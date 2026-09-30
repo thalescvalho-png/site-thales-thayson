@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thales Carvalho & Thayson Azevedo</title>
+  <meta name="description" content="Dupla de compositores de Alvinópolis, Minas Gerais. História, músicas, trajetória nos festivais da canção e próximos lançamentos.">
+  <meta property="og:title" content="Thales Carvalho & Thayson Azevedo">
+  <meta property="og:description" content="Canções do interior de Minas, com raiz no rock e olhar no mundo.">
+  <meta property="og:image" content="img/show-correnteza-2025.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <a class="marca" href="#inicio" id="marca">Thales & Thayson</a>
+    <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" id="menuBtn">Menu</button>
+    <nav id="menu">
+      <a href="#historia">História</a>
+      <a href="#musicas">Músicas</a>
+      <a href="#lancamento">Lançamento</a>
+      <a href="#trajetoria">Trajetória</a>
+      <a href="#galeria">Fotos</a>
+      <a href="#contato" id="menuContato">Contato</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="capa" id="inicio">
+      <img id="capaImg" alt="" src="img/show-correnteza-2025.jpg">
+      <div class="capa-texto">
+        <h1 id="nome">Thales Carvalho & Thayson Azevedo</h1>
+        <p id="chamada"></p>
+        <a class="botao" href="#musicas">Ouvir agora</a>
+      </div>
+    </section>
+
+    <section class="bloco" id="historia">
+      <h2 id="historiaTitulo">A história</h2>
+      <div class="texto" id="historiaTexto"></div>
+    </section>
+
+    <section class="bloco" id="musicas">
+      <h2>Músicas</h2>
+      <div class="musicas" id="listaMusicas"></div>
+    </section>
+
+    <section class="bloco destaque" id="lancamento">
+      <div class="destaque-img"><img id="lancImg" alt=""></div>
+      <div>
+        <p class="rotulo">Próximo lançamento</p>
+        <h2 id="lancTitulo"></h2>
+        <p class="sub" id="lancSub"></p>
+        <div class="texto" id="lancTexto"></div>
+      </div>
+    </section>
+
+    <section class="bloco" id="trajetoria">
+      <h2>Trajetória</h2>
+      <ol class="linha" id="linha"></ol>
+    </section>
+
+    <section class="bloco" id="raizes">
+      <h2 id="raizesTitulo">Raízes no rock</h2>
+      <div class="texto" id="raizesTexto"></div>
+    </section>
+
+    <section class="bloco" id="galeria">
+      <h2>Fotos</h2>
+      <div class="grade" id="grade"></div>
+    </section>
+
+    <section class="bloco" id="contato">
+      <h2>Contato</h2>
+      <p id="contatoTexto"></p>
+      <ul class="links" id="links"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="ano"></span> Thales Carvalho & Thayson Azevedo · Alvinópolis, Minas Gerais</p>
+  </footer>
+
+  <dialog id="visor"><img alt=""><p></p><button aria-label="Fechar">Fechar</button></dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
