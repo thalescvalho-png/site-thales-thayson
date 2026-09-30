@@ -301,7 +301,11 @@ def main():
         sys.exit(f"Não encontrei {ENCARTE_JSON}")
     if not Path(CHROME).exists():
         sys.exit("Não encontrei o Google Chrome em /Applications. Instale o Chrome e rode de novo.")
-    dados = json.loads(ENCARTE_JSON.read_text(encoding="utf-8"))
+    try:
+        dados = json.loads(ENCARTE_JSON.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as problema:
+        sys.exit(f"O encarte.json tem um erro na linha {problema.lineno}, coluna {problema.colno}: {problema.msg}.\n"
+                 "Confira vírgulas e aspas retas (\") perto desse ponto.")
     total = len(dados["faixas"]) + 3
     capa = CAPA if CAPA.exists() else CAPA_SITE
     capa_url = "capa" + capa.suffix
