@@ -298,3 +298,24 @@ img{ max-width:100%; height:auto; display:block; }
   .tocador-tempo{ grid-column:1 / -1; order:4; }
   .pagina-album{ padding-bottom:130px; }
 }
+
+/* ===== Álbum: voltar, apoio e encarte bloqueado ===== */
+.voltar{ display:inline-block; margin-bottom:18px; font-size:14px; color:var(--nevoa); text-decoration:none; }
+.voltar:hover{ color:var(--texto); text-decoration:underline; }
+.apoie{ background:var(--noite); }
+.apoie-in{ max-width:880px; margin:0 auto; padding:72px 24px 24px; }
+.apoie-in{ border-radius:10px; }
+.apoie-in > *{ max-width:60ch; }
+.apoie-rotulo{ font-family:var(--serif); font-style:italic; font-size:21px; color:var(--ambar); }
+.apoie h2{ font-family:var(--serif); font-weight:500; font-size:clamp(36px, 4.6vw, 54px); line-height:1.05; margin:6px 0 16px; }
+.apoie p{ color:var(--texto-suave); }
+.apoie-preco{ margin:22px 0 14px; font-family:var(--serif); font-size:44px; color:var(--texto) !important; line-height:1; }
+.apoie-preco span{ display:block; font-family:var(--sans); font-size:14px; color:var(--nevoa); margin-bottom:6px; }
+.apoie-nota{ margin-top:12px; font-size:13px; color:var(--nevoa) !important; }
+.encarte.bloqueado .encarte-in{ display:block; max-width:880px; padding:96px 24px; }
+.encarte-lista{ list-style:none; margin:8px 0 32px; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap:12px; }
+.encarte-lista li{ display:flex; align-items:baseline; gap:12px; padding:18px 20px; border-radius:8px; background:rgba(19,34,58,.7); border:1px dashed var(--aco); }
+.encarte-lista .num{ font-family:var(--serif); font-size:22px; color:var(--ambar); }
+.encarte-lista .nome{ font-family:var(--serif); font-size:22px; color:var(--texto-suave); filter:blur(.2px); }
+.encarte-lista li::after{ content:"exclusivo"; margin-left:auto; font-size:12px; color:var(--nevoa); }
+.tocador.bloqueado{ display:none; }
