@@ -33,17 +33,9 @@
     var alturaAbertura = window.innerHeight;
     if (y < alturaAbertura * 1.2){
       camadas.forEach(function(c){ c.style.transform = 'translate3d(0,' + (y * parseFloat(c.dataset.velocidade)) + 'px,0)'; });
-      aberturaTexto.style.transform = 'translate3d(0,' + (y * 0.4) + 'px,0)';
-      aberturaTexto.style.opacity = String(1 - limitar(y / (alturaAbertura * 0.65)));
     }
 
-    // 2. Correnteza: a capa sai da névoa e o texto aparece em etapas
-    var p = progresso(correnteza);
-    var nitidez = limitar(p / 0.55);
-    capaArte.style.filter = 'blur(' + ((1 - nitidez) * 18).toFixed(1) + 'px)';
-    capaVeu.style.opacity = String((1 - nitidez) * 0.75);
-    passos.forEach(function(el){ el.classList.toggle('on', p >= parseFloat(el.dataset.limite)); });
-
+    // 2. Correnteza: sem efeito de névoa; a seção rola normalmente
     // 3. Trajetória: rolar para baixo faz a linha do tempo andar para o lado
     var t = progresso(trajetoria);
     var sobra = Math.max(trilha.scrollWidth - window.innerWidth, 0);
@@ -52,7 +44,7 @@
   }
   function pedir(){ if (!pendente){ pendente = true; requestAnimationFrame(atualizar); } }
 
-  if (reduzir){ passos.forEach(function(el){ el.classList.add('on'); }); }
+  passos.forEach(function(el){ el.classList.add('on'); });
   medirTrajetoria();
   atualizar();
   window.addEventListener('scroll', pedir, { passive: true });

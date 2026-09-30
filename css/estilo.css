@@ -55,7 +55,7 @@ img{ max-width:100%; height:auto; display:block; }
 @keyframes pulsa{ 0%,100%{ transform:scaleY(.4); } 50%{ transform:scaleY(1); } }
 
 /* ===== CORRENTEZA: CAPA SAINDO DA NÉVOA ===== */
-.correnteza{ position:relative; height:260vh; background:var(--noite); }
+.correnteza{ position:relative; background:var(--noite); }
 .fixo{ position:sticky; top:0; height:100svh; overflow:hidden; display:flex; align-items:center; }
 .correnteza-grade{ max-width:1280px; width:100%; margin:0 auto; padding:72px 24px 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px; align-items:center; }
 .capa{ position:relative; aspect-ratio:1/1; width:100%; max-width:520px; justify-self:center; border-radius:4px; overflow:hidden; background:var(--vale); }
@@ -319,3 +319,33 @@ img{ max-width:100%; height:auto; display:block; }
 .encarte-lista .nome{ font-family:var(--serif); font-size:22px; color:var(--texto-suave); filter:blur(.2px); }
 .encarte-lista li::after{ content:"exclusivo"; margin-left:auto; font-size:12px; color:var(--nevoa); }
 .tocador.bloqueado{ display:none; }
+
+/* ===== Ajustes: abertura legível e Correnteza sem névoa, rolando normalmente ===== */
+.abertura .frase, .abertura-texto p.local, .abertura h1{ text-shadow:0 2px 18px rgba(14,24,38,.9); }
+.correnteza{ height:auto; }
+.correnteza .fixo{ position:static; height:auto; overflow:visible; padding:40px 0 100px; }
+.capa .veu{ display:none; }
+.capa .arte{ filter:none !important; }
+.passo{ opacity:1; transform:none; transition:none; }
+@media (max-width:860px){
+  .abertura{ height:auto; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
+  .abertura-texto{ position:relative; top:auto; padding:110px 20px 150px; z-index:2; }
+  .abertura-texto p.local{ font-size:18px; margin-bottom:12px; }
+  .abertura h1{ font-size:clamp(40px, 12vw, 60px); }
+  .abertura .frase{ display:block; font-size:21px; line-height:1.35; color:var(--neblina); margin-top:16px; max-width:none; }
+  .abertura .acoes{ margin-top:24px; gap:10px; }
+  .abertura .acoes .botao{ min-height:44px; padding:0 18px; font-size:14px; }
+  .desca{ display:none; }
+  .correnteza .fixo{ padding:24px 0 72px; }
+  .correnteza-grade{ padding-top:24px; gap:22px; }
+  .capa{ width:min(78vw, 320px); height:min(78vw, 320px); max-width:none; aspect-ratio:auto; }
+}
+
+/* ===== AJUSTES 30/09 ===== */
+
+/* Capa de Correnteza sem névoa: aparece direto, nítida, no computador e no celular */
+#capaArte{ filter:none !important; }
+#capaVeu{ display:none !important; }
+
+/* Links do contato (Instagram e WhatsApp) na cor do texto */
+.contato dd a{ color:inherit; text-decoration:underline; text-underline-offset:3px; }
