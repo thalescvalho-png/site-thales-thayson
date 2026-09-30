@@ -1,0 +1,51 @@
+// Configuração do Worker "correnteza" (venda do álbum).
+// Segredos (MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET, RESEND_API_KEY) NÃO ficam aqui:
+// são cadastrados com  npx wrangler secret put NOME  (veja o README).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "correnteza",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+
+  "vars": {
+    // Endereços que podem chamar a API pelo navegador (separe com vírgula)
+    "SITE_ORIGENS": "https://thalescvalho-png.github.io",
+    // Página do álbum: o link do e-mail leva para cá com ?codigo=...
+    "PAGINA_ALBUM": "https://thalescvalho-png.github.io/site-thales-thayson/correnteza.html",
+    "PRECO": "19.90",
+    // Quantos aparelhos/navegadores diferentes podem usar o mesmo código
+    "LIMITE_APARELHOS": "5",
+    // Remetente do e-mail. Sem domínio próprio, o Resend só aceita onboarding@resend.dev
+    "EMAIL_REMETENTE": "Thales Carvalho & Thayson Azevedo <onboarding@resend.dev>",
+    // (opcional) endereço que recebe as respostas dos compradores
+    "EMAIL_RESPONDER_PARA": "",
+    // Tempo para pagar o Pix antes do QR code expirar
+    "PIX_VALIDADE_MINUTOS": "30"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "correnteza",
+      "database_id": "47f08bb4-9f79-4ff2-96ec-d3da1487153d",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    { "binding": "ARQUIVOS", "bucket_name": "correnteza" }
+  ],
+
+  // Limites de tentativas (proteção contra abuso). period só aceita 10 ou 60 segundos.
+  "ratelimits": [
+    { "name": "LIMITE_CHECKOUT", "namespace_id": "2601", "simple": { "limit": 6, "period": 60 } },
+    { "name": "LIMITE_CONSULTA", "namespace_id": "2602", "simple": { "limit": 40, "period": 60 } },
+    { "name": "LIMITE_CODIGO_ERRADO", "namespace_id": "2603", "simple": { "limit": 15, "period": 60 } },
+    { "name": "LIMITE_ARQUIVOS", "namespace_id": "2604", "simple": { "limit": 300, "period": 60 } }
+  ],
+
+  // A cada 10 minutos confere pagamentos pendentes (caso algum aviso do Mercado Pago se perca)
+  "triggers": { "crons": ["*/10 * * * *"] }
+}

@@ -1,0 +1,4 @@
+.DS_Store
+# masters do álbum: ainda não vão para o repositório
+audio/*.mp3
+audio/*.wav

@@ -1,0 +1,23 @@
+{
+  "name": "correnteza-backend",
+  "private": true,
+  "type": "module",
+  "description": "Venda do álbum Correnteza: pagamentos (Mercado Pago), códigos de acesso e arquivos (Cloudflare Worker + D1 + R2)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "publicar": "wrangler deploy",
+    "logs": "wrangler tail",
+    "checar": "wrangler types && tsc --noEmit",
+    "banco:atualizar": "wrangler d1 migrations apply correnteza --remote",
+    "codigo": "node scripts/admin.mjs codigo",
+    "pedidos": "node scripts/admin.mjs pedidos",
+    "aparelhos": "node scripts/admin.mjs aparelhos",
+    "liberar-aparelhos": "node scripts/admin.mjs liberar-aparelhos",
+    "desativar-codigo": "node scripts/admin.mjs desativar",
+    "exportar-emails": "node scripts/admin.mjs exportar-emails"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "wrangler": "^4.145.0"
+  }
+}

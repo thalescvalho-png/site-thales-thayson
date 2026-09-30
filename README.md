@@ -10,6 +10,7 @@ js/principal.js   parallax, capa de Correnteza, trajetória horizontal e galeria
 js/album.js       player do álbum
 img/              fotos em WebP, até 1600 px no lado maior, sem metadados/GPS
 audio/            áudios do álbum (vazia por enquanto, veja abaixo)
+backend/          venda do álbum: pagamentos, códigos de acesso e arquivos (veja backend/README.md)
 ```
 
 ## Player do álbum
