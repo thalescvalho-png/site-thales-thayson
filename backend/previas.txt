@@ -1,0 +1,24 @@
+# Prévias do álbum Correnteza
+#
+# Para cada faixa, escreva em que ponto a prévia começa (minutos:segundos).
+# Se deixar só o nome da faixa, vale o "padrao" abaixo.
+# Linhas que começam com # são só comentários.
+#
+# Depois de mudar, gere as prévias de novo (na pasta backend):
+#     ./scripts/gerar-previas.sh
+# e envie para o R2:
+#     ./scripts/enviar-r2.sh previews
+
+duracao   15      # segundos de cada prévia
+fade      1.5     # segundos de fade in e de fade out
+padrao    0:45    # início usado quando a faixa não tem um valor próprio
+
+01-clareira            0:45
+02-candeia             0:45
+03-no-leito            0:45
+04-meandros            0:45
+05-a-danca-das-chamas  0:45
+06-degredo             0:45
+07-lugubre             0:45
+08-correnteza          0:45
+09-endless             0:45

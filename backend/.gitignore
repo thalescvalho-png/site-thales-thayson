@@ -1,0 +1,8 @@
+# arquivos gerados na máquina: nunca vão para o GitHub
+node_modules/
+.wrangler/
+.dev.vars*
+.env*
+__pycache__/
+*.pyc
+.DS_Store
