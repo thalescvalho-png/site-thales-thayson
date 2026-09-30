@@ -1,90 +1,261 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thales Carvalho & Thayson Azevedo</title>
-  <meta name="description" content="Dupla de compositores de Alvinópolis, Minas Gerais. História, músicas, trajetória nos festivais da canção e próximos lançamentos.">
-  <meta property="og:title" content="Thales Carvalho & Thayson Azevedo">
-  <meta property="og:description" content="Canções do interior de Minas, com raiz no rock e olhar no mundo.">
-  <meta property="og:image" content="img/show-correnteza-2025.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thales Carvalho &amp; Thayson Azevedo</title>
+<meta name="description" content="Duo de música autoral de Alvinópolis, Minas Gerais. Single Pacífico Homem e o álbum Correnteza, em breve.">
+<meta property="og:title" content="Thales Carvalho &amp; Thayson Azevedo">
+<meta property="og:description" content="Há mais de 15 anos, música autoral em Minas Gerais.">
+<meta property="og:image" content="img/sem-ano_capa-album_correnteza.webp">
+<meta name="theme-color" content="#0E1826">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
-  <header class="topo">
-    <a class="marca" href="#inicio" id="marca">Thales & Thayson</a>
-    <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" id="menuBtn">Menu</button>
-    <nav id="menu">
-      <a href="#historia">História</a>
-      <a href="#musicas">Músicas</a>
-      <a href="#lancamento">Lançamento</a>
+
+<header class="topo" id="topo">
+  <div class="topo-in">
+    <a class="marca" href="#inicio"><span class="longa">Thales Carvalho &amp; Thayson Azevedo</span><span class="curta">Thales &amp; Thayson</span></a>
+    <nav class="menu" aria-label="Seções">
+      <a href="correnteza.html">Álbum</a>
+      <a href="#quem-somos">Quem somos</a>
       <a href="#trajetoria">Trajetória</a>
-      <a href="#galeria">Fotos</a>
-      <a href="#contato" id="menuContato">Contato</a>
+      <a href="#discografia">Discografia</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#contato">Contato</a>
+      <a class="botao" href="correnteza.html#ouvir">Ouvir</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <section class="capa" id="inicio">
-      <img id="capaImg" alt="" src="img/show-correnteza-2025.jpg">
-      <div class="capa-texto">
-        <h1 id="nome">Thales Carvalho & Thayson Azevedo</h1>
-        <p id="chamada"></p>
-        <a class="botao" href="#musicas">Ouvir agora</a>
+<main>
+  <!-- ===== ABERTURA ===== -->
+  <section class="abertura" id="inicio">
+    <div class="camada ceu-nevoa" data-velocidade="0.6" aria-hidden="true">
+      <svg viewBox="0 0 1440 500" preserveAspectRatio="none"><defs><filter id="bA" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="60"/></filter></defs>
+        <ellipse cx="1050" cy="240" rx="460" ry="130" fill="#3E5C76" opacity=".5" filter="url(#bA)"/>
+        <ellipse cx="300" cy="120" rx="360" ry="90" fill="#1A2D45" opacity=".8" filter="url(#bA)"/></svg>
+    </div>
+    <div class="camada serra-longe" data-velocidade="0.45" aria-hidden="true">
+      <svg viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 170 C 140 110, 260 70, 400 110 S 640 40, 820 95 S 1100 30, 1260 90 S 1400 70, 1440 80 L1440 300 L0 300Z" fill="#1A2D45"/></svg>
+    </div>
+    <div class="camada nevoa-1" data-velocidade="0.35" aria-hidden="true">
+      <div class="deriva"><svg viewBox="0 0 1440 160" preserveAspectRatio="none"><defs><filter id="bB" x="-20%" y="-100%" width="140%" height="300%"><feGaussianBlur stdDeviation="30"/></filter></defs>
+        <ellipse cx="480" cy="85" rx="560" ry="38" fill="#A9BCCB" opacity=".28" filter="url(#bB)"/>
+        <ellipse cx="1150" cy="70" rx="380" ry="30" fill="#A9BCCB" opacity=".2" filter="url(#bB)"/></svg></div>
+    </div>
+    <div class="camada serra-meio" data-velocidade="0.22" aria-hidden="true">
+      <svg viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 150 C 200 90, 380 120, 560 80 S 900 150, 1100 95 S 1330 120, 1440 105 L1440 300 L0 300Z" fill="#13223A"/></svg>
+    </div>
+    <div class="camada nevoa-2" data-velocidade="0.14" aria-hidden="true">
+      <div class="deriva lenta"><svg viewBox="0 0 1440 140" preserveAspectRatio="none"><defs><filter id="bC" x="-20%" y="-100%" width="140%" height="300%"><feGaussianBlur stdDeviation="26"/></filter></defs>
+        <ellipse cx="1000" cy="72" rx="620" ry="32" fill="#A9BCCB" opacity=".22" filter="url(#bC)"/></svg></div>
+    </div>
+    <div class="camada serra-perto" data-velocidade="0.05" aria-hidden="true">
+      <svg viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 110 C 260 70, 520 95, 760 60 S 1180 95, 1440 70 L1440 220 L0 220Z" fill="#0E1826"/></svg>
+    </div>
+
+    <div class="abertura-texto" id="aberturaTexto">
+      <p class="local">Alvinópolis, Minas Gerais</p>
+      <h1><span>Thales Carvalho</span><span>&amp; Thayson Azevedo</span></h1>
+      <p class="frase">Há mais de 15 anos, música autoral em Minas Gerais.</p>
+      <div class="acoes">
+        <a class="botao" href="#discografia">Ouvir Pacífico Homem</a>
+        <a class="botao contorno" href="#trajetoria">Conheça nossa trajetória</a>
       </div>
-    </section>
+    </div>
+    <div class="desca" aria-hidden="true">role<span class="linha"></span></div>
+  </section>
 
-    <section class="bloco" id="historia">
-      <h2 id="historiaTitulo">A história</h2>
-      <div class="texto" id="historiaTexto"></div>
-    </section>
+  <!-- ===== CORRENTEZA ===== -->
+  <section class="correnteza" id="correnteza" aria-label="Próximo lançamento: Correnteza">
+    <div class="fixo">
+      <div class="correnteza-grade">
+        <div class="capa">
+          <div class="arte" id="capaArte">
+            <img src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" alt="Capa de Correnteza: dois músicos com violões sentados sobre a água, sob um facho de luz na névoa">
+          </div>
+          <div class="veu" id="capaVeu"></div>
+        </div>
+        <div>
+          <p class="quando passo" data-limite="0.12">Em breve, nosso primeiro álbum</p>
+          <h2 class="passo" data-limite="0.22">Correnteza</h2>
+          <p class="verso passo" data-limite="0.34">Vem em mim, correnteza</p>
+          <p class="descricao passo" data-limite="0.46">Uma jornada poética e sensorial sobre a força transformadora da natureza, os fluxos internos da alma humana e a busca por significado diante dos desafios da existência. É o resultado de um caminho marcado por resiliência e amizade, uma celebração das vozes do interior, geográfico e humano.</p>
+          <div class="passo" data-limite="0.6">
+            <div class="contagem" aria-label="Contagem regressiva">
+              <div><b>[--]</b><small>dias</small></div><div><b>[--]</b><small>horas</small></div><div><b>[--]</b><small>minutos</small></div>
+            </div>
+            <p class="nota">Data de lançamento: [a definir]</p>
+            <div class="acoes-linha">
+              <a class="botao" href="#correnteza">Fazer pré-save</a>
+              <a class="botao contorno" href="correnteza.html">Faixas e encarte</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="bloco" id="musicas">
-      <h2>Músicas</h2>
-      <div class="musicas" id="listaMusicas"></div>
-    </section>
-
-    <section class="bloco destaque" id="lancamento">
-      <div class="destaque-img"><img id="lancImg" alt=""></div>
+  <!-- ===== QUEM SOMOS ===== -->
+  <section class="quem" id="quem-somos">
+    <div class="quem-in">
       <div>
-        <p class="rotulo">Próximo lançamento</p>
-        <h2 id="lancTitulo"></h2>
-        <p class="sub" id="lancSub"></p>
-        <div class="texto" id="lancTexto"></div>
+        <h2>Raízes mineiras, olhar contemporâneo</h2>
+        <p>O duo Thales Carvalho e Thayson Azevedo constrói, há mais de 15 anos, uma trajetória dedicada à música autoral em Minas Gerais. Reconhecidos em festivais pela força de suas composições, unem raízes mineiras a influências contemporâneas. Seu trabalho é marcado pela experimentação estética, pela fusão de sonoridades e pelo compromisso com a cena cultural local. Agora preparam o lançamento do álbum Correnteza, síntese poética dessa caminhada conjunta.</p>
+        <a class="mais" href="#trajetoria">Ler a história completa</a>
       </div>
-    </section>
+      <img class="retrato" src="img/sem-ano_sem-evento_sem-musica-3.webp" width="1200" height="1600" loading="lazy" alt="Thales Carvalho e Thayson Azevedo no palco, com violão e guitarra, sob luz vermelha">
+    </div>
+  </section>
 
-    <section class="bloco" id="trajetoria">
-      <h2>Trajetória</h2>
-      <ol class="linha" id="linha"></ol>
-    </section>
+  <!-- ===== TRAJETÓRIA (rolagem horizontal) ===== -->
+  <section class="trajetoria" id="trajetoria" aria-label="Trajetória">
+    <div class="fixo">
+      <div class="traj-topo">
+        <h2>De festival em festival</h2>
+        <a class="botao contorno" href="#galeria">Ver a galeria de fotos</a>
+      </div>
+      <div class="rio" aria-hidden="true"><span id="rioCheio"></span></div>
+      <div class="trilha" id="trilha">
+        <article class="marco"><span class="ano">2009</span><h3>Melhor intérprete · 29º Festival</h3><span class="musica">Meu triunfo é o rock n' roll</span><p>Movidos pelo Festival da Canção de Alvinópolis, nasce a parceria.</p>
+          <img src="img/2009_festival-alvinopolis_meu-triunfo-e-o-rock-n-roll.webp" width="448" height="336" alt="Banda tocando guitarras no palco do Festival da Canção de Alvinópolis em 2009, com luzes coloridas e fumaça"></article>
+        <article class="marco"><span class="ano">2012</span><h3>Melhor intérprete</h3><span class="musica">Monotonia</span><p>Com a banda Hard Case.</p>
+          <img src="img/2012_festival-alvinopolis_monotonia.webp" width="960" height="720" loading="lazy" alt="A banda Hard Case posando em tom de brincadeira numa praça à noite, no festival de 2012"></article>
+        <article class="marco"><span class="ano">2014</span><h3>4º lugar geral</h3><span class="musica">O espelho do outro lado</span><p>Já como Paralello.</p>
+          <img src="img/2014_festival-alvinopolis-premiacao_o-espelho-do-outro-lado.webp" width="960" height="720" loading="lazy" alt="Premiados no palco do Festival da Canção de Alvinópolis de 2014, com o troféu em forma de clave de sol"></article>
+        <article class="marco"><span class="ano">2016</span><h3>1º lugar da fase local</h3><span class="musica">Encruzilhada</span><p>Paralello no 36º Festival da Canção.</p>
+          <img src="img/2016_festival-alvinopolis-fase-local_encruzilhada.webp" width="960" height="540" loading="lazy" alt="Paralello tocando Encruzilhada no Celeiro Bar, com o banner do 36º Festival da Canção de Alvinópolis, 2016"></article>
+        <article class="marco"><span class="ano">2019</span><h3>1º lugar geral · 37º Festival</h3><span class="musica">No Leito</span><p>Letra de Marco Paulo Andrade.</p>
+          <img src="img/2019_festival-alvinopolis-premiacao_no-leito.webp" width="744" height="690" loading="lazy" alt="Quatro amigos abraçados segurando o troféu de primeiro lugar geral do Festival da Canção de Alvinópolis, 2019"></article>
+        <article class="marco"><span class="ano">2023</span><h3>Melhor Música de Alvinópolis · 38º Festival</h3><span class="musica">Lúgubre</span><p>A canção premiada ganha videoclipe em 2024.</p>
+          <img src="img/2023_festival-alvinopolis-premiacao_lugubre.webp" width="1599" height="1066" loading="lazy" alt="A dupla e músicos com os cheques de Melhor Música de Alvinópolis no 38º Festival da Canção"></article>
+        <article class="marco"><span class="ano">2025</span><h3>Melhor Música de Alvinópolis · 39º Festival</h3><span class="musica">Meandros</span><p>A dupla volta a ser premiada no Festival da Canção.</p>
+          <img src="img/2025_festival-alvinopolis-premiacao_meandros.webp" width="1078" height="832" loading="lazy" alt="Amigos comemoram com a placa de Melhor Música de Alvinópolis diante do banner do 39º Festival da Canção, em 2025"></article>
+        <article class="marco"><span class="ano">2026</span><h3>Melhor Música de Alvinópolis · 40º Festival</h3><span class="musica">Do Avesso</span><p>Mais uma canção premiada no Festival da Canção de Alvinópolis.</p>
+          <img src="img/2026_festival-alvinopolis-premiacao_do-avesso.webp" width="1200" height="1600" loading="lazy" alt="Grupo abraçado no palco com o troféu de Melhor Música de Alvinópolis, na premiação de Do Avesso em 2026"></article>
+        <article class="marco destaque"><span class="ano">Hoje</span><h3>Pacífico Homem e Correnteza</h3><span class="musica">A próxima página</span><p>O single chega às plataformas e o primeiro álbum se aproxima.</p>
+          <img src="img/2025_show-acustico-correnteza_sem-musica-3.webp" width="1200" height="1600" loading="lazy" alt="A dupla em show acústico de Correnteza, com a arte do álbum projetada ao fundo"></article>
+      </div>
+    </div>
+  </section>
 
-    <section class="bloco" id="raizes">
-      <h2 id="raizesTitulo">Raízes no rock</h2>
-      <div class="texto" id="raizesTexto"></div>
-    </section>
+  <!-- ===== DISCOGRAFIA ===== -->
+  <section class="disco" id="discografia">
+    <h2>Discografia</h2>
+    <div class="disco-grade">
+      <article class="obra pacifico">
+        <img class="capinha" src="img/sem-ano_capa-single_pacifico-homem.webp" width="1600" height="1600" loading="lazy" alt="Capa de Pacífico Homem: homem de máscara segurando um ramo, num vale enevoado cortado por um riacho">
+        <p class="gancho">Composta na Rua Pacífico Homem, em Ouro Preto</p>
+        <h3>Pacífico Homem, single</h3>
+        <p>Produzido do zero em home studio, com sonoridade intimista e tecnicamente cuidadosa.</p>
+        <a class="botao" href="#discografia">Ouvir em todas as plataformas</a>
+      </article>
+      <article class="obra">
+        <img class="capinha" src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" loading="lazy" alt="Capa de Correnteza">
+        <p class="gancho">Vem em mim, correnteza</p>
+        <h3>Correnteza, álbum</h3>
+        <p>O primeiro álbum da dupla, com oito faixas. Em breve nas plataformas.</p>
+        <a class="botao contorno" href="correnteza.html">Faixas e encarte</a>
+      </article>
+      <article class="obra chamas">
+        <img class="capinha" src="img/sem-ano_clipe_danca-das-chamas.webp" width="1600" height="905" loading="lazy" alt="Frame do videoclipe de A Dança das Chamas: a dupla canta e toca violão em estúdio">
+        <p class="gancho">Faixa de Correnteza</p>
+        <h3>A Dança das Chamas, videoclipe</h3>
+        <p>Gravado em estúdio e exibido na Mostra Cultural da Lei Paulo Gustavo.</p>
+        <a class="botao contorno" href="#discografia">Assistir no YouTube</a>
+      </article>
+      <article class="obra lugubre">
+        <div class="capinha vazia">[frame do clipe de Lúgubre]</div>
+        <p class="gancho">Fala, minha noite</p>
+        <h3>Lúgubre, videoclipe</h3>
+        <p>Canção premiada no Festival da Canção de Alvinópolis, com clipe realizado em 2024.</p>
+        <a class="botao contorno" href="#discografia">Assistir no YouTube</a>
+      </article>
+    </div>
+  </section>
 
-    <section class="bloco" id="galeria">
-      <h2>Fotos</h2>
-      <div class="grade" id="grade"></div>
-    </section>
+  <!-- ===== GALERIA ===== -->
+  <section class="galeria" id="galeria">
+    <div class="galeria-in">
+      <h2>Galeria</h2>
+      <p class="intro">Palcos, estúdios e bastidores. Toque numa foto para ampliar.</p>
+      <div class="mosaico">
+        <figure><button type="button"><img src="img/2014_festival-alvinopolis_o-espelho-do-outro-lado.webp" width="960" height="640" loading="lazy" alt="Paralello no palco do Festival da Canção de Alvinópolis, 2014"></button>
+          <figcaption><b>2014</b> · Festival da Canção de Alvinópolis · <i>O espelho do outro lado</i> · foto: fimagens.com</figcaption></figure>
+        <figure><button type="button"><img src="img/2019_rock-in-rua_sem-musica.webp" width="1024" height="768" loading="lazy" alt="Banda tocando no palco de rua do Rock in Rua, 2019"></button>
+          <figcaption><b>2019</b> · Rock in Rua</figcaption></figure>
+        <figure><button type="button"><img src="img/2023_festival-alvinopolis_lugubre.webp" width="1063" height="563" loading="lazy" alt="Cantor de braços abertos apresentando Lúgubre no 38º Festival da Canção de Alvinópolis"></button>
+          <figcaption><b>2023</b> · 38º Festival da Canção de Alvinópolis · <i>Lúgubre</i></figcaption></figure>
+        <figure><button type="button"><img src="img/2024_gravacao-leve-music_sem-musica.webp" width="900" height="1600" loading="lazy" alt="Colagem de bastidores da gravação em estúdio: violão, bateria e mesa de som"></button>
+          <figcaption><b>[2024]</b> · Gravação no estúdio Leve Music</figcaption></figure>
+        <figure><button type="button"><img src="img/2025_show-acustico-correnteza_sem-musica-1.webp" width="1200" height="1600" loading="lazy" alt="Músico de camisa preta toca violão sentado no show acústico de Correnteza"></button>
+          <figcaption><b>2025</b> · Show acústico Correnteza</figcaption></figure>
+        <figure><button type="button"><img src="img/2025_show-acustico-correnteza_sem-musica-2.webp" width="1200" height="1600" loading="lazy" alt="Músico canta ao violão diante da arte de Correnteza projetada"></button>
+          <figcaption><b>2025</b> · Show acústico Correnteza</figcaption></figure>
+        <figure><button type="button"><img src="img/2025_apresentacao_sem-musica-1.webp" width="901" height="1600" loading="lazy" alt="A dupla em apresentação acústica com dois violões, sob luz roxa"></button>
+          <figcaption><b>2025</b> · [evento]</figcaption></figure>
+        <figure><button type="button"><img src="img/2025_apresentacao_sem-musica-2.webp" width="900" height="1600" loading="lazy" alt="A dupla sentada tocando violões numa apresentação acústica"></button>
+          <figcaption><b>2025</b> · [evento]</figcaption></figure>
+        <figure><button type="button"><img src="img/2026_sem-evento_sem-musica.webp" width="901" height="1600" loading="lazy" alt="Selfie da dupla com violões num palco ao ar livre durante o dia"></button>
+          <figcaption><b>2026</b> · [evento]</figcaption></figure>
+        <figure><button type="button"><img src="img/2026_festival-alvinopolis_do-avesso-1.webp" width="1600" height="1200" loading="lazy" alt="Banda no palco do Festival da Canção de Alvinópolis, com telão mostrando um disco e a torre de uma igreja"></button>
+          <figcaption><b>2026</b> · Festival da Canção de Alvinópolis · <i>Do Avesso</i></figcaption></figure>
+        <figure><button type="button"><img src="img/2026_festival-alvinopolis_do-avesso-2.webp" width="1200" height="1600" loading="lazy" alt="A dupla tocando violões sob luzes azuis no palco do festival"></button>
+          <figcaption><b>2026</b> · Festival da Canção de Alvinópolis · <i>Do Avesso</i></figcaption></figure>
+        <figure><button type="button"><img src="img/2026_festival-alvinopolis_do-avesso-3.webp" width="900" height="1600" loading="lazy" alt="A dupla com violão e guitarra no palco iluminado do festival"></button>
+          <figcaption><b>2026</b> · Festival da Canção de Alvinópolis · <i>Do Avesso</i></figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_festival-bela-vista_lugubre.webp" width="1280" height="916" loading="lazy" alt="Apresentação de Lúgubre sob luz azul, com uma lua e uma árvore projetadas no telão"></button>
+          <figcaption><b>[ano]</b> · Festival em Bela Vista · <i>Lúgubre</i></figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_festival-bela-vista_sem-musica.webp" width="1600" height="1200" loading="lazy" alt="Grupo de músicos e amigos reunidos em frente ao palco do festival em Bela Vista"></button>
+          <figcaption><b>[ano]</b> · Festival em Bela Vista</figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_mostra-cultural-lei-paulo-gustavo_danca-das-chamas-e-lugubre.webp" width="1600" height="1043" loading="lazy" alt="A dupla fala ao microfone na Mostra Cultural da Lei Paulo Gustavo"></button>
+          <figcaption><b>[ano]</b> · Mostra Cultural Lei Paulo Gustavo · clipes de <i>Dança das Chamas</i> e <i>Lúgubre</i></figcaption></figure>
+        <figure class="pequena"><button type="button"><img src="img/sem-ano_gravacao-home-studio_pacifico-homem.webp" width="249" height="375" loading="lazy" alt="Gravação em home studio: um músico canta ao microfone enquanto outro opera o computador"></button>
+          <figcaption><b>[ano]</b> · Gravação em home studio · <i>Pacífico Homem</i></figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_equipe_sem-musica.webp" width="1200" height="1600" loading="lazy" alt="Quatro pessoas posam abraçadas diante de uma parede de capas de discos"></button>
+          <figcaption><b>[ano]</b> · Equipe</figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_sem-evento_sem-musica-1.webp" width="900" height="1600" loading="lazy" alt="A dupla em show, com violão e guitarra, sob luz azul"></button>
+          <figcaption><b>[ano]</b> · [evento]</figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_sem-evento_sem-musica-2.webp" width="900" height="1600" loading="lazy" alt="A dupla cantando e tocando violão e guitarra em palco escuro com luz azul"></button>
+          <figcaption><b>[ano]</b> · [evento]</figcaption></figure>
+        <figure><button type="button"><img src="img/sem-ano_bolsa-amarela_sem-musica.webp" width="1048" height="724" loading="lazy" alt="Foto antiga de uma banda tocando guitarras na rua"></button>
+          <figcaption><b>[ano]</b> · Bolsa Amarela</figcaption></figure>
+      </div>
+    </div>
+  </section>
 
-    <section class="bloco" id="contato">
-      <h2>Contato</h2>
-      <p id="contatoTexto"></p>
-      <ul class="links" id="links"></ul>
-    </section>
-  </main>
+  <!-- ===== CONTATO ===== -->
+  <section class="contato" id="contato">
+    <div class="contato-in">
+      <div><h2>Vamos conversar</h2><p class="apoio-texto">Shows, festivais, parcerias e imprensa.</p></div>
+      <dl>
+        <div><dt>E-mail</dt><dd>[e-mail]</dd></div>
+        <div><dt>Instagram</dt><dd>[@perfil]</dd></div>
+        <div><dt>WhatsApp para shows</dt><dd>[número]</dd></div>
+      </dl>
+    </div>
+    <div class="rodape"><span>Apoio: [logos PNAB, Lei Paulo Gustavo, Prefeitura de Alvinópolis]</span><span>Dados entre colchetes ainda serão confirmados.</span></div>
+  </section>
+</main>
 
-  <footer>
-    <p>© <span id="ano"></span> Thales Carvalho & Thayson Azevedo · Alvinópolis, Minas Gerais</p>
-  </footer>
+<dialog class="ampliada" id="ampliada" aria-label="Foto ampliada">
+  <img src="" alt="">
+  <p></p>
+  <button type="button" class="fechar" aria-label="Fechar">×</button>
+  <button type="button" class="anterior" aria-label="Foto anterior">‹</button>
+  <button type="button" class="proxima" aria-label="Próxima foto">›</button>
+</dialog>
 
-  <dialog id="visor"><img alt=""><p></p><button aria-label="Fechar">Fechar</button></dialog>
+<div class="barra" aria-label="Ouvir o single">
+  <img src="img/sem-ano_capa-single_pacifico-homem.webp" width="42" height="42" alt="" loading="lazy">
+  <div><b>Pacífico Homem</b><small>novo single</small></div>
+  <a class="botao" href="#discografia">Ouvir</a>
+</div>
 
-  <script src="app.js"></script>
+<script src="js/principal.js"></script>
 </body>
 </html>
