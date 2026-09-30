@@ -110,7 +110,7 @@ img{ max-width:100%; height:auto; display:block; }
 /* ===== DISCOGRAFIA ===== */
 .disco{ max-width:1280px; margin:0 auto; padding:120px 24px; }
 .disco h2, .galeria h2{ font-family:var(--serif); font-weight:500; font-size:clamp(40px, 5vw, 60px); margin-bottom:40px; }
-.disco-grade{ display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:24px; }
+.disco-grade{ display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:20px; }
 .obra{ display:flex; flex-direction:column; gap:14px; padding:22px; border-radius:6px; background:var(--vale); }
 .obra .capinha{ aspect-ratio:1/1; width:100%; border-radius:3px; object-fit:cover; background:var(--aco); }
 .obra .gancho{ font-family:var(--serif); font-style:italic; font-size:23px; line-height:1.25; }
@@ -124,6 +124,10 @@ img{ max-width:100%; height:auto; display:block; }
 .obra.chamas{ background:#2A1F1C; }
 .obra.chamas .gancho{ color:#E0A77A; }
 .obra .capinha{ object-fit:cover; }
+.obra.monotonia{ background:#26241F; }
+.obra.monotonia .gancho{ color:#D9C9A8; }
+.obra.monotonia .botao{ background:#D9C9A8; color:#26241F; }
+.obra .botao.em-breve{ opacity:.6; cursor:default; pointer-events:none; }
 .obra .capinha.vazia{ display:flex; align-items:center; justify-content:center; padding:16px; text-align:center; font-size:14px; color:var(--nevoa); background:#2C3140; border:1px dashed var(--aco); }
 .acoes-linha{ display:flex; flex-wrap:wrap; gap:12px; }
 @media (max-width:980px){ .disco{ padding:80px 24px; } }
