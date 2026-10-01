@@ -10,6 +10,8 @@
 <meta property="og:image" content="img/sem-ano_capa-album_correnteza.webp">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E1826">
+<!-- o site já é escuro: impede o "modo escuro" do celular (Samsung Internet, Chrome) de inverter as cores -->
+<meta name="color-scheme" content="dark">
 <!-- endereço da API de venda (backend/) e chave PÚBLICA do Mercado Pago (Credenciais → Public Key).
      Com a chave vazia, a página mostra "pagamento em breve", mas prévias e códigos continuam funcionando. -->
 <meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
@@ -17,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=4">
+<link rel="stylesheet" href="css/estilo.css?v=5">
 </head>
 <body class="pagina-album">
 
@@ -235,7 +237,7 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <audio id="audio" preload="none"></audio>
 </div>
 
-<script src="js/album.js?v=4"></script>
-<script src="js/compra.js?v=4"></script>
+<script src="js/album.js?v=5"></script>
+<script src="js/compra.js?v=5"></script>
 </body>
 </html>
