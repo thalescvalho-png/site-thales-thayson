@@ -110,9 +110,9 @@
       if (controleBrick){ controleBrick.unmount(); controleBrick = null; }
       var mp = new window.MercadoPago(CHAVE_MP, { locale: 'pt-BR' });
       return mp.bricks().create('payment', 'brickPagamento', {
-        initialization: { amount: d ? d.preco : 19.9, payer: { email: email } },
+        initialization: { amount: d ? d.preco : 22.9, payer: { email: email } },
         customization: {
-          paymentMethods: { bankTransfer: ['pix'], creditCard: 'all', debitCard: 'all', maxInstallments: 1 },
+          paymentMethods: { bankTransfer: ['pix'], creditCard: 'all', debitCard: 'all', maxInstallments: 3 },
           visual: { style: { theme: 'dark', customVariables: { baseColor: '#C68B3E' } } }
         },
         callbacks: {

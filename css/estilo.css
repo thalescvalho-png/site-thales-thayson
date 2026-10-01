@@ -402,3 +402,4 @@ button.botao{ cursor:pointer; font-family:inherit; }
   .faixa-extras .ver-letra{ padding:6px 14px 6px 0; }
 }
 @media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
+.apoie-parcelas{ margin:-4px 0 18px; font-size:15px; color:var(--texto-suave); }

@@ -67,6 +67,12 @@ Use a Public Key do mesmo tipo do Access Token (as duas de teste, ou as duas de 
 > Para testar sem cobrar de verdade, use primeiro as **Credenciais de teste** e os cartões de teste
 > do Mercado Pago. Depois troque pelo Access Token de produção com o mesmo comando.
 
+### Parcelamento em até 3x sem juros
+A página e o backend aceitam no máximo 3 parcelas no crédito. Quem decide se as parcelas têm juros
+é a **sua conta** do Mercado Pago: nas configurações de custos/parcelamento da conta, ative a opção de
+oferecer parcelamento **sem juros** (sem acréscimo para o comprador) até 3x. A taxa dessas parcelas
+passa a ser descontada de você. Sem essa opção, o comprador vê as parcelas com juros.
+
 ### 2. Mercado Pago: aviso de pagamento (`MP_WEBHOOK_SECRET`)
 1. Na mesma aplicação: **Webhooks** → **Configurar notificações**.
 2. URL (modo produção): `https://correnteza.correnteza-backend.workers.dev/api/webhook/mercadopago`
@@ -188,7 +194,7 @@ Depois de mudar qualquer uma, rode `npm run publicar`.
 |---|---|---|
 | `SITE_ORIGENS` | sites que podem chamar a API (CORS), separados por vírgula | GitHub Pages |
 | `PAGINA_ALBUM` | página que o link do e-mail abre (`?codigo=` é acrescentado) | `.../correnteza.html` |
-| `PRECO` | preço cobrado (o navegador não consegue alterar) | `19.90` |
+| `PRECO` | preço cobrado (o navegador não consegue alterar) | `22.90` |
 | `LIMITE_APARELHOS` | aparelhos/navegadores por código | `5` |
 | `EMAIL_REMETENTE` | remetente do e-mail | `onboarding@resend.dev` |
 | `EMAIL_RESPONDER_PARA` | para onde vão as respostas dos compradores (opcional) | vazio |
