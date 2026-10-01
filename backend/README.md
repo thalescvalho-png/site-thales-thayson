@@ -61,7 +61,8 @@ Elas passam a valer na hora, sem precisar publicar de novo. Para ver quais já e
 3. `npx wrangler secret put MP_ACCESS_TOKEN` e cole.
 
 A **Public Key** (também em Credenciais) **não** é segredo: ela vai na página do álbum,
-no Payment Brick, na próxima etapa do projeto.
+na linha `<meta name="mp-public-key" content="">` do topo de `correnteza.html`.
+Use a Public Key do mesmo tipo do Access Token (as duas de teste, ou as duas de produção).
 
 > Para testar sem cobrar de verdade, use primeiro as **Credenciais de teste** e os cartões de teste
 > do Mercado Pago. Depois troque pelo Access Token de produção com o mesmo comando.
@@ -99,8 +100,8 @@ npm run codigo -- --aparelhos 2                  # com outro limite de aparelhos
 npm run codigo -- --email voce@exemplo.com       # anotando para quem é
 ```
 
-O comando mostra o código e o link da página. Até a página de compra ficar pronta, dá para
-conferir direto no navegador:
+O comando mostra o código e o link da página: abra o link para ver o álbum liberado.
+Também dá para conferir direto no navegador:
 
 ```
 https://correnteza.correnteza-backend.workers.dev/api/album?token=SEU-CODIGO&aparelho=meu-teste-1
@@ -202,7 +203,7 @@ webhook no Mercado Pago e o endereço da API na página do álbum.
 
 ---
 
-## Para a próxima etapa: como a página conversa com a API
+## Como a página conversa com a API
 
 | Pedido | O que devolve |
 |---|---|

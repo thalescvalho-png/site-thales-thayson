@@ -4,22 +4,41 @@ Site estático em HTML, CSS e JS puros, sem etapa de build.
 
 ```
 index.html        página inicial (abertura, Correnteza, quem somos, trajetória, discografia, galeria, contato)
-correnteza.html   página do álbum: faixas com player, encarte com letras e ficha técnica
+correnteza.html   página do álbum: compra, faixas com player, encarte com letras e ficha técnica
 css/estilo.css    estilos das duas páginas (a paleta fica nas variáveis de :root)
 js/principal.js   parallax, capa de Correnteza, trajetória horizontal e galeria ampliada
-js/album.js       player do álbum
+js/album.js       código de acesso, player e encarte do álbum (tudo vem da API de venda)
+js/compra.js      compra pelo Mercado Pago (Pix, crédito e débito) e tela de "obrigado"
 img/              fotos em WebP, até 1600 px no lado maior, sem metadados/GPS
-audio/            áudios do álbum (vazia por enquanto, veja abaixo)
+audio/            masters guardados só neste computador (ignorados pelo Git, nunca vão para o site)
 backend/          venda do álbum: pagamentos, códigos de acesso e arquivos (veja backend/README.md)
 ```
 
-## Player do álbum
+## Compra e player do álbum
 
-Cada faixa em `correnteza.html` tem um `data-audio` com o arquivo esperado
-(`audio/01-clareira.mp3` … `audio/08-correnteza.mp3`). O player verifica quais arquivos
-existem: as faixas presentes ficam tocáveis e as demais aparecem como "em breve".
-Com a pasta vazia, a página mostra só a lista e o encarte.
-Atenção: tudo o que estiver em `audio/` fica público quando o site for publicado.
+`correnteza.html` não guarda nenhum áudio nem letra: tudo vem da API de venda (`backend/`).
+
+- **Sem código:** cada faixa toca uma prévia de 15 s, e o encarte mostra só os títulos.
+- **Compra:** a pessoa informa o e-mail e paga pelo formulário do Mercado Pago (Pix, crédito ou débito).
+  No Pix, a página mostra o QR code e o "copia e cola" e libera o álbum sozinha quando o pagamento cai,
+  mesmo que a pessoa feche e volte depois.
+- **Com código** (pela compra, pelo link do e-mail ou digitado em "Já comprei"): faixas completas,
+  download de cada faixa, do álbum em .zip e do encarte em PDF, e as letras no encarte da página.
+  O código fica guardado no navegador. "Sair deste aparelho" o apaga.
+
+Duas configurações ficam no topo de `correnteza.html`:
+
+```html
+<meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
+<meta name="mp-public-key" content="">
+```
+
+Cole em `mp-public-key` a **Public Key** do Mercado Pago (Credenciais → Public Key; ela **não** é segredo).
+Enquanto ela estiver vazia, o formulário de pagamento não aparece ("abre em breve"), mas as prévias
+e os códigos funcionam. Use primeiro a Public Key **de teste** junto com o Access Token de teste no backend.
+
+A API só aceita chamadas do endereço do GitHub Pages (`SITE_ORIGENS` no backend). Por isso, abrindo o
+arquivo direto do computador, as prévias e a compra não carregam. Isso é normal.
 
 ## Encarte
 

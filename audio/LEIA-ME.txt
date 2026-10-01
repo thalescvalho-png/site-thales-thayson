@@ -1,2 +1,5 @@
-Coloque aqui os arquivos de áudio do álbum com os nomes usados em correnteza.html (data-audio).
-Ex.: 01-clareira.mp3, 02-candeia.mp3 ... 08-correnteza.mp3
+Esta pasta guarda os masters do álbum só neste computador. Os arquivos .mp3 e .wav daqui
+são ignorados pelo Git e NUNCA vão para o site (o repositório é público).
+
+O site não toca nada desta pasta: as prévias e as faixas completas vêm da API de venda,
+que lê os arquivos do R2. Para atualizar as músicas, veja "Atualizar as músicas" em backend/README.md.
