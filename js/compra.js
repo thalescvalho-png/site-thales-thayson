@@ -27,9 +27,15 @@
 
   function avisar(texto){ mensagem.textContent = texto || ''; mensagem.hidden = !texto; }
   function etapa(nome){
+    var antes = secao.dataset.estado;
     secao.dataset.estado = nome;
     [].forEach.call(secao.querySelectorAll('.etapa'), function(e){ e.hidden = e.dataset.etapa !== nome; });
     jaComprei.hidden = nome === 'liberado';
+    // a tela de boas-vindas surge de novo a cada vez que o álbum é liberado
+    if (nome === 'liberado' && antes !== 'liberado'){
+      secao.classList.remove('surgindo'); void secao.offsetWidth; secao.classList.add('surgindo');
+    }
+    plancton(nome === 'liberado');
   }
   function irPara(){ secao.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   function reais(v){ return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
@@ -45,9 +51,7 @@
     if (d.acesso){
       pararConsulta();
       C.gravar('correnteza.pedido', null);
-      document.getElementById('codigoMostrado').textContent = d.codigo;
       document.getElementById('baixarZip').href = d.zip;
-      document.getElementById('baixarPdf').href = d.encarte.pdf;
       avisar('');
       etapa('liberado');
       return;
@@ -58,6 +62,68 @@
       jaComprei.open = true;
     }
   });
+
+  // ----- Plâncton: pontos de luz que sobem devagar atrás da tela de boas-vindas -----
+  var reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tela = null, pontos = [], quadroP = 0, visivelP = false, ligadoP = false;
+  var CORES_P = ['95,242,224', '57,200,255', '120,170,255', '198,139,62'];
+  function plancton(ligar){
+    ligadoP = ligar;
+    if (ligar && !tela){
+      tela = document.createElement('canvas');
+      tela.className = 'plancton'; tela.setAttribute('aria-hidden', 'true');
+      secao.insertBefore(tela, secao.firstChild);
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(e){ visivelP = e[0].isIntersecting; girarP(); }).observe(secao);
+      } else visivelP = true;
+    }
+    if (tela) tela.hidden = !ligar;
+    girarP();
+  }
+  function girarP(){
+    cancelAnimationFrame(quadroP);
+    if (!tela || !ligadoP) return;
+    var r = secao.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (tela.width !== Math.round(r.width * dpr) || tela.height !== Math.round(r.height * dpr)){
+      tela.width = Math.round(r.width * dpr); tela.height = Math.round(r.height * dpr);
+    }
+    var ctx = tela.getContext('2d'), w = r.width, h = r.height;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var total = Math.round(Math.min(120, w * h / 9000));
+    while (pontos.length < total) pontos.push(novoPonto(w, h, true));
+    pontos.length = total;
+    var ultimo = performance.now();
+    function quadro(agora){
+      var dt = Math.min(50, agora - ultimo) / 16.7; ultimo = agora;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'lighter';
+      pontos.forEach(function(p, i){
+        p.x += p.vx * dt + Math.sin((agora / 1000) * p.f + p.fase) * .25 * dt;
+        p.y += p.vy * dt;
+        p.vida += dt;
+        if (p.y < -10 || p.vida > p.max) pontos[i] = p = novoPonto(w, h, false);
+        var a = Math.sin(Math.PI * p.vida / p.max) * p.brilho;
+        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        g.addColorStop(0, 'rgba(' + p.cor + ',' + a.toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(' + p.cor + ',0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(p.x - p.r * 4, p.y - p.r * 4, p.r * 8, p.r * 8);
+      });
+      if (!reduzir && visivelP) quadroP = requestAnimationFrame(quadro);
+    }
+    quadro(ultimo);
+  }
+  function novoPonto(w, h, espalhado){
+    return {
+      x: Math.random() * w, y: espalhado ? Math.random() * h : h * (.6 + Math.random() * .45),
+      vx: (Math.random() - .5) * .15, vy: -(.12 + Math.random() * .35),
+      r: .8 + Math.random() * 2.2, brilho: .35 + Math.random() * .6,
+      cor: CORES_P[Math.random() < .12 ? 3 : Math.floor(Math.random() * 3)],
+      f: .3 + Math.random() * .8, fase: Math.random() * 6.3,
+      vida: espalhado ? Math.random() * 400 : 0, max: 300 + Math.random() * 500
+    };
+  }
+  window.addEventListener('resize', function(){ if (ligadoP) girarP(); });
 
   // ----- Código digitado -----
   formCodigo.addEventListener('submit', function(e){
@@ -70,8 +136,9 @@
     }, function(){ avisar('Não foi possível conferir o código agora. Verifique a internet e tente de novo.'); });
   });
 
-  document.getElementById('btCopiarCodigo').addEventListener('click', function(){
-    copiar(document.getElementById('codigoMostrado').textContent, this);
+  document.getElementById('btOuvirTudo').addEventListener('click', function(){
+    document.getElementById('ouvir').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (C.ouvirTudo) C.ouvirTudo();
   });
   document.getElementById('btSair').addEventListener('click', function(){
     if (!confirm('Tirar o acesso ao álbum deste aparelho? Para voltar, basta digitar o código de novo.')) return;

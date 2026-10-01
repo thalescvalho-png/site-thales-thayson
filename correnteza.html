@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=2">
+<link rel="stylesheet" href="css/estilo.css?v=3">
 </head>
 <body class="pagina-album">
 
@@ -120,19 +120,13 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <p class="aguardando"><span class="girando" aria-hidden="true"></span> Aguardando a confirmação…</p>
 </div>
 
-<div class="etapa" data-etapa="liberado" hidden>
-<p class="apoie-rotulo">Obrigado pelo apoio!</p>
-<h2>Correnteza é seu</h2>
-<p>As nove faixas completas e o encarte com as letras já estão liberados nesta página. Para ouvir em outro aparelho, use o link do e-mail ou o código abaixo.</p>
-<div class="codigo-caixa">
-<span>Seu código de acesso</span>
-<b id="codigoMostrado"></b>
-<button type="button" class="link" id="btCopiarCodigo">copiar</button>
-</div>
-<div class="acoes">
-<a class="botao" id="baixarZip" href="#" download>Baixar o álbum (.zip)</a>
-<a class="botao contorno" id="baixarPdf" href="#" download>Encarte em PDF</a>
-<a class="botao contorno" href="#ouvir">Ouvir agora</a>
+<div class="etapa navegar" data-etapa="liberado" hidden>
+<h2>Vamos navegar nessa correnteza!</h2>
+<p class="navegar-obrigado">Obrigado pelo apoio!</p>
+<div class="acoes navegar-acoes">
+<button type="button" class="botao" id="btOuvirTudo">Ouça o álbum na íntegra</button>
+<a class="botao contorno" href="#encarte">Leia o encarte completo</a>
+<a class="botao contorno" id="baixarZip" href="#" download>Baixe o álbum para ouvir onde preferir</a>
 </div>
 <button type="button" class="link" id="btSair">Sair deste aparelho</button>
 </div>
@@ -233,13 +227,13 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 </div>
 <div class="tocador-tempo">
 <span id="tempoAtual">0:00</span>
-<input type="range" id="barra" min="0" max="100" step="0.1" value="0" aria-label="Posição na faixa" disabled>
+<div class="bio"><canvas id="bioPrincipal" aria-hidden="true"></canvas><input type="range" id="barra" min="0" max="100" step="0.1" value="0" aria-label="Posição na faixa" disabled></div>
 <span id="tempoTotal">0:00</span>
 </div>
 <audio id="audio" preload="none"></audio>
 </div>
 
-<script src="js/album.js"></script>
-<script src="js/compra.js"></script>
+<script src="js/album.js?v=3"></script>
+<script src="js/compra.js?v=3"></script>
 </body>
 </html>
