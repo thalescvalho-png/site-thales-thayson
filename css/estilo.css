@@ -303,13 +303,39 @@ img{ max-width:100%; height:auto; display:block; }
 .voltar{ display:inline-block; margin-bottom:18px; font-size:14px; color:var(--nevoa); text-decoration:none; }
 .voltar:hover{ color:var(--texto); text-decoration:underline; }
 .apoie{ background:var(--noite); }
-.apoie-in{ max-width:880px; margin:0 auto; padding:72px 24px 24px; }
-.apoie-in{ border-radius:10px; }
+.apoie-in{ max-width:1040px; margin:0 auto; padding:72px 24px 24px; }
 .apoie-in > *{ max-width:60ch; }
+.apoie-in > .etapa[data-etapa="comprar"]{ max-width:none; }
+.apoie-cabeca{ max-width:60ch; }
 .apoie-rotulo{ font-family:var(--serif); font-style:italic; font-size:21px; color:var(--ambar); }
 .apoie h2{ font-family:var(--serif); font-weight:500; font-size:clamp(36px, 4.6vw, 54px); line-height:1.05; margin:6px 0 16px; }
 .apoie p{ color:var(--texto-suave); }
 .apoie-preco{ margin:22px 0 14px; font-family:var(--serif); font-size:44px; color:var(--texto) !important; line-height:1; }
+
+/* compra: o que vem no álbum à esquerda, preço e e-mail no cartão à direita */
+.apoie-grade{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,400px); gap:40px; align-items:start; margin-top:40px; }
+.apoie-inclui h3{ font-family:var(--serif); font-weight:500; font-size:26px; margin:0 0 18px; }
+.inclui{ list-style:none; margin:0; padding:0; display:grid; gap:20px; }
+.inclui li{ position:relative; padding-left:34px; }
+.inclui li::before{ content:""; position:absolute; left:0; top:4px; width:20px; height:20px; border-radius:50%; background:rgba(198,139,62,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.4l2.6 2.6L14 7.6' fill='none' stroke='%23C68B3E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat; }
+.inclui b{ display:block; font-weight:600; color:var(--texto); }
+.inclui span{ display:block; font-size:15px; line-height:1.55; color:var(--texto-suave); }
+.apoie-cartao{ padding:28px; border-radius:14px; background:var(--serra); border:1px solid #24405F; box-shadow:0 18px 50px rgba(0,0,0,.25); }
+.apoie-cartao .apoie-preco{ margin-top:0; }
+.apoie-cartao .apoie-parcelas{ margin:0 0 22px; }
+.apoie-cartao .compra{ margin-top:0; }
+.apoie-cartao .compra input[type=email]{ background:var(--noite); }
+.apoie-cartao .compra .botao{ justify-self:stretch; margin-top:6px; }
+.compra .dica{ margin-top:-4px; font-size:13px; color:var(--nevoa); }
+.apoie-cartao .compra .marcar{ margin:4px 0 0; font-size:14px; }
+.apoie-cartao .brick{ margin-top:0; }
+.apoie-cartao .apoie-nota{ margin-top:16px; text-align:center; }
+/* com o formulário do Mercado Pago aberto, o cartão ganha espaço */
+.apoie-grade:has(.brick:not(:empty)){ grid-template-columns:minmax(0,1fr) minmax(0,520px); }
+@media (max-width:820px){
+  .apoie-grade{ grid-template-columns:minmax(0,1fr); gap:32px; margin-top:28px; }
+  .apoie-cartao{ padding:22px; }
+}
 .apoie-preco span{ display:block; font-family:var(--sans); font-size:14px; color:var(--nevoa); margin-bottom:6px; }
 .apoie-nota{ margin-top:12px; font-size:13px; color:var(--nevoa) !important; }
 .encarte.bloqueado .encarte-in{ display:block; max-width:880px; padding:96px 24px; }
@@ -403,3 +429,4 @@ button.botao{ cursor:pointer; font-family:inherit; }
 }
 @media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
 .apoie-parcelas{ margin:-4px 0 18px; font-size:15px; color:var(--texto-suave); }
+.ja-comprei{ max-width:none; }
