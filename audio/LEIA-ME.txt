@@ -1,0 +1,2 @@
+Coloque aqui os arquivos de áudio do álbum com os nomes usados em correnteza.html (data-audio).
+Ex.: 01-clareira.mp3, 02-candeia.mp3 ... 08-correnteza.mp3
