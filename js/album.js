@@ -107,7 +107,8 @@
   // mini player de cada prévia na lista: ícone de tocar/pausar e uma barrinha que corre com o trecho
   function miniPlayer(){
     var m = el('span', 'mini');
-    m.setAttribute('aria-hidden', 'true');
+    m.setAttribute('role', 'img');
+    m.setAttribute('aria-label', 'prévia');
     m.innerHTML = '<svg class="mini-icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/>'
       + '<path class="i-tocar" d="M10 7.5l6.5 4.5-6.5 4.5z"/><path class="i-pausa" d="M8.5 7.5h2.5v9H8.5zM13 7.5h2.5v9H13z"/></svg>'
       + '<span class="mini-barra"><i></i></span>';
@@ -134,7 +135,7 @@
       b.appendChild(el('span', 'num', dois(f.numero)));
       b.appendChild(el('span', 'nome', f.titulo));
       var estado = el('span', 'estado');
-      if (!completo){ estado.appendChild(miniPlayer()); estado.appendChild(el('span', 'mini-rotulo', 'prévia')); }
+      if (!completo) estado.appendChild(miniPlayer());
       b.appendChild(estado);
       b.addEventListener('click', function(){ if (i === atual) alternar(); else carregarFaixa(i, true); });
       li.appendChild(b);

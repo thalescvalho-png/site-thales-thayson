@@ -223,7 +223,6 @@ img{ max-width:100%; height:auto; display:block; }
 .faixas li.disponivel .faixa:hover{ background:rgba(169,188,203,.07); }
 .faixas li.atual .num, .faixas li.atual .nome{ color:var(--ambar); }
 /* mini player das prévias: ícone de tocar/pausar e barrinha de avanço */
-.faixa .estado:not(:empty){ display:flex; align-items:center; gap:10px; }
 .mini{ display:flex; align-items:center; gap:8px; }
 .mini-icone{ width:24px; height:24px; flex-shrink:0; }
 .mini-icone circle{ fill:none; stroke:currentColor; stroke-opacity:.55; stroke-width:1.2; }
@@ -235,7 +234,7 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .faixas li.disponivel .faixa:hover .mini-icone circle{ stroke-opacity:1; }
 .mini-barra{ position:relative; width:64px; height:3px; border-radius:2px; background:rgba(169,188,203,.22); overflow:hidden; }
 .mini-barra i{ position:absolute; inset:0; background:var(--ambar); transform:scaleX(0); transform-origin:left center; }
-@media (max-width:560px){ .mini-barra{ width:44px; } .mini-rotulo{ display:none; } }
+@media (max-width:560px){ .mini-barra{ width:44px; } }
 .ver-letra{ font-size:14px; color:var(--nevoa); text-decoration:none; padding:10px 8px; white-space:nowrap; }
 .ver-letra:hover{ color:var(--texto); text-decoration:underline; }
 
