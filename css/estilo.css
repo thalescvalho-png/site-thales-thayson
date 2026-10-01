@@ -232,9 +232,6 @@ body.tocando .faixas li.atual .mini-icone .i-tocar{ display:none; }
 body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .faixas li.atual .mini-icone{ color:var(--ambar); }
 .faixas li.disponivel .faixa:hover .mini-icone circle{ stroke-opacity:1; }
-.mini-barra{ position:relative; width:64px; height:3px; border-radius:2px; background:rgba(169,188,203,.22); overflow:hidden; }
-.mini-barra i{ position:absolute; inset:0; background:var(--ambar); transform:scaleX(0); transform-origin:left center; }
-@media (max-width:560px){ .mini-barra{ width:44px; } }
 .ver-letra{ font-size:14px; color:var(--nevoa); text-decoration:none; padding:10px 8px; white-space:nowrap; }
 .ver-letra:hover{ color:var(--texto); text-decoration:underline; }
 
@@ -303,8 +300,7 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .tocador-controles button.tocar{ width:48px; height:48px; background:var(--ambar); color:var(--noite); font-size:17px; }
 .tocador-controles button:disabled{ opacity:.35; cursor:default; }
 .tocador-tempo{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--nevoa); font-variant-numeric:tabular-nums; }
-.tocador-tempo input{ flex-grow:1; accent-color:var(--ambar); }
-.tocador-tempo input:disabled{ opacity:.35; }
+.tocador-tempo .bio{ flex-grow:1; }
 @media (max-width:860px){
   .tocador{ grid-template-columns:44px minmax(0,1fr) auto; gap:12px; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
   .tocador img{ width:44px; height:44px; }
@@ -443,3 +439,93 @@ button.botao{ cursor:pointer; font-family:inherit; }
 @media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
 .apoie-parcelas{ margin:-4px 0 18px; font-size:15px; color:var(--texto-suave); }
 .ja-comprei{ max-width:none; }
+
+/* ===================================================================
+   CORRENTEZA VIVA (01/10): boas-vindas, barras bioluminescentes,
+   faixas com as cores do encarte e a letra de cada faixa numa janela
+   =================================================================== */
+:root{ --bio:#5FF2E0; --bio-azul:#39C8FF; }
+
+/* ----- Boas-vindas: "Vamos navegar nessa correnteza!" ----- */
+.apoie[data-estado="liberado"]{ position:relative; overflow:hidden; isolation:isolate;
+  background:
+    radial-gradient(60% 55% at 18% 30%, rgba(57,200,255,.14), transparent 70%),
+    radial-gradient(50% 50% at 85% 75%, rgba(95,242,224,.12), transparent 70%),
+    radial-gradient(40% 40% at 60% 10%, rgba(198,139,62,.10), transparent 70%),
+    linear-gradient(180deg, var(--noite), #0B1A2B 50%, var(--noite)); }
+.plancton{ position:absolute; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
+.apoie[data-estado="liberado"] .apoie-in{ padding:120px 24px 110px; min-height:min(78svh, 720px); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+.apoie-in > .navegar{ max-width:none; display:flex; flex-direction:column; align-items:center; }
+.navegar h2{ font-size:clamp(42px, 6.4vw, 84px); line-height:1.02; margin:0; max-width:14ch;
+  background:linear-gradient(100deg, var(--neblina) 20%, #BFFBF3 45%, var(--neblina) 70%); background-size:250% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0 40px rgba(95,242,224,.18); animation:reflexo 7s ease-in-out infinite; }
+@keyframes reflexo{ 0%,100%{ background-position:100% 0; } 50%{ background-position:0 0; } }
+.navegar-obrigado{ font-family:var(--serif); font-style:italic; font-size:clamp(22px, 2.6vw, 30px); color:var(--ambar) !important; margin-top:14px; }
+.apoie .navegar-acoes{ justify-content:center; margin-top:40px; gap:14px; }
+.navegar-acoes .botao{ min-height:52px; padding:0 26px; }
+.navegar-acoes .botao.contorno{ border-color:rgba(95,242,224,.35); background:rgba(14,24,38,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); transition:border-color .3s ease, box-shadow .3s ease; }
+.navegar-acoes .botao.contorno:hover{ border-color:var(--bio); box-shadow:0 0 28px -6px rgba(95,242,224,.55); }
+.navegar-acoes .botao:not(.contorno){ box-shadow:0 0 34px -8px rgba(198,139,62,.8); }
+.navegar #btSair{ margin-top:28px; font-size:13px; }
+/* a tela surge: cada linha sobe da névoa, uma depois da outra */
+.apoie.surgindo .navegar > *{ animation:surgir 1.3s cubic-bezier(.2,.7,.2,1) both; }
+.apoie.surgindo .navegar > :nth-child(2){ animation-delay:.35s; }
+.apoie.surgindo .navegar > :nth-child(3){ animation-delay:.7s; }
+.apoie.surgindo .navegar > :nth-child(4){ animation-delay:1.1s; }
+.apoie.surgindo .navegar h2{ animation:surgir 1.3s cubic-bezier(.2,.7,.2,1) both, reflexo 7s ease-in-out 1.3s infinite; }
+@keyframes surgir{ from{ opacity:0; transform:translateY(26px); filter:blur(10px); } to{ opacity:1; transform:none; filter:none; } }
+@media (max-width:560px){
+  .apoie[data-estado="liberado"] .apoie-in{ padding:96px 20px 80px; }
+  .navegar-acoes{ flex-direction:column; align-self:stretch; }
+}
+
+/* ----- Barras bioluminescentes (desenhadas em js/album.js) ----- */
+.bio{ position:relative; height:34px; min-width:0; }
+.bio canvas{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.bio input{ position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.bio input:disabled{ cursor:default; }
+.bio:focus-within{ outline:2px solid var(--bio); outline-offset:2px; border-radius:6px; }
+.tocador{ border-top-color:color-mix(in srgb, var(--tom, var(--bio)) 22%, #1F3550); }
+.tocador::before{ content:""; position:absolute; left:0; right:0; top:-1px; height:1px; pointer-events:none;
+  background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--tom, var(--bio)) 70%, transparent), transparent); opacity:.6; }
+body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,139,62,.75); }
+
+/* ----- Lista de faixas com a cor de cada página do encarte ----- */
+.faixas li{ --tom:var(--ambar); position:relative; transition:background .5s ease; }
+.faixas .faixa .num{ color:color-mix(in srgb, var(--tom) 65%, var(--nevoa)); }
+.faixas li.disponivel .faixa:hover{ background:linear-gradient(90deg, color-mix(in srgb, var(--tom) 10%, transparent), transparent 70%); }
+.faixas li.atual{ background:linear-gradient(90deg, color-mix(in srgb, var(--tom) 16%, transparent), rgba(57,200,255,.04) 60%, transparent); }
+.faixas li.atual::before{ content:""; position:absolute; left:0; top:12%; bottom:12%; width:2px; border-radius:2px; background:var(--tom); box-shadow:0 0 14px 1px var(--tom); }
+.faixas li.atual .num{ color:var(--tom); text-shadow:0 0 18px color-mix(in srgb, var(--tom) 70%, transparent); }
+.faixas li.atual .nome{ color:var(--neblina); text-shadow:0 0 22px color-mix(in srgb, var(--tom) 55%, transparent); }
+.faixas li.atual .mini-icone{ color:var(--tom); filter:drop-shadow(0 0 6px var(--tom)); }
+/* prévias: o nome à esquerda e uma correnteza longa ocupando o resto da linha */
+.faixas.previas .faixa{ grid-template-columns:44px minmax(0,13em) minmax(90px,1fr); gap:20px; padding-left:12px; }
+.faixas.previas .estado{ display:block; min-width:0; }
+.faixas.previas .mini{ gap:12px; }
+.mini-barra{ position:relative; flex-grow:1; height:26px; min-width:0; }
+.mini-barra::before{ content:""; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; border-radius:2px;
+  background:linear-gradient(90deg, color-mix(in srgb, var(--tom) 30%, transparent), rgba(169,188,203,.14)); }
+.faixas li.atual .mini-barra::before{ display:none; }
+.mini-barra canvas{ position:absolute; inset:0; width:100%; height:100%; }
+@media (max-width:560px){
+  .faixas.previas .faixa{ grid-template-columns:34px minmax(0,1fr); gap:4px 10px; padding:12px 8px 10px 10px; }
+  .faixas.previas .estado{ grid-column:2; }
+}
+
+/* ----- A letra de uma faixa, numa janela ----- */
+.letra-janela{ width:100vw; height:100svh; max-width:none; max-height:none; margin:0; padding:0; border:0; background:transparent; color:var(--texto); }
+.letra-janela::backdrop{ background:rgba(6,12,20,.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+.letra-janela[open]{ display:flex; align-items:center; justify-content:center; animation:surgir .6s ease both; }
+.letra-janela-in{ position:relative; width:min(640px, calc(100vw - 32px)); max-height:calc(100svh - 48px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; }
+.letra-janela .pagina{ border-radius:12px; padding:44px 34px 30px; background-color:rgba(14,24,38,.94); scroll-margin-top:0; }
+.letra-janela .fechar{ position:absolute; top:10px; right:10px; z-index:2; width:42px; height:42px; border-radius:50%; border:1px solid rgba(169,188,203,.35); background:rgba(14,24,38,.8); color:var(--texto); font-size:24px; line-height:1; cursor:pointer; }
+.letra-nav{ position:sticky; bottom:0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px 12px; padding:10px 20px; background:rgba(14,24,38,.96); border-top:1px solid #1F3550; }
+.letra-nav .todas{ color:var(--nevoa); }
+@media (max-width:560px){ .letra-janela .pagina{ padding:40px 22px 24px; } .letra-nav .todas{ order:3; width:100%; text-align:center; } }
+.encarte-intro a{ color:var(--ambar); text-underline-offset:3px; }
+
+@media (prefers-reduced-motion: reduce){
+  .apoie.surgindo .navegar > *, .navegar h2, .letra-janela[open]{ animation:none !important; }
+}
