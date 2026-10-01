@@ -104,6 +104,23 @@
   }
   function itens(){ return [].slice.call(lista.children); }
 
+  // mini player de cada prévia na lista: ícone de tocar/pausar e uma barrinha que corre com o trecho
+  function miniPlayer(){
+    var m = el('span', 'mini');
+    m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = '<svg class="mini-icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/>'
+      + '<path class="i-tocar" d="M10 7.5l6.5 4.5-6.5 4.5z"/><path class="i-pausa" d="M8.5 7.5h2.5v9H8.5zM13 7.5h2.5v9H13z"/></svg>'
+      + '<span class="mini-barra"><i></i></span>';
+    return m;
+  }
+  var quadro = 0;
+  function pintarMini(){
+    var li = lista.children[atual];
+    var fio = li && li.querySelector('.mini-barra i');
+    if (fio && audio.duration) fio.style.transform = 'scaleX(' + Math.min(1, audio.currentTime / audio.duration).toFixed(4) + ')';
+  }
+  function animarMini(){ pintarMini(); quadro = requestAnimationFrame(animarMini); }
+
   function montar(d){
     var tocando = !audio.paused;
     var idAtual = atual >= 0 && faixas[atual] ? faixas[atual].id : null;
@@ -116,7 +133,8 @@
       b.type = 'button';
       b.appendChild(el('span', 'num', dois(f.numero)));
       b.appendChild(el('span', 'nome', f.titulo));
-      var estado = el('span', 'estado', completo ? '' : 'prévia');
+      var estado = el('span', 'estado');
+      if (!completo){ estado.appendChild(miniPlayer()); estado.appendChild(el('span', 'mini-rotulo', 'prévia')); }
       b.appendChild(estado);
       b.addEventListener('click', function(){ if (i === atual) alternar(); else carregarFaixa(i, true); });
       li.appendChild(b);
@@ -154,6 +172,8 @@
       x.classList.toggle('atual', j === i);
       var b = x.querySelector('.faixa');
       if (j === i) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+      var fio = x.querySelector('.mini-barra i');
+      if (fio) fio.style.transform = '';
     });
     audio.src = completo ? f.audio : f.previa;
     titulo.textContent = f.titulo;
@@ -180,13 +200,18 @@
   });
   btProxima.addEventListener('click', function(){ carregarFaixa(vizinha(1), true); });
 
-  audio.addEventListener('play', function(){ btTocar.innerHTML = '&#10074;&#10074;'; btTocar.setAttribute('aria-label', 'Pausar'); document.body.classList.add('tocando'); });
-  audio.addEventListener('pause', function(){ btTocar.innerHTML = '&#9654;&#xFE0E;'; btTocar.setAttribute('aria-label', 'Tocar'); document.body.classList.remove('tocando'); });
+  audio.addEventListener('play', function(){ btTocar.innerHTML = '&#10074;&#10074;'; btTocar.setAttribute('aria-label', 'Pausar'); document.body.classList.add('tocando');
+    cancelAnimationFrame(quadro); animarMini();
+  });
+  audio.addEventListener('pause', function(){ btTocar.innerHTML = '&#9654;&#xFE0E;'; btTocar.setAttribute('aria-label', 'Tocar'); document.body.classList.remove('tocando');
+    cancelAnimationFrame(quadro); pintarMini();
+  });
   audio.addEventListener('loadedmetadata', function(){ tempoTotal.textContent = formatar(audio.duration); });
   audio.addEventListener('timeupdate', function(){
     if (arrastando || !audio.duration) return;
     barra.value = (audio.currentTime / audio.duration) * 100;
     tempoAtual.textContent = formatar(audio.currentTime);
+    if (audio.paused) pintarMini(); // ao arrastar a barra principal com o áudio parado
   });
   audio.addEventListener('ended', function(){
     if (atual < faixas.length - 1) carregarFaixa(atual + 1, true); // para ao fim da última faixa
