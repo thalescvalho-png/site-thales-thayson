@@ -513,12 +513,8 @@ window.Correnteza.bioluz = function(amplitude){
     janela = el('dialog', 'letra-janela');
     janela.setAttribute('aria-label', 'Letra');
     janela.innerHTML = '<div class="letra-janela-in"><button type="button" class="fechar" aria-label="Fechar">&times;</button><div class="letra-conteudo"></div>'
-      + '<nav class="letra-nav"><button type="button" class="link anterior">&larr; letra anterior</button>'
-      + '<a class="link todas" href="#encarte">ver o encarte completo</a>'
-      + '<button type="button" class="link proxima">próxima letra &rarr;</button></nav></div>';
+      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a></nav></div>';
     janela.querySelector('.fechar').addEventListener('click', function(){ janela.close(); });
-    janela.querySelector('.anterior').addEventListener('click', function(){ mostrarLetra(atualLetra - 1); });
-    janela.querySelector('.proxima').addEventListener('click', function(){ mostrarLetra(atualLetra + 1); });
     janela.querySelector('.todas').addEventListener('click', function(){ janela.close(); });
     // clicar fora da página fecha
     janela.addEventListener('click', function(e){ if (e.target === janela) janela.close(); });
