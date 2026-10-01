@@ -250,6 +250,7 @@ window.Correnteza.bioluz = function(amplitude){
   function montar(d){
     var tocando = !audio.paused;
     var idAtual = atual >= 0 && faixas[atual] ? faixas[atual].id : null;
+    var liberou = !completo && !!d.acesso;
     faixas = d.faixas;
     completo = !!d.acesso;
     lista.textContent = '';
@@ -290,10 +291,11 @@ window.Correnteza.bioluz = function(amplitude){
       : 'Ouça uma prévia de 15 segundos de cada faixa. O álbum completo fica disponível em primeira mão para quem adquire.';
     sub.textContent = completo ? 'Correnteza' : 'prévias de 15 segundos';
 
-    // ao liberar o acesso no meio de uma prévia, segue na mesma faixa, agora completa
-    var i = idAtual ? faixas.map(function(f){ return f.id; }).indexOf(idAtual) : -1;
+    // ao liberar o acesso, a prévia para e a pessoa escolhe por qual faixa completa começar
+    var i = !liberou && idAtual ? faixas.map(function(f){ return f.id; }).indexOf(idAtual) : -1;
+    if (liberou) audio.pause();
     atual = -1;
-    carregarFaixa(i >= 0 ? i : 0, tocando);
+    carregarFaixa(i >= 0 ? i : 0, tocando && !liberou);
   }
 
   function carregarFaixa(i, tocarJa){
