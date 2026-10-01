@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=3">
+<link rel="stylesheet" href="css/estilo.css?v=4">
 </head>
 <body class="pagina-album">
 
@@ -47,8 +47,6 @@
 <p class="album-verso">Vem em mim, correnteza</p>
 <p class="album-texto">Uma jornada poética e sensorial sobre a força transformadora da natureza, os fluxos internos da alma humana e a busca por significado diante dos desafios da existência. É o resultado de um caminho marcado por resiliência e amizade, uma celebração das vozes do interior, geográfico e humano.</p>
 <div class="acoes">
-<a class="botao so-sem-acesso" href="#apoie">Adquira o álbum por <span data-preco>R$ 22,90</span></a>
-<a class="botao contorno so-sem-acesso" href="#ouvir">Ouvir as prévias</a>
 <a class="botao so-com-acesso" href="#ouvir">Ouvir o álbum</a>
 </div>
 </div>
@@ -76,14 +74,16 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <li><b>As nove faixas completas</b><span>Ouça o álbum inteiro aqui no site, em primeira mão, antes de ele chegar às plataformas.</span></li>
 <li><b>Todas as músicas para baixar</b><span>O álbum em MP3 (.zip) para guardar e ouvir quando quiser, mesmo sem internet.</span></li>
 <li><b>O encarte completo</b><span>Letras de todas as canções, créditos de cada faixa e a arte do álbum, para ler aqui ou baixar em PDF.</span></li>
-<li><b>Acesso na hora</b><span>Liberado assim que o pagamento é aprovado, com um código que funciona em até 5 aparelhos.</span></li>
+<li><b>Acesso na hora</b><span>Liberado assim que o pagamento é aprovado, com um código que funciona em até 3 aparelhos.</span></li>
 </ul>
 </div>
 
 <div class="apoie-cartao">
-<p class="apoie-preco"><span>Correnteza completo por</span><b data-preco>R$ 22,90</b></p>
-<p class="apoie-parcelas">Pix, débito ou até 3x sem juros no cartão</p>
-<form class="compra" id="formCompra" novalidate>
+<button type="button" class="apoie-adquirir" id="btAdquirir" aria-controls="formCompra">
+<span class="apoie-preco"><span>Correnteza completo por</span><b data-preco>R$ 22,90</b></span>
+<span class="apoie-chamada">Apoie os artistas e adquira o álbum completo por <span data-preco>R$ 22,90</span> <span aria-hidden="true">&rarr;</span></span>
+</button>
+<form class="compra" id="formCompra" novalidate hidden>
 <label for="email">Seu e-mail</label>
 <input type="email" id="email" name="email" autocomplete="email" inputmode="email" required placeholder="voce@exemplo.com" aria-describedby="dicaEmail">
 <small class="dica" id="dicaEmail">É para ele que mandamos o seu código de acesso.</small>
@@ -91,7 +91,7 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <label class="marcar"><input type="checkbox" id="novidades" name="novidades"> Quero receber novidades da dupla</label>
 </form>
 <div class="brick" id="brickPagamento"></div>
-<p class="apoie-nota" id="notaCompra">Pagamento seguro pelo Mercado Pago.</p>
+<p class="apoie-nota" id="notaCompra" hidden>Pagamento seguro pelo Mercado Pago.</p>
 </div>
 </div>
 </div>
@@ -133,7 +133,7 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 
 <p class="mensagem" id="mensagemCompra" role="alert" hidden></p>
 
-<details class="ja-comprei" id="jaComprei">
+<details class="ja-comprei" id="jaComprei" open>
 <summary>Já comprei e tenho um código</summary>
 <form id="formCodigo" novalidate>
 <label for="campoCodigo">Código de acesso</label>
@@ -141,7 +141,7 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <input type="text" id="campoCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX" required>
 <button type="submit" class="botao">Entrar</button>
 </div>
-<p class="apoie-nota">O código está no e-mail que enviamos depois do pagamento. Cada código vale em até 5 aparelhos.</p>
+<p class="apoie-nota">O código está no e-mail que enviamos depois do pagamento. Cada código vale em até 3 aparelhos.</p>
 </form>
 </details>
 
@@ -187,7 +187,6 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <li><span class="num">08</span><span class="nome">Correnteza</span></li>
 <li><span class="num">09</span><span class="nome">Endless</span></li>
 </ol>
-<a class="botao" href="#apoie">Adquira o álbum por apenas <span data-preco>R$ 22,90</span></a>
 </div>
 </section>
 
@@ -207,7 +206,10 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <div><dt>Mixagem e masterização</dt><dd>Felipe Fantoni</dd></div>
 <div><dt>Arte da capa</dt><dd>Thales Carvalho e Thayson Azevedo</dd></div>
 </dl>
+<div class="ficha-acoes">
+<a class="botao apoiar-final so-sem-acesso" href="#apoie" data-comprar>Apoie a produção independente</a>
 <a class="botao contorno" href="index.html">&larr; Voltar à página inicial</a>
+</div>
 </div>
 </section>
 
@@ -233,7 +235,7 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <audio id="audio" preload="none"></audio>
 </div>
 
-<script src="js/album.js?v=3"></script>
-<script src="js/compra.js?v=3"></script>
+<script src="js/album.js?v=4"></script>
+<script src="js/compra.js?v=4"></script>
 </body>
 </html>

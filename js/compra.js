@@ -151,6 +151,19 @@
     nota.textContent = 'O pagamento pelo site abre em breve. Se você já tem um código, use a opção abaixo.';
   }
 
+  // o cartão do preço abre o formulário de compra; o botão do fim da página leva até ele
+  var btAdquirir = document.getElementById('btAdquirir');
+  function abrirCompra(){
+    btAdquirir.setAttribute('aria-expanded', 'true');
+    secao.classList.add('comprando');
+    nota.hidden = false;
+    if (CHAVE_MP && !controleBrick){ formCompra.hidden = false; campoEmail.focus({ preventScroll: true }); }
+  }
+  btAdquirir.addEventListener('click', abrirCompra);
+  [].forEach.call(document.querySelectorAll('[data-comprar]'), function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); abrirCompra(); irPara(); });
+  });
+
   formCompra.addEventListener('submit', function(e){
     e.preventDefault();
     var email = campoEmail.value.trim();
