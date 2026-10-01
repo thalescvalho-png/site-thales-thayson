@@ -137,8 +137,8 @@
   });
 
   document.getElementById('btOuvirTudo').addEventListener('click', function(){
+    // só leva até a lista; a música começa quando a pessoa escolhe uma faixa
     document.getElementById('ouvir').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (C.ouvirTudo) C.ouvirTudo();
   });
   document.getElementById('btSair').addEventListener('click', function(){
     if (!confirm('Tirar o acesso ao álbum deste aparelho? Para voltar, basta digitar o código de novo.')) return;

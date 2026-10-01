@@ -371,13 +371,6 @@ window.Correnteza.bioluz = function(amplitude){
     navigator.mediaSession.setActionHandler('nexttrack', function(){ btProxima.click(); });
   }
 
-  // botão "Ouça o álbum na íntegra" da tela de boas-vindas
-  C.ouvirTudo = function(){
-    if (atual >= 0 && !audio.paused) return;
-    if (atual > 0 && audio.currentTime > 0) audio.play().catch(function(){});
-    else carregarFaixa(0, true);
-  };
-
   C.aoCarregar(montar);
   C.pronto = C.carregar();
   C.pronto.catch(function(){
