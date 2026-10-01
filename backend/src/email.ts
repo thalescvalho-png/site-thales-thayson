@@ -53,7 +53,7 @@ export async function enviarEmailDeAcesso(
 ): Promise<{ enviado: boolean }> {
   const link = new URL(env.PAGINA_ALBUM);
   link.searchParams.set("codigo", dados.codigo);
-  const aparelhos = String(Number(env.LIMITE_APARELHOS) || 5);
+  const aparelhos = String(Number(env.LIMITE_APARELHOS) || 3);
 
   if (!env.RESEND_API_KEY) {
     console.log(`[e-mail NÃO enviado: falta RESEND_API_KEY] Para: ${dados.para} | Pedido: ${dados.pedidoId} | Link: ${link}`);

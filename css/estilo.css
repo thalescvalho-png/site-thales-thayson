@@ -288,6 +288,8 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .ficha dl{ margin:24px 0 40px; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:22px 32px; }
 .ficha dt{ font-size:13px; color:var(--nevoa); }
 .ficha dd{ margin:2px 0 0; font-size:17px; }
+.ficha-acoes{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+.botao.apoiar-final{ background:#E8C872; color:var(--noite); box-shadow:0 0 34px -10px rgba(232,200,114,.8); }
 
 /* ===== PLAYER FIXO ===== */
 .tocador{ position:fixed; left:0; right:0; bottom:0; z-index:25; display:grid; grid-template-columns:48px minmax(0,1fr) auto minmax(0,1.4fr); align-items:center; gap:16px; padding:12px 24px calc(12px + env(safe-area-inset-bottom,0px)); background:rgba(14,24,38,.96); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-top:1px solid #1F3550; }
@@ -329,21 +331,28 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .inclui li::before{ content:""; position:absolute; left:0; top:4px; width:20px; height:20px; border-radius:50%; background:rgba(198,139,62,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.4l2.6 2.6L14 7.6' fill='none' stroke='%23C68B3E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat; }
 .inclui b{ display:block; font-weight:600; color:var(--texto); }
 .inclui span{ display:block; font-size:15px; line-height:1.55; color:var(--texto-suave); }
-.apoie-cartao{ padding:28px; border-radius:14px; background:var(--serra); border:1px solid #24405F; box-shadow:0 18px 50px rgba(0,0,0,.25); }
-.apoie-cartao .apoie-preco{ margin-top:0; }
-.apoie-cartao .apoie-parcelas{ margin:0 0 22px; }
-.apoie-cartao .compra{ margin-top:0; }
+.apoie-cartao{ display:grid; gap:0; }
+/* o cartão do preço no tom de "A Dança das Chamas": clicar nele abre a compra */
+.apoie-adquirir{ --chama:#E5774A; display:block; width:100%; padding:28px; border:0; border-radius:14px; text-align:left; cursor:pointer; font:inherit; color:#2A1208;
+  background:linear-gradient(140deg, #F08D5A 0%, var(--chama) 45%, #C9532E 100%);
+  box-shadow:0 18px 50px rgba(0,0,0,.28), 0 0 44px -14px rgba(229,119,74,.75); transition:transform .25s ease, box-shadow .25s ease; }
+.apoie-adquirir:hover{ transform:translateY(-2px); box-shadow:0 22px 56px rgba(0,0,0,.3), 0 0 60px -10px rgba(229,119,74,.9); }
+.apoie-adquirir:focus-visible{ outline:2px solid #F7C9A8; outline-offset:3px; }
+.apoie-adquirir .apoie-preco{ display:block; margin:0 0 18px; color:#2A1208 !important; }
+.apoie-adquirir .apoie-preco span{ color:rgba(42,18,8,.72); }
+.apoie-chamada{ display:block; padding-top:16px; border-top:1px solid rgba(42,18,8,.22); font-weight:600; font-size:16px; line-height:1.45; }
+.apoie-cartao .compra{ margin-top:22px; padding:24px; border-radius:14px; background:var(--serra); border:1px solid #24405F; }
+.apoie-cartao .brick{ margin-top:22px; }
 .apoie-cartao .compra input[type=email]{ background:var(--noite); }
 .apoie-cartao .compra .botao{ justify-self:stretch; margin-top:6px; }
 .compra .dica{ margin-top:-4px; font-size:13px; color:var(--nevoa); }
 .apoie-cartao .compra .marcar{ margin:4px 0 0; font-size:14px; }
-.apoie-cartao .brick{ margin-top:0; }
 .apoie-cartao .apoie-nota{ margin-top:16px; text-align:center; }
 /* com o formulário do Mercado Pago aberto, o cartão ganha espaço */
 .apoie-grade:has(.brick:not(:empty)){ grid-template-columns:minmax(0,1fr) minmax(0,520px); }
 @media (max-width:820px){
   .apoie-grade{ grid-template-columns:minmax(0,1fr); gap:32px; margin-top:28px; }
-  .apoie-cartao{ padding:22px; }
+  .apoie-adquirir{ padding:22px; }
 }
 .apoie-preco span{ display:block; font-family:var(--sans); font-size:14px; color:var(--nevoa); margin-bottom:6px; }
 .apoie-nota{ margin-top:12px; font-size:13px; color:var(--nevoa) !important; }
@@ -437,7 +446,6 @@ button.botao{ cursor:pointer; font-family:inherit; }
   .faixa-extras .ver-letra{ padding:6px 14px 6px 0; }
 }
 @media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
-.apoie-parcelas{ margin:-4px 0 18px; font-size:15px; color:var(--texto-suave); }
 .ja-comprei{ max-width:none; }
 
 /* ===================================================================

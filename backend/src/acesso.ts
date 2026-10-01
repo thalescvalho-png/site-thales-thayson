@@ -1,7 +1,7 @@
 // Confere o código de acesso e o limite de aparelhos/navegadores por código.
 //
 // Cada navegador cria um identificador aleatório ("aparelho") e o envia junto com o código.
-// Um código aceita até LIMITE_APARELHOS identificadores diferentes (padrão 5).
+// Um código aceita até LIMITE_APARELHOS identificadores diferentes (padrão 3).
 import { agora, ipDe, normalizarCodigo } from "./util";
 
 export type MotivoRecusa = "sem_codigo" | "codigo_invalido" | "sem_aparelho" | "limite_aparelhos" | "muitas_tentativas";
@@ -54,7 +54,7 @@ export async function verificarAcesso(request: Request, env: Env, ctx: Execution
       );
     }
   } else {
-    const limite = linha.limite ?? (Number(env.LIMITE_APARELHOS) || 5);
+    const limite = linha.limite ?? (Number(env.LIMITE_APARELHOS) || 3);
     if (linha.total >= limite) return { ok: false, motivo: "limite_aparelhos" };
     // insere só se ainda houver vaga (a conta é refeita dentro do próprio comando)
     const inserido = await env.DB.prepare(

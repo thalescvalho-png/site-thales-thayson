@@ -16,7 +16,7 @@
     "PAGINA_ALBUM": "https://thalescvalho-png.github.io/site-thales-thayson/correnteza.html",
     "PRECO": "22.90",
     // Quantos aparelhos/navegadores diferentes podem usar o mesmo código
-    "LIMITE_APARELHOS": "5",
+    "LIMITE_APARELHOS": "3",
     // Remetente do e-mail. Sem domínio próprio, o Resend só aceita onboarding@resend.dev
     "EMAIL_REMETENTE": "Thales Carvalho & Thayson Azevedo <onboarding@resend.dev>",
     // (opcional) endereço que recebe as respostas dos compradores
