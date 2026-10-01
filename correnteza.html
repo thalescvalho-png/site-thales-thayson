@@ -10,6 +10,10 @@
 <meta property="og:image" content="img/sem-ano_capa-album_correnteza.webp">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E1826">
+<!-- endereço da API de venda (backend/) e chave PÚBLICA do Mercado Pago (Credenciais → Public Key).
+     Com a chave vazia, a página mostra "pagamento em breve", mas prévias e códigos continuam funcionando. -->
+<meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
+<meta name="mp-public-key" content="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -25,7 +29,7 @@
 <a href="#ouvir">Faixas</a>
 <a href="#encarte">Encarte</a>
 <a href="#ficha">Ficha técnica</a>
-<a class="botao" href="#apoie">Apoiar</a>
+<a class="botao" href="#apoie"><span class="so-sem-acesso">Apoiar</span><span class="so-com-acesso">Meu álbum</span></a>
 </nav>
 </div>
 </header>
@@ -38,74 +42,124 @@
 <img class="album-capa" src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" alt="Capa de Correnteza: dois músicos com violões sentados sobre a água, sob um facho de luz na névoa">
 <div>
 <a class="voltar" href="index.html">&larr; Voltar à página inicial</a>
-<p class="album-rotulo">Álbum · 9 faixas · em breve</p>
+<p class="album-rotulo">Álbum · 9 faixas · pré-venda</p>
 <h1>Correnteza</h1>
 <p class="album-verso">Vem em mim, correnteza</p>
 <p class="album-texto">Uma jornada poética e sensorial sobre a força transformadora da natureza, os fluxos internos da alma humana e a busca por significado diante dos desafios da existência. É o resultado de um caminho marcado por resiliência e amizade, uma celebração das vozes do interior, geográfico e humano.</p>
 <div class="acoes">
-<a class="botao" href="#apoie">Adquira o álbum por R$ 19,90</a>
-<a class="botao contorno" href="#ouvir">Ver as faixas</a>
+<a class="botao so-sem-acesso" href="#apoie">Adquira o álbum por <span data-preco>R$ 22,90</span></a>
+<a class="botao contorno so-sem-acesso" href="#ouvir">Ouvir as prévias</a>
+<a class="botao so-com-acesso" href="#ouvir">Ouvir o álbum</a>
 </div>
 </div>
 </div>
 </section>
 
 <!-- ===== APOIE / COMPRA =====
-Quando o link de pagamento do Mercado Pago existir, coloque-o no href do botão abaixo
-e apague a linha da nota "em breve". -->
-<section class="apoie" id="apoie">
+O formulário de pagamento (Mercado Pago) e o código de acesso são montados por js/compra.js.
+A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public-key" e
+"correnteza-api", no topo desta página. -->
+<section class="apoie" id="apoie" data-estado="comprar">
 <div class="apoie-in">
+
+<div class="etapa" data-etapa="comprar">
 <p class="apoie-rotulo">Em primeira mão</p>
 <h2>Apoie os artistas independentes</h2>
-<p>Correnteza nasceu de mais de quinze anos de estrada, amizade e canções feitas no interior de Minas. Ao adquirir o álbum antes do lançamento, você ouve as nove faixas em primeira mão, recebe o encarte com letras e créditos e ajuda a gente a dar continuidade à nossa carreira.</p>
-<p class="apoie-preco"><span>por apenas</span> R$ 19,90</p>
-<a class="botao" href="#apoie" id="botaoComprar">Adquira o álbum por apenas R$ 19,90</a>
-<p class="apoie-nota">Pagamento via Mercado Pago · disponível em breve</p>
+<p>Correnteza nasceu de mais de quinze anos de estrada, amizade e canções feitas no interior de Minas. Ao adquirir o álbum antes do lançamento, você ouve as nove faixas em primeira mão, baixa as músicas e o encarte com letras e créditos e ajuda a gente a dar continuidade à nossa carreira.</p>
+<p class="apoie-preco"><span>por apenas</span> <b data-preco>R$ 22,90</b></p>
+<p class="apoie-parcelas">no Pix ou em até 3x sem juros no cartão de crédito</p>
+<form class="compra" id="formCompra" novalidate>
+<label for="email">Seu e-mail <small>(é para ele que mandamos o código de acesso)</small></label>
+<input type="email" id="email" name="email" autocomplete="email" inputmode="email" required placeholder="voce@exemplo.com">
+<label class="marcar"><input type="checkbox" id="novidades" name="novidades"> Quero receber novidades da dupla por e-mail</label>
+<button type="submit" class="botao" id="botaoComprar">Ir para o pagamento</button>
+</form>
+<div class="brick" id="brickPagamento"></div>
+<p class="apoie-nota" id="notaCompra">Pix, cartão de crédito (até 3x sem juros) ou débito, pelo Mercado Pago. O acesso é liberado assim que o pagamento é aprovado.</p>
+</div>
+
+<div class="etapa" data-etapa="pix" hidden>
+<p class="apoie-rotulo">Quase lá</p>
+<h2>Pague com Pix</h2>
+<p>Abra o app do seu banco, escolha <b>Pix → Ler QR code</b> ou <b>Pix copia e cola</b>. Esta página libera o álbum sozinha quando o pagamento cair.</p>
+<div class="pix">
+<img id="pixQr" width="220" height="220" alt="QR code do Pix">
+<div class="pix-dados">
+<label for="pixCopia">Pix copia e cola</label>
+<textarea id="pixCopia" rows="3" readonly></textarea>
+<button type="button" class="botao" id="btCopiarPix">Copiar código Pix</button>
+<p class="apoie-nota" id="pixValidade"></p>
+</div>
+</div>
+<p class="aguardando"><span class="girando" aria-hidden="true"></span> <span id="textoAguardando">Aguardando o pagamento…</span></p>
+<button type="button" class="link" id="btCancelarPix">Escolher outra forma de pagamento</button>
+</div>
+
+<div class="etapa" data-etapa="analise" hidden>
+<p class="apoie-rotulo">Pagamento em análise</p>
+<h2>Estamos esperando a confirmação</h2>
+<p>O Mercado Pago está analisando o pagamento. Isso costuma levar poucos minutos. Pode deixar esta página aberta ou voltar depois: assim que for aprovado, o código chega no seu e-mail e o álbum é liberado aqui.</p>
+<p class="aguardando"><span class="girando" aria-hidden="true"></span> Aguardando a confirmação…</p>
+</div>
+
+<div class="etapa" data-etapa="liberado" hidden>
+<p class="apoie-rotulo">Obrigado pelo apoio!</p>
+<h2>Correnteza é seu</h2>
+<p>As nove faixas completas e o encarte com as letras já estão liberados nesta página. Para ouvir em outro aparelho, use o link do e-mail ou o código abaixo.</p>
+<div class="codigo-caixa">
+<span>Seu código de acesso</span>
+<b id="codigoMostrado"></b>
+<button type="button" class="link" id="btCopiarCodigo">copiar</button>
+</div>
+<div class="acoes">
+<a class="botao" id="baixarZip" href="#" download>Baixar o álbum (.zip)</a>
+<a class="botao contorno" id="baixarPdf" href="#" download>Encarte em PDF</a>
+<a class="botao contorno" href="#ouvir">Ouvir agora</a>
+</div>
+<button type="button" class="link" id="btSair">Sair deste aparelho</button>
+</div>
+
+<p class="mensagem" id="mensagemCompra" role="alert" hidden></p>
+
+<details class="ja-comprei" id="jaComprei">
+<summary>Já comprei e tenho um código</summary>
+<form id="formCodigo" novalidate>
+<label for="campoCodigo">Código de acesso</label>
+<div class="linha-codigo">
+<input type="text" id="campoCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+<button type="submit" class="botao">Entrar</button>
+</div>
+<p class="apoie-nota">O código está no e-mail que enviamos depois do pagamento. Cada código vale em até 5 aparelhos.</p>
+</form>
+</details>
+
 </div>
 </section>
 
 <!-- ===== FAIXAS E PLAYER =====
-As faixas estão bloqueadas: nenhum áudio fica público no site.
-Quem adquirir o álbum recebe o acesso por outro caminho (a definir com o Mercado Pago). -->
+A lista é refeita por js/album.js com o que vem da API: prévias de 15 s para todos,
+faixas completas, letras e downloads para quem tem o código. -->
 <section class="faixas-secao" id="ouvir">
 <div class="faixas-in">
 <h2>Faixas</h2>
-<p class="faixas-aviso" id="avisoPlayer">As nove faixas ficam disponíveis em primeira mão para quem adquire o álbum, antes de chegarem às plataformas.</p>
+<p class="faixas-aviso" id="avisoPlayer">Ouça uma prévia de cada faixa. O álbum completo fica disponível em primeira mão para quem adquire, antes de chegar às plataformas.</p>
 <ol class="faixas" id="faixas">
-<li>
-<button type="button" class="faixa" disabled><span class="num">01</span><span class="nome">Clareira</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">02</span><span class="nome">Candeia</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">03</span><span class="nome">No Leito</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">04</span><span class="nome">Meandros</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">05</span><span class="nome">A Dança das Chamas</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">06</span><span class="nome">Degredo</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">07</span><span class="nome">Lúgubre</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">08</span><span class="nome">Correnteza</span><span class="estado">exclusivo</span></button>
-</li>
-<li>
-<button type="button" class="faixa" disabled><span class="num">09</span><span class="nome">Endless</span><span class="estado">exclusivo</span></button>
-</li>
+<li><button type="button" class="faixa" disabled><span class="num">01</span><span class="nome">Clareira</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">02</span><span class="nome">Candeia</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">03</span><span class="nome">No Leito</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">04</span><span class="nome">Meandros</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">05</span><span class="nome">A Dança das Chamas</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">06</span><span class="nome">Degredo</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">07</span><span class="nome">Lúgubre</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">08</span><span class="nome">Correnteza</span><span class="estado">exclusivo</span></button></li>
+<li><button type="button" class="faixa" disabled><span class="num">09</span><span class="nome">Endless</span><span class="estado">exclusivo</span></button></li>
 </ol>
 </div>
 </section>
 
-<!-- ===== ENCARTE (bloqueado) =====
-O encarte completo, com letras e créditos, fica em "encarte-privado-correnteza.html",
-fora da pasta do site, e só será entregue a quem adquirir o álbum. -->
+<!-- ===== ENCARTE =====
+Bloqueado: só a lista de títulos. Com o código, js/album.js troca o conteúdo pelas
+páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do site). -->
 <section class="encarte bloqueado" id="encarte">
 <div class="encarte-in">
 <h2>Encarte</h2>
@@ -121,7 +175,7 @@ fora da pasta do site, e só será entregue a quem adquirir o álbum. -->
 <li><span class="num">08</span><span class="nome">Correnteza</span></li>
 <li><span class="num">09</span><span class="nome">Endless</span></li>
 </ol>
-<a class="botao" href="#apoie">Adquira o álbum por apenas R$ 19,90</a>
+<a class="botao" href="#apoie">Adquira o álbum por apenas <span data-preco>R$ 22,90</span></a>
 </div>
 </section>
 
@@ -152,7 +206,7 @@ fora da pasta do site, e só será entregue a quem adquirir o álbum. -->
 <img src="img/sem-ano_capa-album_correnteza.webp" width="48" height="48" alt="">
 <div class="tocador-info">
 <b id="tocadorTitulo">Correnteza</b>
-<small id="tocadorSub">exclusivo para quem adquire o álbum</small>
+<small id="tocadorSub">prévias de 15 segundos</small>
 </div>
 <div class="tocador-controles">
 <button type="button" id="btAnterior" aria-label="Faixa anterior" disabled>&#9198;&#xFE0E;</button>
@@ -168,5 +222,6 @@ fora da pasta do site, e só será entregue a quem adquirir o álbum. -->
 </div>
 
 <script src="js/album.js"></script>
+<script src="js/compra.js"></script>
 </body>
 </html>

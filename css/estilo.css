@@ -349,3 +349,57 @@ img{ max-width:100%; height:auto; display:block; }
 
 /* Links do contato (Instagram e WhatsApp) na cor do texto */
 .contato dd a{ color:inherit; text-decoration:underline; text-underline-offset:3px; }
+
+/* ===== COMPRA DO ÁLBUM (js/compra.js) ===== */
+[hidden]{ display:none !important; }
+.so-com-acesso{ display:none !important; }
+.com-acesso .so-com-acesso{ display:inline-flex !important; }
+.com-acesso span.so-com-acesso{ display:inline !important; }
+.com-acesso .so-sem-acesso{ display:none !important; }
+.apoie-preco b{ font-weight:inherit; }
+.compra{ display:grid; gap:10px; margin-top:8px; }
+.compra label, .ja-comprei label, .pix-dados label{ font-size:14px; color:var(--texto-suave); }
+.compra label small{ color:var(--nevoa); font-size:13px; }
+.compra input[type=email], .ja-comprei input, .pix-dados textarea{ width:100%; min-height:48px; padding:10px 14px; border-radius:8px; border:1px solid var(--aco); background:var(--serra); color:var(--texto); font:inherit; font-size:16px; }
+.compra input:focus, .ja-comprei input:focus, .pix-dados textarea:focus{ outline:2px solid var(--ambar); outline-offset:1px; border-color:transparent; }
+.compra .marcar{ display:flex; align-items:center; gap:10px; margin:4px 0 8px; cursor:pointer; }
+.compra .marcar input{ width:20px; height:20px; accent-color:var(--ambar); flex-shrink:0; }
+.compra .botao{ justify-self:start; cursor:pointer; font-family:inherit; }
+.botao:disabled{ opacity:.6; cursor:progress; }
+button.botao{ cursor:pointer; font-family:inherit; }
+.brick{ max-width:560px !important; margin-top:16px; scroll-margin-top:96px; }
+.mensagem{ margin-top:18px; padding:12px 16px; border-radius:8px; background:rgba(198,139,62,.12); border:1px solid rgba(198,139,62,.45); color:var(--texto) !important; }
+.link{ background:none; border:0; padding:8px 0; color:var(--nevoa); font:inherit; font-size:14px; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.link:hover{ color:var(--texto); }
+
+.pix{ display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start; margin:24px 0 8px; max-width:none !important; }
+.pix img{ width:220px; height:220px; padding:10px; border-radius:8px; background:#fff; image-rendering:pixelated; }
+.pix-dados{ flex:1 1 260px; display:grid; gap:10px; }
+.pix-dados textarea{ resize:none; font-family:ui-monospace, Menlo, monospace; font-size:13px; word-break:break-all; }
+.pix-dados .botao{ justify-self:start; }
+.aguardando{ display:flex; align-items:center; gap:10px; margin:14px 0 4px; font-size:15px; }
+.girando{ width:16px; height:16px; border-radius:50%; border:2px solid rgba(169,188,203,.3); border-top-color:var(--ambar); animation:girar 1s linear infinite; flex-shrink:0; }
+@keyframes girar{ to{ transform:rotate(360deg); } }
+
+.codigo-caixa{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 14px; margin:22px 0 4px; padding:16px 20px; border-radius:8px; background:var(--serra); border:1px solid var(--aco); }
+.codigo-caixa span{ width:100%; font-size:13px; color:var(--nevoa); }
+.codigo-caixa b{ font-family:ui-monospace, Menlo, monospace; font-size:clamp(17px, 4.4vw, 22px); letter-spacing:.06em; word-break:break-all; }
+.apoie .acoes{ margin-top:22px; }
+
+.ja-comprei{ margin-top:28px; padding-top:18px; border-top:1px solid #1F3550; }
+.ja-comprei summary{ cursor:pointer; color:var(--texto-suave); font-size:15px; }
+.ja-comprei form{ display:grid; gap:8px; margin-top:14px; }
+.linha-codigo{ display:flex; gap:10px; }
+.linha-codigo input{ flex:1 1 auto; min-width:0; text-transform:uppercase; letter-spacing:.04em; }
+.linha-codigo .botao{ flex-shrink:0; }
+
+/* faixas com letra e download ao lado (no celular, numa linha abaixo do nome) */
+.faixa-extras{ display:flex; flex-shrink:0; }
+@media (max-width:560px){
+  .faixas li{ flex-wrap:wrap; gap:0; }
+  .faixas li .faixa{ flex-basis:100%; }
+  .faixa-extras{ margin:-14px 0 6px 60px; }
+  .faixa-extras .ver-letra{ padding:6px 14px 6px 0; }
+}
+@media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
+.apoie-parcelas{ margin:-4px 0 18px; font-size:15px; color:var(--texto-suave); }

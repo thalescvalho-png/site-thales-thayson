@@ -81,7 +81,7 @@ export async function rotaCheckout(request: Request, env: Env): Promise<Response
     pagamento.date_of_expiration = expiracaoPix(Number(env.PIX_VALIDADE_MINUTOS) || 30);
   } else {
     pagamento.token = String(form.token);
-    pagamento.installments = tipo === "debit_card" ? 1 : Math.min(Math.max(Math.trunc(Number(form.installments) || 1), 1), 12);
+    pagamento.installments = tipo === "debit_card" ? 1 : Math.min(Math.max(Math.trunc(Number(form.installments) || 1), 1), 3);
     if (form.issuer_id) pagamento.issuer_id = String(form.issuer_id);
   }
 
