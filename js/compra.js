@@ -1,5 +1,5 @@
 // Compra do álbum: formulário do Mercado Pago (Payment Brick), Pix com consulta automática,
-// código de acesso digitado e a tela de "obrigado" com os downloads.
+// código de acesso digitado e a tela de "obrigado" com o encarte em PDF.
 // O preço cobrado é sempre o do servidor; aqui ele só é mostrado.
 (function(){
   var C = window.Correnteza;
@@ -20,7 +20,7 @@
 
   var MOTIVOS = {
     codigo_invalido: 'Esse código não foi encontrado. Confira as letras e os números (o código está no e-mail que enviamos).',
-    limite_aparelhos: 'Esse código já foi usado no número máximo de aparelhos. Fale com a gente pelo contato da página inicial para liberar.',
+    limite_aparelhos: 'Esse código já está no número máximo de aparelhos. Desconecte um aparelho antigo logo abaixo para ouvir neste.',
     muitas_tentativas: 'Muitas tentativas seguidas. Espere um minuto e tente de novo.',
     sem_aparelho: 'Não foi possível identificar este navegador. Tente de novo ou use outro navegador.'
   };
@@ -51,15 +51,22 @@
     if (d.acesso){
       pararConsulta();
       C.gravar('correnteza.pedido', null);
-      document.getElementById('baixarZip').href = d.zip;
+      // só player: no lugar do download do álbum fica o do encarte em PDF
+      var zip = document.getElementById('baixarZip');
+      zip.hidden = !d.zip;
+      if (d.zip) zip.href = d.zip;
+      if (d.encarte) document.getElementById('baixarEncarte').href = d.encarte.pdf;
       avisar('');
       etapa('liberado');
       return;
     }
     if (secao.dataset.estado === 'liberado'){ etapa('comprar'); formCompra.hidden = !CHAVE_MP; }
     if (codigoTentado && d.motivo){
-      avisar(MOTIVOS[d.motivo] || 'Não foi possível usar esse código agora.');
-      jaComprei.open = true;
+      // no limite de aparelhos, o painel com a lista (js/aparelhos.js) já explica o que fazer
+      var painel = d.motivo === 'limite_aparelhos' && C.mostrarLimite;
+      avisar(painel ? '' : MOTIVOS[d.motivo] || 'Não foi possível usar esse código agora.');
+      jaComprei.open = !painel;
+      if (painel) C.mostrarLimite();
     }
   });
 
@@ -140,9 +147,14 @@
     // só leva até a lista; a música começa quando a pessoa escolhe uma faixa
     document.getElementById('ouvir').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+  document.getElementById('baixarEncarte').addEventListener('click', function(e){
+    var d = C.dados();
+    if (d && d.encarte) this.href = d.encarte.pdf;
+    C.abrirPdf(e);
+  });
   document.getElementById('btSair').addEventListener('click', function(){
-    if (!confirm('Tirar o acesso ao álbum deste aparelho? Para voltar, basta digitar o código de novo.')) return;
-    C.sair();
+    if (!confirm('Tirar o acesso ao álbum deste aparelho? A vaga dele fica livre para outro aparelho. Para voltar, basta digitar o código de novo.')) return;
+    if (C.sairDeVez) C.sairDeVez(); else C.sair();
   });
 
   // ----- Pagamento -----
@@ -157,6 +169,7 @@
     btAdquirir.setAttribute('aria-expanded', 'true');
     secao.classList.add('comprando');
     nota.hidden = false;
+    C.evento('abrir_compra');
     if (CHAVE_MP && !controleBrick){ formCompra.hidden = false; campoEmail.focus({ preventScroll: true }); }
   }
   btAdquirir.addEventListener('click', abrirCompra);
@@ -197,6 +210,7 @@
         },
         callbacks: {
           onReady: function(){
+            C.evento('pagamento');
             formCompra.hidden = true;
             brick.scrollIntoView({ behavior: 'smooth', block: 'start' });
           },
@@ -220,7 +234,7 @@
     return C.pedirJson('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedPaymentMethod: r.selectedPaymentMethod, formData: r.formData, email: email, novidades: campoNovidades.checked })
+      body: JSON.stringify({ selectedPaymentMethod: r.selectedPaymentMethod, formData: r.formData, email: email, novidades: campoNovidades.checked, origem: C.origem() })
     }).then(function(res){
       if (res._status >= 400 || !res.pedido){
         avisar(res.mensagem || 'Não foi possível processar o pagamento. Confira os dados e tente de novo.');
@@ -244,6 +258,7 @@
   }
 
   function liberar(codigo){
+    C.evento('compra');
     pararConsulta();
     C.gravar('correnteza.pedido', null);
     if (controleBrick){ controleBrick.unmount(); controleBrick = null; }

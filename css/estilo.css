@@ -562,3 +562,187 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
   .mov .revela, .mov .palavras .pal, .mov .desvela, .mov .capa .arte img{ opacity:1 !important; transform:none !important; filter:none !important; clip-path:none !important; transition:none !important; }
   .capa, .retrato, .quem h2{ translate:none; }
 }
+
+/* ===================================================================
+   OUTUBRO/2026: rodapé, fim da prévia, aparelhos, mural, Stories,
+   páginas de texto (termos, privacidade), links da bio e administração
+   =================================================================== */
+
+/* ----- Rodapé (todas as páginas) ----- */
+.rodape{ border-top:1px solid #1F3550; }
+.rodape-in{ max-width:1280px; margin:0 auto; padding:28px 24px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px 28px; font-size:13px; color:var(--nevoa); }
+.rodape nav{ display:flex; flex-wrap:wrap; gap:8px 22px; }
+.rodape a{ color:var(--nevoa); text-underline-offset:3px; }
+.rodape a:hover{ color:var(--texto); }
+.pagina-album .rodape{ margin-bottom:84px; }
+@media (max-width:860px){ .pagina-album .rodape{ margin-bottom:0; } }
+
+/* ----- Botão de compartilhar no player e aviso de "outro aparelho tocando" ----- */
+.tocador-controles button.compartilhar{ display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
+.tocador-controles button.compartilhar svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.tocador.avisando .tocador-info small{ color:var(--ambar); white-space:normal; }
+.tocador:not(.bloqueado) .tocador-controles button.compartilhar{ opacity:1; }
+.tocador.bloqueado .compartilhar{ display:none !important; }
+
+/* ----- Fim da prévia: "ouvir o álbum completo" ou "me avise" ----- */
+.fim-previa{ position:fixed; right:16px; bottom:calc(92px + env(safe-area-inset-bottom,0px)); z-index:26; width:min(420px, calc(100vw - 32px));
+  max-height:calc(100svh - 180px); overflow-y:auto; padding:24px 24px 16px; border-radius:14px; background:rgba(19,34,58,.97);
+  border:1px solid color-mix(in srgb, var(--ambar) 40%, #24405F); box-shadow:0 24px 60px rgba(0,0,0,.45);
+  opacity:0; transform:translateY(16px); transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1); }
+.fim-previa.aberto{ opacity:1; transform:none; }
+.fim-previa .fechar{ position:absolute; top:8px; right:8px; width:38px; height:38px; border-radius:50%; border:0; background:transparent; color:var(--nevoa); font-size:24px; line-height:1; cursor:pointer; }
+.fim-previa-rotulo{ font-family:var(--serif); font-style:italic; font-size:18px; color:var(--ambar); }
+.fim-previa h2{ font-family:var(--serif); font-weight:500; font-size:30px; line-height:1.1; margin:4px 32px 16px 0; }
+.fim-previa-acoes{ display:flex; flex-wrap:wrap; gap:10px; }
+.fim-previa .novidades{ display:grid; gap:8px; margin-top:16px; }
+.fim-previa .novidades label{ font-size:14px; color:var(--texto-suave); }
+.fim-previa .novidades input[type=email]{ width:100%; min-height:46px; padding:10px 14px; border-radius:8px; border:1px solid var(--aco); background:var(--noite); color:var(--texto); font:inherit; }
+.fim-previa .marcar, .mural-form .marcar{ display:flex; align-items:flex-start; gap:10px; cursor:pointer; line-height:1.45; }
+.fim-previa .marcar input, .mural-form .marcar input{ width:20px; height:20px; margin-top:1px; accent-color:var(--ambar); flex-shrink:0; }
+.fim-previa .novidades .botao{ justify-self:start; }
+.fim-previa .mensagem{ margin-top:4px; }
+.fim-previa-ok{ margin-top:16px; color:var(--texto); }
+.fim-previa #btProximaPrevia{ display:block; margin-top:10px; }
+.fim-previa .apoie-nota a, .mural-form .apoie-nota a, .compra .dica a{ color:inherit; text-underline-offset:3px; }
+@media (max-width:860px){ .fim-previa{ left:16px; right:16px; width:auto; bottom:calc(118px + env(safe-area-inset-bottom,0px)); } }
+@media (prefers-reduced-motion: reduce){ .fim-previa{ transition:none; } }
+
+/* ----- Aparelhos do comprador ----- */
+.botao.pequeno{ min-height:38px; padding:0 16px; font-size:14px; }
+.aparelhos{ margin-top:30px; width:min(520px, 100%); text-align:left; }
+.aparelhos summary{ cursor:pointer; text-align:center; color:var(--texto-suave); font-size:15px; }
+.aparelhos-corpo{ margin-top:14px; color:var(--texto-suave); font-size:15px; }
+.aparelhos-lista{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.aparelhos-lista li{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 16px; border-radius:10px; background:rgba(19,34,58,.8); border:1px solid #24405F; }
+.aparelho-info{ min-width:0; line-height:1.35; }
+.aparelho-info b{ display:block; color:var(--texto); font-weight:500; }
+.aparelho-info small{ color:var(--nevoa); font-size:13px; }
+.aparelhos .selo, .aparelho-info .selo{ display:inline-block; margin-left:8px; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; vertical-align:2px; color:var(--noite); background:var(--bio, #5FF2E0); }
+.aparelhos-corpo .apoie-nota{ margin-top:12px; }
+.aparelhos-limite{ margin-top:22px; padding:22px 24px; border-radius:14px; background:var(--serra); border:1px solid color-mix(in srgb, var(--ambar) 45%, #24405F); max-width:620px !important; }
+.aparelhos-limite h3{ font-family:var(--serif); font-weight:500; font-size:28px; line-height:1.15; margin:0 0 6px; }
+.aviso-app{ margin:0 0 22px; padding:12px 16px; border-radius:8px; background:rgba(57,200,255,.08); border:1px solid rgba(57,200,255,.35); color:var(--texto) !important; font-size:15px; }
+@media (max-width:560px){ .aparelhos-lista li{ flex-direction:column; align-items:flex-start; } }
+
+/* ----- Mural dos ouvintes ----- */
+.mural{ border-top:1px solid #1F3550; }
+.mural-in{ max-width:1100px; margin:0 auto; padding:96px 24px; }
+.mural h2{ font-family:var(--serif); font-weight:500; font-size:clamp(40px, 5vw, 60px); margin-bottom:12px; }
+.mural-intro{ color:var(--texto-suave); max-width:60ch; }
+.mural-grade{ display:grid; grid-template-columns:minmax(0,380px) minmax(0,1fr); gap:48px; align-items:start; margin-top:40px; }
+.mural-form{ display:grid; gap:8px; padding:24px; border-radius:14px; background:var(--serra); border:1px solid #24405F; }
+.mural-form label, .mural-filtro label{ font-size:14px; color:var(--texto-suave); }
+.mural-form label small{ color:var(--nevoa); font-size:13px; }
+.mural-form input[type=text], .mural-form input[type=email], .mural-form textarea, .mural-form select, .mural-filtro select{
+  width:100%; min-height:46px; padding:10px 14px; border-radius:8px; border:1px solid var(--aco); background:var(--noite); color:var(--texto); font:inherit; }
+.mural-form textarea{ resize:vertical; min-height:120px; line-height:1.5; }
+.mural-form input:focus, .mural-form textarea:focus, .mural-form select:focus, .mural-filtro select:focus{ outline:2px solid var(--ambar); outline-offset:1px; border-color:transparent; }
+.mural-linha{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mural-linha > div, .mural-email{ display:grid; gap:8px; }
+.mural-form .marcar{ margin:6px 0 4px; font-size:14px; }
+.mural-form .botao{ justify-self:start; margin-top:4px; }
+.mural-form .mensagem{ margin-top:8px; }
+.mural-apoiador{ display:none; }
+.com-acesso .mural-apoiador{ display:block; }
+.com-acesso .mural-email{ display:none; }
+.mural-filtro{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.mural-filtro select{ width:auto; max-width:100%; min-height:40px; padding:6px 12px; }
+.comentarios{ list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+.comentario{ padding:18px 20px; border-radius:12px; background:rgba(19,34,58,.55); border:1px solid #1F3550; }
+.comentario.apoiador{ border-color:color-mix(in srgb, var(--ambar) 40%, #1F3550); }
+.comentario-cab{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
+.comentario-cab b{ font-weight:600; }
+.comentario-cab .cidade{ color:var(--nevoa); font-size:14px; }
+.comentario-cab .selo{ padding:1px 9px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--noite); background:var(--ambar); }
+.comentario-texto{ margin-top:8px; white-space:pre-line; overflow-wrap:anywhere; }
+.comentario-pe{ margin-top:8px; font-size:13px; color:var(--nevoa); }
+.mural-vazio{ color:var(--nevoa); }
+@media (max-width:860px){ .mural-grade{ grid-template-columns:1fr; } .mural-in{ padding:80px 24px; } }
+@media (max-width:420px){ .mural-linha{ grid-template-columns:1fr; } }
+
+/* ----- Cartões para os Stories (js/compartilhar.js) ----- */
+.compartilhar-janela{ width:min(760px, calc(100vw - 24px)); max-height:calc(100svh - 24px); padding:0; border:1px solid #24405F; border-radius:16px; background:var(--serra); color:var(--texto); }
+.compartilhar-janela::backdrop{ background:rgba(6,12,20,.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+.compartilhar-in{ position:relative; padding:26px 26px 22px; }
+.compartilhar-janela h2{ font-family:var(--serif); font-weight:500; font-size:32px; margin:0 40px 18px 0; line-height:1.1; }
+.compartilhar-janela .fechar{ position:absolute; top:12px; right:12px; width:42px; height:42px; border-radius:50%; border:1px solid rgba(169,188,203,.35); background:transparent; color:var(--texto); font-size:24px; line-height:1; cursor:pointer; }
+.cartao-grade{ display:grid; grid-template-columns:240px minmax(0,1fr); gap:26px; align-items:start; }
+.cartao-previa{ position:relative; aspect-ratio:9/16; border-radius:12px; overflow:hidden; background:var(--noite); box-shadow:0 16px 40px rgba(0,0,0,.4); }
+.cartao-previa img{ width:100%; height:100%; object-fit:cover; transition:opacity .3s ease; }
+.cartao-previa.gerando img{ opacity:.35; }
+.cartao-previa img:not([src]){ visibility:hidden; }
+.cartao-opcoes{ display:grid; gap:14px; min-width:0; }
+.cartao-modos{ margin:0; padding:0; border:0; display:grid; gap:8px; }
+.cartao-modos legend{ font-size:14px; color:var(--texto-suave); margin-bottom:6px; }
+.cartao-modos label{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+.cartao-modos input{ width:18px; height:18px; accent-color:var(--ambar); }
+.cartao-faixa{ display:grid; gap:6px; font-size:14px; color:var(--texto-suave); }
+.cartao-faixa select{ min-height:44px; padding:8px 12px; border-radius:8px; border:1px solid var(--aco); background:var(--noite); color:var(--texto); font:inherit; }
+.cartao-estrofes{ display:grid; gap:8px; max-height:240px; overflow-y:auto; padding-right:4px; }
+.cartao-estrofe{ text-align:left; padding:10px 14px; border-radius:8px; border:1px solid #24405F; background:var(--noite); color:var(--texto-suave); font-family:var(--serif); font-size:17px; line-height:1.35; cursor:pointer; }
+.cartao-estrofe.escolhida{ border-color:var(--ambar); color:var(--texto); box-shadow:0 0 0 1px var(--ambar) inset; }
+.cartao-acoes{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; }
+.cartao-nota{ margin:0 !important; }
+.letra-nav{ gap:22px; flex-wrap:wrap; }
+.letra-nav .verso{ color:var(--nevoa); }
+@media (max-width:640px){
+  .cartao-grade{ grid-template-columns:1fr; }
+  .cartao-previa{ width:min(220px, 60vw); justify-self:center; }
+  .compartilhar-in{ padding:22px 18px 18px; }
+}
+
+/* ----- Páginas de texto: termos, privacidade, descadastro ----- */
+.pagina-texto main{ max-width:760px; margin:0 auto; padding:120px 24px 80px; }
+.pagina-texto h1{ font-family:var(--serif); font-weight:500; font-size:clamp(40px, 6vw, 64px); line-height:1.05; margin-bottom:10px; }
+.pagina-texto .atualizado{ color:var(--nevoa); font-size:14px; margin-bottom:36px; }
+.pagina-texto h2{ font-family:var(--serif); font-weight:500; font-size:30px; line-height:1.15; margin:44px 0 12px; scroll-margin-top:96px; }
+.pagina-texto h3{ font-size:17px; font-weight:600; margin:24px 0 8px; }
+.pagina-texto p, .pagina-texto li{ color:var(--texto-suave); }
+.pagina-texto p + p{ margin-top:12px; }
+.pagina-texto ul, .pagina-texto ol{ padding-left:22px; margin:10px 0; display:grid; gap:6px; }
+.pagina-texto a{ color:var(--ambar); text-underline-offset:3px; }
+.pagina-texto b, .pagina-texto strong{ color:var(--texto); font-weight:600; }
+.pagina-texto .tabela{ overflow-x:auto; margin:14px 0; }
+.pagina-texto table{ width:100%; border-collapse:collapse; font-size:15px; }
+.pagina-texto th, .pagina-texto td{ text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid #1F3550; color:var(--texto-suave); }
+.pagina-texto th{ color:var(--texto); font-weight:600; }
+.pagina-texto .resumo{ padding:18px 22px; border-radius:12px; background:var(--serra); border:1px solid #24405F; }
+.pagina-texto .caixa-acao{ margin-top:28px; padding:24px; border-radius:14px; background:var(--serra); border:1px solid #24405F; display:grid; gap:12px; }
+
+/* ----- Links da bio (links/) ----- */
+.pagina-links{ min-height:100svh; background:radial-gradient(120% 70% at 50% 0%, #1A2D45 0%, var(--noite) 60%); }
+.links-in{ max-width:520px; margin:0 auto; padding:48px 20px 40px; text-align:center; }
+.links-capa{ width:132px; height:132px; margin:0 auto 18px; border-radius:10px; box-shadow:0 18px 40px rgba(0,0,0,.45); }
+.pagina-links h1{ font-family:var(--serif); font-weight:500; font-size:34px; line-height:1.1; }
+.links-sub{ color:var(--texto-suave); margin:8px 0 28px; font-size:15px; }
+.links-lista{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+.links-lista a, .links-lista span{ display:flex; align-items:center; justify-content:center; gap:10px; min-height:58px; padding:12px 20px; border-radius:14px; text-decoration:none; font-weight:500;
+  background:rgba(19,34,58,.85); border:1px solid #24405F; color:var(--texto); transition:border-color .25s ease, transform .25s ease; }
+.links-lista a:hover{ border-color:var(--ambar); transform:translateY(-1px); }
+.links-lista .destaque a{ background:var(--ambar); color:var(--noite); border-color:var(--ambar); font-weight:600; box-shadow:0 0 34px -10px rgba(198,139,62,.9); }
+.links-lista span{ color:var(--nevoa); }
+.links-lista small{ font-weight:400; color:inherit; opacity:.8; }
+.links-redes{ display:flex; justify-content:center; gap:18px; margin-top:28px; font-size:15px; }
+.links-redes a{ color:var(--texto-suave); text-underline-offset:3px; }
+.pagina-links .rodape-in{ justify-content:center; text-align:center; }
+
+/* ----- Administração (admin.html) ----- */
+.pagina-admin main{ max-width:1000px; margin:0 auto; padding:40px 20px 80px; }
+.pagina-admin h1{ font-family:var(--serif); font-weight:500; font-size:40px; }
+.pagina-admin h2{ font-family:var(--serif); font-weight:500; font-size:28px; margin:40px 0 12px; }
+.admin-entrar{ display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; max-width:520px; }
+.admin-entrar input, .admin-filtro select{ flex:1 1 220px; min-height:46px; padding:10px 14px; border-radius:8px; border:1px solid var(--aco); background:var(--serra); color:var(--texto); font:inherit; }
+.admin-abas{ display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.admin-abas button[aria-pressed=true]{ background:var(--ambar); color:var(--noite); border-color:var(--ambar); }
+.admin-comentario{ padding:16px 18px; border-radius:12px; background:var(--serra); border:1px solid #24405F; margin-bottom:12px; }
+.admin-comentario p{ margin-top:6px; }
+.admin-comentario .meta{ font-size:13px; color:var(--nevoa); }
+.admin-comentario .texto{ white-space:pre-line; overflow-wrap:anywhere; }
+.admin-comentario .acoes{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.admin-tabela{ overflow-x:auto; }
+.admin-tabela table{ width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums; }
+.admin-tabela th, .admin-tabela td{ text-align:left; padding:8px 10px; border-bottom:1px solid #1F3550; }
+.admin-cartoes{ display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; }
+.admin-cartoes div{ padding:14px 16px; border-radius:12px; background:var(--serra); border:1px solid #24405F; }
+.admin-cartoes b{ display:block; font-family:var(--serif); font-size:34px; font-weight:500; line-height:1.1; }
+.admin-cartoes span{ font-size:13px; color:var(--nevoa); }

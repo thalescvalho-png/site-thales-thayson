@@ -4,6 +4,8 @@
 (function(){
   var API = (document.querySelector('meta[name="correnteza-api"]') || {}).content || '';
   API = API.replace(/\/$/, '');
+  // testando no próprio computador: usa o backend local (npm run dev, na pasta backend)
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) API = 'http://localhost:8787';
 
   // ----- 1. Guardar o código e o identificador deste aparelho -----
   // O identificador é criado uma vez e fica no navegador: cada um conta como um aparelho no limite do código.
@@ -36,6 +38,7 @@
   // ----- 2. Conversa com a API -----
   var ouvintes = [];
   var dados = null;
+  var desvio = 0; // diferença entre o relógio do servidor e o deste aparelho
 
   function pedirJson(caminho, opcoes){
     return fetch(API + caminho, opcoes).then(function(r){
@@ -51,11 +54,55 @@
       // código recusado de vez: esquece para não tentar de novo a cada visita
       if (codigo && !d.acesso && (d.motivo === 'codigo_invalido' || d.motivo === 'sem_codigo')) gravar('correnteza.codigo', null);
       if (d.acesso && d.codigo) gravar('correnteza.codigo', d.codigo);
+      if (d.agora) desvio = d.agora - Date.now();
       dados = d;
       document.body.classList.toggle('com-acesso', !!d.acesso);
       ouvintes.forEach(function(f){ f(d, codigo); });
       return d;
     });
+  }
+
+  function credenciais(){ return { token: ler('correnteza.codigo') || '', aparelho: aparelho() }; }
+  function consulta(){
+    var c = credenciais();
+    return '?token=' + encodeURIComponent(c.token) + '&aparelho=' + encodeURIComponent(c.aparelho);
+  }
+
+  // Os links das faixas completas expiram em 30 minutos. Antes disso a página pede links novos,
+  // sem recarregar a lista nem parar a música.
+  var renovando = null;
+  function linksVencendo(margem){
+    return !!(dados && dados.acesso && dados.linksExpiram && dados.linksExpiram - (Date.now() + desvio) < margem);
+  }
+  function renovarLinks(){
+    if (renovando) return renovando;
+    if (!dados || !dados.acesso) return Promise.reject(new Error('sem_acesso'));
+    renovando = pedirJson('/api/links' + consulta(), { cache: 'no-store' }).then(function(l){
+      renovando = null;
+      if (!l.faixas){
+        // aparelho desconectado ou código desativado: a página volta ao estado sem acesso
+        if (l._status === 401 || l._status === 403) carregar();
+        throw new Error(l.erro || 'links_indisponiveis');
+      }
+      if (l.agora) desvio = l.agora - Date.now();
+      l.faixas.forEach(function(n){
+        dados.faixas.forEach(function(f){ if (f.id === n.id){ f.audio = n.audio; if (n.download) f.download = n.download; } });
+      });
+      if (dados.encarte){ dados.encarte.pdf = l.pdf; dados.encarte.json = l.json; }
+      if (l.zip) dados.zip = l.zip;
+      dados.linksExpiram = l.expira;
+      return dados;
+    }, function(e){ renovando = null; throw e; });
+    return renovando;
+  }
+  setInterval(function(){ if (!document.hidden && linksVencendo(8 * 60000)) renovarLinks().catch(function(){}); }, 60000);
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden && linksVencendo(8 * 60000)) renovarLinks().catch(function(){}); });
+
+  // botões e links do PDF: se o link já venceu, pega um novo antes de abrir
+  function abrirPdf(e){
+    if (!linksVencendo(60000)) return;
+    e.preventDefault();
+    renovarLinks().then(function(d){ location.href = d.encarte.pdf; }, function(){});
   }
 
   window.Correnteza = {
@@ -66,6 +113,13 @@
     aoCarregar: function(f){ ouvintes.push(f); if (dados) f(dados); },
     usarCodigo: function(codigo){ gravar('correnteza.codigo', codigo); return carregar(); },
     sair: function(){ gravar('correnteza.codigo', null); return carregar(); },
+    credenciais: credenciais,
+    consulta: consulta,
+    linksVencendo: linksVencendo,
+    renovarLinks: renovarLinks,
+    abrirPdf: abrirPdf,
+    evento: function(nome){ if (window.Medicao) window.Medicao.evento(nome); },
+    origem: function(){ return window.Medicao ? window.Medicao.origem() : 'direto'; },
     ler: ler,
     gravar: gravar
   };
@@ -203,6 +257,12 @@ window.Correnteza.bioluz = function(amplitude){
   var completo = false;
   var atual = -1;
   var arrastando = false;
+  var pedindoPlay = false; // a pessoa pediu para tocar e o áudio ainda não começou
+  var ultimaRenovacao = 0; // evita pedir links novos sem parar se a faixa continuar falhando
+  var retomarEm = -1;      // depois de trocar o link, volta ao ponto em que estava
+  // quem chega por um link de faixa (correnteza.html?faixa=lugubre) já encontra a faixa escolhida
+  var pedida = (new URLSearchParams(location.search).get('faixa') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+  function slug(f){ return f.id.replace(/^\d+-/, ''); }
 
   function dois(n){ return (n < 10 ? '0' : '') + n; }
   function formatar(s){
@@ -273,10 +333,14 @@ window.Correnteza.bioluz = function(amplitude){
         letra.addEventListener('click', function(e){
           if (C.abrirLetra && C.abrirLetra(f.numero)) e.preventDefault();
         });
-        var baixar = el('a', 'ver-letra', 'baixar'); baixar.href = f.download; baixar.setAttribute('download', '');
-        baixar.setAttribute('aria-label', 'Baixar ' + f.titulo);
         var extras = el('span', 'faixa-extras');
-        extras.appendChild(letra); extras.appendChild(baixar);
+        extras.appendChild(letra);
+        // download das faixas só quando o backend liberar (DOWNLOAD_FAIXAS = "sim")
+        if (f.download){
+          var baixar = el('a', 'ver-letra', 'baixar'); baixar.href = f.download; baixar.setAttribute('download', '');
+          baixar.setAttribute('aria-label', 'Baixar ' + f.titulo);
+          extras.appendChild(baixar);
+        }
         li.appendChild(extras);
         // mostra a duração assim que ela for conhecida
         var sonda = new Audio(); sonda.preload = 'metadata'; sonda.src = f.audio;
@@ -287,16 +351,29 @@ window.Correnteza.bioluz = function(amplitude){
     tocador.classList.remove('bloqueado');
     [btTocar, btAnterior, btProxima, barra].forEach(function(b){ b.disabled = false; });
     aviso.textContent = completo
-      ? 'Seu álbum completo. Toque numa faixa para ouvir ou baixe as músicas uma a uma.'
+      ? (d.downloadFaixas ? 'Seu álbum completo. Toque numa faixa para ouvir ou baixe as músicas uma a uma.' : 'Seu álbum completo. Toque numa faixa para ouvir.')
       : 'Ouça uma prévia de 15 segundos de cada faixa. O álbum completo fica disponível em primeira mão para quem adquire.';
     sub.textContent = completo ? 'Correnteza' : 'prévias de 15 segundos';
 
     // ao liberar o acesso, a prévia para e a pessoa escolhe por qual faixa completa começar
     var i = !liberou && idAtual ? faixas.map(function(f){ return f.id; }).indexOf(idAtual) : -1;
+    if (i < 0 && pedida) i = faixas.map(slug).indexOf(pedida);
     if (liberou) audio.pause();
     atual = -1;
     carregarFaixa(i >= 0 ? i : 0, tocando && !liberou);
+    if (pedida){ pedida = ''; anunciarPedida(); }
   }
+
+  // botão da apresentação: "Ouvir a prévia de Lúgubre" para quem chegou pelo link da faixa
+  var btPrevia = document.getElementById('btOuvirPrevia');
+  function anunciarPedida(){
+    if (btPrevia && faixas[atual] && atual > 0) btPrevia.textContent = 'Ouvir a prévia de ' + faixas[atual].titulo;
+  }
+  if (btPrevia) btPrevia.addEventListener('click', function(){
+    if (!faixas.length) return;
+    if (audio.paused) alternar();
+    document.getElementById('ouvir').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
   function carregarFaixa(i, tocarJa){
     var f = faixas[i];
@@ -311,7 +388,7 @@ window.Correnteza.bioluz = function(amplitude){
     bioMini.ligar(tela || null);
     bioMini.cor(tomDe(f, i)); bioPrincipal.cor(tomDe(f, i));
     tocador.style.setProperty('--tom', tomDe(f, i));
-    audio.src = completo ? f.audio : f.previa;
+    tocador.classList.remove('avisando');
     titulo.textContent = f.titulo;
     sub.textContent = 'Correnteza · faixa ' + dois(f.numero) + (completo ? '' : ' · prévia');
     barra.value = 0; tempoAtual.textContent = '0:00'; tempoTotal.textContent = '0:00';
@@ -321,12 +398,33 @@ window.Correnteza.bioluz = function(amplitude){
         artwork: [{ src: 'img/sem-ano_capa-album_correnteza.webp', sizes: '1600x1600', type: 'image/webp' }]
       });
     }
-    if (tocarJa) audio.play().catch(function(){});
+    retomarEm = -1;
+    // link da faixa completa perto de vencer: pede um novo antes de tocar
+    if (completo && C.linksVencendo(2 * 60000)){
+      audio.pause(); audio.removeAttribute('src'); audio.load();
+      var esta = i;
+      C.renovarLinks().catch(function(){}).then(function(){
+        if (atual !== esta) return;
+        audio.src = faixas[i].audio;
+        if (tocarJa) tocar();
+      });
+    } else {
+      audio.src = completo ? f.audio : f.previa;
+      if (tocarJa) tocar();
+    }
     pintar(0);
+  }
+  function tocar(){
+    pedindoPlay = true;
+    var p = audio.play();
+    if (p && p.catch) p.catch(function(){ pedindoPlay = false; });
   }
   function alternar(){
     if (atual < 0){ carregarFaixa(0, true); return; }
-    if (audio.paused) audio.play().catch(function(){}); else audio.pause();
+    if (audio.paused){
+      if (!audio.getAttribute('src') && faixas[atual]) audio.src = completo ? faixas[atual].audio : faixas[atual].previa;
+      tocar();
+    } else audio.pause();
   }
   function vizinha(passo){ return faixas.length ? (atual + passo + faixas.length) % faixas.length : -1; }
 
@@ -339,24 +437,77 @@ window.Correnteza.bioluz = function(amplitude){
 
   audio.addEventListener('play', function(){ btTocar.innerHTML = '&#10074;&#10074;'; btTocar.setAttribute('aria-label', 'Pausar'); document.body.classList.add('tocando');
     cancelAnimationFrame(quadro); quadro = requestAnimationFrame(animar);
+    tocador.classList.remove('avisando');
+    if (completo) pegarVez(); else C.evento('previa');
   });
+  audio.addEventListener('playing', function(){ pedindoPlay = false; });
   audio.addEventListener('pause', function(){ btTocar.innerHTML = '&#9654;&#xFE0E;'; btTocar.setAttribute('aria-label', 'Tocar'); document.body.classList.remove('tocando');
     parar();
   });
-  audio.addEventListener('loadedmetadata', function(){ tempoTotal.textContent = formatar(audio.duration); });
+  audio.addEventListener('loadedmetadata', function(){
+    tempoTotal.textContent = formatar(audio.duration);
+    if (retomarEm > 0){ audio.currentTime = retomarEm; retomarEm = -1; }
+  });
   audio.addEventListener('timeupdate', function(){
+    if (completo && !audio.paused) conferirVez();
     if (arrastando || !audio.duration) return;
     barra.value = (audio.currentTime / audio.duration) * 100;
     tempoAtual.textContent = formatar(audio.currentTime);
     if (audio.paused) pintar(0); // ao arrastar a barra principal com o áudio parado
   });
   audio.addEventListener('ended', function(){
+    // a primeira prévia ouvida até o fim abre o cartão "comprar / me avise" em vez de seguir
+    if (!completo){
+      C.evento('previa_fim');
+      if (C.fimDaPrevia && C.fimDaPrevia(faixas[atual], function(){ carregarFaixa(vizinha(1), true); })) return;
+    }
     if (atual < faixas.length - 1) carregarFaixa(atual + 1, true); // para ao fim da última faixa
   });
   audio.addEventListener('error', function(){
-    if (!audio.getAttribute('src')) return;
+    var src = audio.getAttribute('src');
+    if (!src) return;
+    // link da faixa completa vencido (aparelho dormiu, pausa longa): pega um novo e continua de onde parou
+    if (completo && Date.now() - ultimaRenovacao > 60000){
+      ultimaRenovacao = Date.now();
+      var esta = atual, ponto = audio.currentTime || 0, retomar = pedindoPlay || !audio.paused;
+      C.renovarLinks().then(function(){
+        if (atual !== esta || !faixas[esta]) return;
+        retomarEm = ponto;
+        audio.src = faixas[esta].audio;
+        if (retomar) tocar();
+      }, function(){
+        sub.textContent = 'Não deu para tocar esta faixa agora. Tente de novo em instantes.';
+      });
+      return;
+    }
+    pedindoPlay = false;
     sub.textContent = completo ? 'Não deu para tocar esta faixa agora. Tente de novo em instantes.' : 'Prévia indisponível no momento.';
   });
+
+  // ----- Uma reprodução por vez -----
+  // Ao dar play, este aparelho pega a vez. Enquanto toca, confere a cada 20 s se outro aparelho
+  // com o mesmo código começou a tocar; se sim, pausa aqui com um aviso.
+  var ultimaConferencia = 0;
+  function pegarVez(){
+    ultimaConferencia = Date.now();
+    C.pedirJson('/api/tocando', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(C.credenciais())
+    }).catch(function(){});
+  }
+  function conferirVez(){
+    if (Date.now() - ultimaConferencia < 20000) return;
+    ultimaConferencia = Date.now();
+    C.pedirJson('/api/tocando' + C.consulta(), { cache: 'no-store' }).then(function(r){
+      if (r.meu === false){
+        audio.pause();
+        sub.textContent = 'Pausado: começou a tocar em outro aparelho (' + (r.outro || 'sem nome') + ').';
+        tocador.classList.add('avisando');
+      } else if (r._status === 401 || r._status === 403){
+        audio.pause();
+        C.carregar();
+      }
+    }, function(){});
+  }
   barra.addEventListener('input', function(){
     arrastando = true;
     if (audio.duration) tempoAtual.textContent = formatar(barra.value / 100 * audio.duration);
@@ -374,6 +525,7 @@ window.Correnteza.bioluz = function(amplitude){
   }
 
   C.aoCarregar(montar);
+  C.evento('visita');
   C.pronto = C.carregar();
   C.pronto.catch(function(){
     aviso.textContent = 'Não foi possível carregar as prévias agora. Tente recarregar a página em instantes.';
@@ -466,6 +618,7 @@ window.Correnteza.bioluz = function(amplitude){
     var intro = el('p', 'encarte-intro', 'Letras e créditos de cada faixa de Correnteza. ');
     if (d.encarte && d.encarte.pdf){
       var pdf = el('a', '', 'Baixar o encarte em PDF'); pdf.href = d.encarte.pdf; pdf.setAttribute('download', '');
+      pdf.addEventListener('click', function(e){ pdf.href = C.dados().encarte.pdf; C.abrirPdf(e); });
       intro.appendChild(pdf);
     }
     dentro.appendChild(intro);
@@ -513,8 +666,14 @@ window.Correnteza.bioluz = function(amplitude){
     janela = el('dialog', 'letra-janela');
     janela.setAttribute('aria-label', 'Letra');
     janela.innerHTML = '<div class="letra-janela-in"><button type="button" class="fechar" aria-label="Fechar">&times;</button><div class="letra-conteudo"></div>'
-      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a></nav></div>';
+      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a>'
+      + '<button type="button" class="link verso">criar um cartão com um verso</button></nav></div>';
     janela.querySelector('.fechar').addEventListener('click', function(){ janela.close(); });
+    // o cartão para os Stories (js/compartilhar.js) abre já nesta faixa
+    janela.querySelector('.verso').addEventListener('click', function(){
+      janela.close();
+      if (C.compartilhar) C.compartilhar({ modo: 'verso', faixa: atualLetra });
+    });
     janela.querySelector('.todas').addEventListener('click', function(){ janela.close(); });
     // clicar fora da página fecha
     janela.addEventListener('click', function(e){ if (e.target === janela) janela.close(); });
@@ -547,4 +706,62 @@ window.Correnteza.bioluz = function(amplitude){
   };
 
   C.aoCarregar(montar);
+})();
+
+// ----- 6. Fim da prévia: cartão discreto com "ouvir o álbum completo" ou "me avise das novidades" -----
+// Aparece uma vez por visita, quando a primeira prévia termina. As outras prévias seguem sozinhas.
+(function(){
+  var C = window.Correnteza;
+  var cartao = document.getElementById('fimPrevia');
+  if (!cartao) return;
+  var form = document.getElementById('formNovidades');
+  var campo = document.getElementById('emailNovidades');
+  var aceite = document.getElementById('aceiteNovidades');
+  var msg = document.getElementById('msgNovidades');
+  var ok = document.getElementById('novidadesOk');
+  var mostrado = false, seguir = null;
+
+  function fechar(){ cartao.classList.remove('aberto'); cartao.hidden = true; }
+  function avisar(t){ msg.textContent = t || ''; msg.hidden = !t; }
+
+  C.fimDaPrevia = function(f, proxima){
+    if (mostrado || document.body.classList.contains('com-acesso')) return false;
+    mostrado = true; seguir = proxima;
+    cartao.querySelector('[data-faixa]').textContent = f.titulo;
+    cartao.hidden = false;
+    requestAnimationFrame(function(){ cartao.classList.add('aberto'); });
+    return true;
+  };
+
+  document.getElementById('fimPreviaFechar').addEventListener('click', fechar);
+  document.getElementById('btProximaPrevia').addEventListener('click', function(){ fechar(); if (seguir) seguir(); });
+  [].forEach.call(cartao.querySelectorAll('[data-comprar]'), function(a){ a.addEventListener('click', fechar); });
+  document.getElementById('btMeAvise').addEventListener('click', function(){
+    form.hidden = false; this.hidden = true;
+    campo.focus();
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !cartao.hidden) fechar(); });
+  C.aoCarregar(function(d){ if (d.acesso) fechar(); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = campo.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ avisar('Informe um e-mail válido.'); campo.focus(); return; }
+    if (!aceite.checked){ avisar('Marque a caixa para confirmar que quer receber as novidades.'); return; }
+    avisar('');
+    var botao = form.querySelector('button[type=submit]');
+    botao.disabled = true;
+    C.pedirJson('/api/novidades', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, aceite: true, origem: 'previa' })
+    }).then(function(r){
+      botao.disabled = false;
+      if (!r.ok){ avisar(r.mensagem || 'Não foi possível guardar seu e-mail agora. Tente de novo.'); return; }
+      form.hidden = true; ok.hidden = false;
+      C.evento('novidades');
+    }, function(){
+      botao.disabled = false;
+      avisar('Sem conexão agora. Verifique a internet e tente de novo.');
+    });
+  });
 })();
