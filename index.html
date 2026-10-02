@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=7">
+<link rel="stylesheet" href="css/estilo.css?v=9">
 </head>
 <body>
 
@@ -31,13 +31,12 @@
 <div class="topo-in">
 <a class="marca" href="#inicio"><span class="longa">Thales Carvalho &amp; Thayson Azevedo</span><span class="curta">Thales &amp; Thayson</span></a>
 <nav class="menu" aria-label="Seções">
-<a href="correnteza.html">Álbum</a>
 <a href="#quem-somos">Quem somos</a>
 <a href="#trajetoria">Trajetória</a>
 <a href="#discografia">Discografia</a>
 <a href="#galeria">Galeria</a>
 <a href="#contato">Contato</a>
-<a class="botao" href="correnteza.html">Ouvir</a>
+<a class="botao" href="correnteza.html">Álbum Correnteza</a>
 </nav>
 </div>
 </header>
@@ -73,7 +72,6 @@
 <p class="local">Alvinópolis, Minas Gerais</p>
 <h1><span>Thales Carvalho</span><span>&amp; Thayson Azevedo</span></h1>
 <div class="acoes">
-<a class="botao" href="https://open.spotify.com/track/0tWGZJrif0WSTOK7dhBFYT" target="_blank" rel="noopener">Ouvir Pacífico Homem</a>
 <a class="botao contorno" href="#trajetoria">Conheça nossa trajetória</a>
 </div>
 </div>
@@ -159,7 +157,20 @@
 <p class="gancho">Composta na Rua Pacífico Homem, em Ouro Preto</p>
 <h3>Pacífico Homem, single</h3>
 <p>Produzido do zero em home studio, com sonoridade intimista e tecnicamente cuidadosa.</p>
+<div class="obra-acoes">
 <a class="botao" href="https://open.spotify.com/track/0tWGZJrif0WSTOK7dhBFYT" target="_blank" rel="noopener">Ouvir no Spotify</a>
+<button type="button" class="obra-partilhar" data-titulo="Pacífico Homem" data-link="https://open.spotify.com/track/0tWGZJrif0WSTOK7dhBFYT" aria-label="Compartilhar Pacífico Homem"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg><span>Compartilhar</span></button>
+</div>
+</article>
+<article class="obra monotonia">
+<img class="capinha" src="img/sem-ano_capa-single_monotonia.webp" width="1600" height="1600" loading="lazy" alt="Capa de Monotonia: estátua de um homem escalando um pedestal de pedra, cortada por um fio vermelho">
+<p class="gancho">Das raízes no rock</p>
+<h3>Monotonia, single · Paralello</h3>
+<p>Composição premiada no Festival da Canção de Alvinópolis em 2012, relançada pela Paralello, um dos projetos de rock clássico da dupla.</p>
+<div class="obra-acoes">
+<a class="botao" href="https://open.spotify.com/track/5D4x3uYkp0xLHSiE40zE7n" target="_blank" rel="noopener">Ouvir no Spotify</a>
+<button type="button" class="obra-partilhar" data-titulo="Monotonia" data-link="https://open.spotify.com/track/5D4x3uYkp0xLHSiE40zE7n" aria-label="Compartilhar Monotonia"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg><span>Compartilhar</span></button>
+</div>
 </article>
 <article class="obra">
 <img class="capinha" src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" loading="lazy" alt="Capa de Correnteza">
@@ -167,13 +178,6 @@
 <h3>Correnteza, álbum</h3>
 <p>O primeiro álbum da dupla, com nove faixas. Em breve nas plataformas.</p>
 <a class="botao contorno" href="correnteza.html">Faixas e encarte</a>
-</article>
-<article class="obra monotonia">
-<img class="capinha" src="img/sem-ano_capa-single_monotonia.webp" width="1600" height="1600" loading="lazy" alt="Capa de Monotonia: estátua de um homem escalando um pedestal de pedra, cortada por um fio vermelho">
-<p class="gancho">Das raízes no rock</p>
-<h3>Monotonia, single · Paralello</h3>
-<p>Composição premiada no Festival da Canção de Alvinópolis em 2012, relançada pela Paralello, um dos projetos de rock clássico da dupla.</p>
-<a class="botao" href="https://open.spotify.com/track/5D4x3uYkp0xLHSiE40zE7n" target="_blank" rel="noopener">Ouvir no Spotify</a>
 </article>
 <article class="obra chamas">
 <img class="capinha" src="img/sem-ano_clipe_danca-das-chamas.webp" width="1600" height="905" loading="lazy" alt="Frame do videoclipe de A Dança das Chamas: a dupla canta e toca violão em estúdio">
@@ -271,6 +275,7 @@
 </dialog>
 
 <script src="js/medicao.js?v=1"></script>
-<script src="js/principal.js?v=6"></script>
+<script src="js/principal.js?v=7"></script>
+<script src="js/rolagem.js?v=1"></script>
 </body>
 </html>

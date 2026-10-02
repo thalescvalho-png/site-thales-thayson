@@ -129,6 +129,22 @@
   window.addEventListener('resize', function(){ medirTrajetoria(); pedir(); });
   if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ medirTrajetoria(); pedir(); }); }
 
+  // Singles: compartilhar manda o link do Spotify, para quem recebe já cair na música
+  [].forEach.call(document.querySelectorAll('.obra-partilhar'), function(bt){
+    var rotulo = bt.querySelector('span');
+    bt.addEventListener('click', function(){
+      var titulo = bt.getAttribute('data-titulo'), link = bt.getAttribute('data-link');
+      var texto = 'Ouça agora no Spotify: ' + titulo + ', de Thales Carvalho & Thayson Azevedo';
+      if (navigator.share){
+        navigator.share({ title: titulo, text: texto, url: link }).catch(function(){});
+        return;
+      }
+      var feito = function(){ rotulo.textContent = 'Link copiado'; setTimeout(function(){ rotulo.textContent = 'Compartilhar'; }, 2200); };
+      if (navigator.clipboard) navigator.clipboard.writeText(texto + ' ' + link).then(feito, function(){ window.open(link, '_blank', 'noopener'); });
+      else window.open(link, '_blank', 'noopener');
+    });
+  });
+
   // 4. Galeria: clicar numa foto abre a versão ampliada, com setas e Esc
   var janela = document.getElementById('ampliada');
   var fotos = [].slice.call(document.querySelectorAll('.mosaico figure'));
