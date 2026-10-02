@@ -114,9 +114,9 @@ guardada no navegador por 30 dias, então vale mesmo se a pessoa comprar dias de
 
 ## Termos e Privacidade
 
-`termos.html` e `privacidade.html` foram escritos para este site (LGPD e Código de Defesa do Consumidor),
-mas **não substituem uma revisão jurídica** antes de abrir as vendas. Faltam o e-mail de contato
-(`[e-mail de contato]` nas duas páginas). Se mudar o limite de aparelhos ou de trocas no backend,
+`privacidade.html` é um quadro curto dizendo que o site respeita a LGPD, com o contato pelo WhatsApp.
+`termos.html` traz as regras de compra e do mural (Código de Defesa do Consumidor) e **não substitui uma
+revisão jurídica** antes de abrir as vendas. Falta o e-mail de contato (`[e-mail de contato]` nos Termos). Se mudar o limite de aparelhos ou de trocas no backend,
 atualize os números nos Termos.
 
 ## Encarte
