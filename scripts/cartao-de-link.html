@@ -1,0 +1,60 @@
+<!doctype html>
+<!-- Molde dos cartões de link (1200×630) que aparecem quando alguém cola um link no WhatsApp ou no Instagram.
+     Não é uma página do site: scripts/gerar-cartoes-de-link.sh abre este arquivo no Chrome e tira a foto.
+     ?tipo=album | faixa | links   &titulo=Lúgubre  &numero=7  &tom=#9AA2DD  &tom2=#3A3F7B -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Work+Sans:wght@500;600&display=block" rel="stylesheet">
+<style>
+  :root{ --tom:#C68B3E; --tom2:#3E5C76; }
+  *{ box-sizing:border-box; margin:0; }
+  html, body{ width:1200px; height:630px; overflow:hidden; background:#0E1826; }
+  body{ position:relative; display:grid; grid-template-columns:630px 570px; color:#E7ECEE; font-family:'Work Sans', Arial, sans-serif; }
+  .capa{ width:630px; height:630px; object-fit:cover; display:block; }
+  .lado{ position:relative; padding:64px 58px 56px 54px; display:flex; flex-direction:column; justify-content:center; overflow:hidden;
+    background:radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--tom2) 45%, transparent), transparent 70%),
+               linear-gradient(180deg, #13223A, #0E1826 70%); }
+  .lado::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:linear-gradient(180deg, transparent, var(--tom), transparent); box-shadow:0 0 22px 2px var(--tom); }
+  svg.rio{ position:absolute; right:-100px; top:0; width:260px; height:630px; opacity:.45; }
+  .rotulo{ font-weight:600; font-size:17px; letter-spacing:.24em; text-transform:uppercase; color:var(--tom); }
+  h1{ font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; line-height:.98; margin:18px 0 18px; font-size:var(--t, 104px); }
+  .verso{ font-family:'Cormorant Garamond', Georgia, serif; font-style:italic; font-size:30px; color:#B9C8D3; }
+  .artistas{ margin-top:auto; font-family:'Cormorant Garamond', Georgia, serif; font-size:28px; }
+  .chamada{ margin-top:8px; font-size:17px; color:#A9BCCB; }
+</style>
+</head>
+<body>
+<img class="capa" src="../img/sem-ano_capa-album_correnteza.webp" alt="">
+<div class="lado">
+<svg class="rio" viewBox="0 0 260 630" aria-hidden="true"><path d="M160 0 C 40 140, 240 260, 130 380 S 60 560, 170 630" fill="none" stroke="var(--tom)" stroke-width="2.5"/></svg>
+<p class="rotulo" id="rotulo">Álbum · 9 faixas</p>
+<h1 id="titulo">Correnteza</h1>
+<p class="verso" id="verso">Vem em mim, correnteza</p>
+<p class="artistas">Thales Carvalho &amp; Thayson Azevedo</p>
+<p class="chamada" id="chamada">Ouça as prévias e adquira em primeira mão</p>
+</div>
+<script>
+  var p = new URLSearchParams(location.search);
+  var tipo = p.get('tipo') || 'album';
+  if (p.get('tom')) document.documentElement.style.setProperty('--tom', p.get('tom'));
+  if (p.get('tom2')) document.documentElement.style.setProperty('--tom2', p.get('tom2'));
+  if (tipo === 'faixa'){
+    var n = Number(p.get('numero') || 1);
+    document.getElementById('rotulo').textContent = 'Faixa ' + (n < 10 ? '0' : '') + n + ' · Correnteza';
+    document.getElementById('titulo').textContent = p.get('titulo') || '';
+    document.getElementById('verso').textContent = 'do primeiro álbum da dupla';
+    document.getElementById('chamada').textContent = 'Ouça a prévia';
+    // títulos longos ficam menores para caber em duas linhas
+    var t = (p.get('titulo') || '').length;
+    document.documentElement.style.setProperty('--t', t > 14 ? '84px' : t > 9 ? '96px' : '112px');
+  } else if (tipo === 'links'){
+    document.getElementById('rotulo').textContent = 'Música autoral · Alvinópolis, MG';
+    document.getElementById('titulo').textContent = 'Thales & Thayson';
+    document.documentElement.style.setProperty('--t', '92px');
+    document.getElementById('verso').textContent = 'Correnteza, o primeiro álbum da dupla';
+    document.getElementById('chamada').textContent = 'Prévias, álbum, clipes e contato';
+  }
+</script>
+</body>
+</html>

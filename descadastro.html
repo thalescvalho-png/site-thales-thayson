@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sair da lista de novidades · Thales Carvalho &amp; Thayson Azevedo</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E1826">
+<meta name="color-scheme" content="dark">
+<!-- O link de descadastro vai no fim de todo e-mail de novidades:
+     descadastro.html?email=...&chave=...   (gerado por npm run exportar-emails, na pasta backend) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css?v=7">
+</head>
+<body class="pagina-texto">
+
+<header class="topo solido">
+<div class="topo-in">
+<a class="marca" href="index.html"><span class="longa">Thales Carvalho &amp; Thayson Azevedo</span><span class="curta">Thales &amp; Thayson</span></a>
+<nav class="menu" aria-label="Navegação"><a href="index.html">Início</a><a class="botao" href="correnteza.html">Álbum</a></nav>
+</div>
+</header>
+
+<main>
+<h1>Sair da lista de novidades</h1>
+<div class="caixa-acao" id="caixa">
+<p id="texto">Confirme para não receber mais e-mails de novidades da dupla.</p>
+<div><button type="button" class="botao" id="btSairLista">Sair da lista</button></div>
+<p class="apoie-nota">Se você comprou o álbum, continua com o acesso normalmente. E-mails sobre a sua compra, como o código de acesso, não são novidades e continuam chegando quando necessário.</p>
+</div>
+<p class="mensagem" id="msg" role="status" hidden></p>
+</main>
+
+<footer class="rodape">
+<div class="rodape-in">
+<p>&copy; 2026 Thales Carvalho &amp; Thayson Azevedo. Todos os direitos reservados.</p>
+<nav aria-label="Informações"><a href="termos.html">Termos de Uso</a><a href="privacidade.html">Política de Privacidade</a></nav>
+</div>
+</footer>
+
+<script src="js/medicao.js?v=1"></script>
+<script>
+(function(){
+  var p = new URLSearchParams(location.search);
+  var email = (p.get('email') || '').trim(), chave = (p.get('chave') || '').trim();
+  var msg = document.getElementById('msg'), botao = document.getElementById('btSairLista');
+  function avisar(t){ msg.textContent = t; msg.hidden = !t; }
+  if (!email || !chave){
+    document.getElementById('caixa').hidden = true;
+    avisar('Este link está incompleto. Abra de novo o link "sair da lista" que está no fim do e-mail, ou fale com a gente pelo WhatsApp (31) 98581-0879.');
+    return;
+  }
+  document.getElementById('texto').textContent = 'Confirme para que ' + email + ' não receba mais e-mails de novidades da dupla.';
+  botao.addEventListener('click', function(){
+    botao.disabled = true;
+    fetch(window.Medicao.api + '/api/descadastrar', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, chave: chave })
+    }).then(function(r){ return r.json().catch(function(){ return {}; }); }).then(function(r){
+      if (r.ok){
+        document.getElementById('caixa').hidden = true;
+        avisar('Pronto: ' + email + ' saiu da lista de novidades. Se mudar de ideia, é só marcar a caixa de novidades de novo no site.');
+      } else { botao.disabled = false; avisar(r.mensagem || 'Não foi possível concluir agora. Tente de novo em instantes.'); }
+    }, function(){ botao.disabled = false; avisar('Sem conexão agora. Tente de novo em instantes.'); });
+  });
+})();
+</script>
+</body>
+</html>

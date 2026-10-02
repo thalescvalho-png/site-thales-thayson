@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Administração · Correnteza</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E1826">
+<meta name="color-scheme" content="dark">
+<!-- Página só da dupla: moderar o mural e ver vendas, funil e lista de e-mails.
+     A senha é a ADMIN_SENHA cadastrada no backend (npx wrangler secret put ADMIN_SENHA). Sem ela, nada carrega. -->
+<meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css?v=7">
+</head>
+<body class="pagina-admin">
+<main>
+<h1>Administração</h1>
+
+<form class="admin-entrar" id="formEntrar">
+<label class="visualmente-oculto" for="senha">Senha</label>
+<input type="password" id="senha" autocomplete="current-password" placeholder="Senha da administração" required>
+<button type="submit" class="botao">Entrar</button>
+</form>
+<p class="mensagem" id="msg" role="alert" hidden></p>
+
+<div id="painel" hidden>
+<h2>Resumo</h2>
+<div class="admin-filtro"><label for="dias">Período </label>
+<select id="dias"><option value="7">últimos 7 dias</option><option value="30" selected>últimos 30 dias</option><option value="90">últimos 90 dias</option><option value="365">último ano</option></select></div>
+<div class="admin-cartoes" id="cartoes"></div>
+
+<h2>Funil por origem</h2>
+<p class="apoie-nota">Quantas vezes cada etapa aconteceu, por origem do link. Contagens sem nenhum dado pessoal.</p>
+<div class="admin-tabela" id="funil"></div>
+
+<h2>Vendas por origem</h2>
+<div class="admin-tabela" id="vendas"></div>
+
+<h2>Mural</h2>
+<div class="admin-abas" id="abas">
+<button type="button" class="botao contorno pequeno" data-status="pendente" aria-pressed="true">Esperando aprovação</button>
+<button type="button" class="botao contorno pequeno" data-status="publicado" aria-pressed="false">Publicados</button>
+<button type="button" class="botao contorno pequeno" data-status="recusado" aria-pressed="false">Recusados</button>
+<button type="button" class="botao contorno pequeno" data-status="confirmar_email" aria-pressed="false">Sem e-mail confirmado</button>
+</div>
+<div id="comentarios"></div>
+<p><button type="button" class="link" id="btSairAdmin">Sair</button></p>
+</div>
+</main>
+<script src="js/admin.js?v=1"></script>
+</body>
+</html>

@@ -39,7 +39,12 @@ export async function tarefaAgendada(env: Env): Promise<void> {
     for (const pedido of results) await enviarAcesso(env, pedido);
   }
 
-  // 4. comentários do mural cujo e-mail nunca foi confirmado (7 dias)
-  const semana = new Date(Date.now() - 7 * 86400_000).toISOString();
-  await env.DB.prepare("DELETE FROM comentarios WHERE status = 'confirmar_email' AND criado_em < ?1").bind(semana).run();
+  // 4. prazos da Política de Privacidade: comentários nunca confirmados (7 dias), recusados (30 dias)
+  //    e o registro de trocas de aparelho (12 meses)
+  const dias = (n: number) => new Date(Date.now() - n * 86400_000).toISOString();
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM comentarios WHERE status = 'confirmar_email' AND criado_em < ?1").bind(dias(7)),
+    env.DB.prepare("DELETE FROM comentarios WHERE status = 'recusado' AND criado_em < ?1").bind(dias(30)),
+    env.DB.prepare("DELETE FROM aparelhos_liberados WHERE liberado_em < ?1").bind(dias(365)),
+  ]);
 }
