@@ -234,6 +234,13 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .faixas li.disponivel .faixa:hover .mini-icone circle{ stroke-opacity:1; }
 .ver-letra{ font-size:14px; color:var(--nevoa); text-decoration:none; padding:10px 8px; white-space:nowrap; }
 .ver-letra:hover{ color:var(--texto); text-decoration:underline; }
+/* compartilhar: o álbum (ao lado do aviso) e cada faixa (junto da letra) */
+.ver-letra.partilhar{ display:inline-flex; align-items:center; background:none; border:0; cursor:pointer; font:inherit; }
+.partilhar svg, .compartilhar-album svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; }
+.partilhar svg circle, .compartilhar-album svg circle{ fill:currentColor; stroke:none; }
+.compartilhar-album{ display:inline-flex; align-items:center; gap:8px; margin-left:10px; padding:4px 0; background:none; border:0; color:var(--ambar); font:inherit; font-size:15px; font-weight:500; cursor:pointer; vertical-align:baseline; }
+.compartilhar-album svg{ width:16px; height:16px; align-self:center; }
+.compartilhar-album:hover{ text-decoration:underline; text-underline-offset:3px; }
 
 /* ===== ENCARTE VIVO: névoa, rio e uma cor para cada faixa ===== */
 .encarte{ position:relative; overflow:hidden; isolation:isolate; background:linear-gradient(180deg, var(--noite) 0%, var(--serra) 22%, #16283F 55%, var(--serra) 80%, var(--noite) 100%); }
@@ -578,6 +585,7 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
 /* ----- Botão de compartilhar no player e aviso de "outro aparelho tocando" ----- */
 .tocador-controles button.compartilhar{ display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
 .tocador-controles button.compartilhar svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.tocador-controles button.compartilhar svg circle{ fill:currentColor; stroke:none; }
 .tocador.avisando .tocador-info small{ color:var(--ambar); white-space:normal; }
 .tocador:not(.bloqueado) .tocador-controles button.compartilhar{ opacity:1; }
 .tocador.bloqueado .compartilhar{ display:none !important; }
@@ -635,13 +643,14 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
   width:100%; min-height:46px; padding:10px 14px; border-radius:8px; border:1px solid var(--aco); background:var(--noite); color:var(--texto); font:inherit; }
 .mural-form textarea{ resize:vertical; min-height:120px; line-height:1.5; }
 .mural-form input:focus, .mural-form textarea:focus, .mural-form select:focus, .mural-filtro select:focus{ outline:2px solid var(--ambar); outline-offset:1px; border-color:transparent; }
-.mural-linha{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.mural-linha > div, .mural-email{ display:grid; gap:8px; }
+
+.mural-email{ display:grid; gap:8px; }
 .mural-form .marcar{ margin:6px 0 4px; font-size:14px; }
 .mural-form .botao{ justify-self:start; margin-top:4px; }
 .mural-form .mensagem{ margin-top:8px; }
+.mural-form .selo{ margin-left:6px; padding:1px 9px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; vertical-align:1px; color:var(--noite); background:var(--ambar); }
 .mural-apoiador{ display:none; }
-.com-acesso .mural-apoiador{ display:block; }
+.com-acesso .mural-apoiador{ display:inline-block; }
 .com-acesso .mural-email{ display:none; }
 .mural-filtro{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
 .mural-filtro select{ width:auto; max-width:100%; min-height:40px; padding:6px 12px; }
@@ -656,7 +665,6 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
 .comentario-pe{ margin-top:8px; font-size:13px; color:var(--nevoa); }
 .mural-vazio{ color:var(--nevoa); }
 @media (max-width:860px){ .mural-grade{ grid-template-columns:1fr; } .mural-in{ padding:80px 24px; } }
-@media (max-width:420px){ .mural-linha{ grid-template-columns:1fr; } }
 
 /* ----- Cartões para os Stories (js/compartilhar.js) ----- */
 .compartilhar-janela{ width:min(760px, calc(100vw - 24px)); max-height:calc(100svh - 24px); padding:0; border:1px solid #24405F; border-radius:16px; background:var(--serra); color:var(--texto); }
@@ -676,13 +684,9 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
 .cartao-modos input{ width:18px; height:18px; accent-color:var(--ambar); }
 .cartao-faixa{ display:grid; gap:6px; font-size:14px; color:var(--texto-suave); }
 .cartao-faixa select{ min-height:44px; padding:8px 12px; border-radius:8px; border:1px solid var(--aco); background:var(--noite); color:var(--texto); font:inherit; }
-.cartao-estrofes{ display:grid; gap:8px; max-height:240px; overflow-y:auto; padding-right:4px; }
-.cartao-estrofe{ text-align:left; padding:10px 14px; border-radius:8px; border:1px solid #24405F; background:var(--noite); color:var(--texto-suave); font-family:var(--serif); font-size:17px; line-height:1.35; cursor:pointer; }
-.cartao-estrofe.escolhida{ border-color:var(--ambar); color:var(--texto); box-shadow:0 0 0 1px var(--ambar) inset; }
 .cartao-acoes{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; }
 .cartao-nota{ margin:0 !important; }
 .letra-nav{ gap:22px; flex-wrap:wrap; }
-.letra-nav .verso{ color:var(--nevoa); }
 @media (max-width:640px){
   .cartao-grade{ grid-template-columns:1fr; }
   .cartao-previa{ width:min(220px, 60vw); justify-self:center; }

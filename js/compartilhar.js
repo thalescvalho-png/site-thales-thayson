@@ -1,7 +1,7 @@
 // Cartões para os Stories (1080×1920), desenhados no próprio navegador com a capa e a paleta do álbum.
-//   ouvindo: "Ouvindo [faixa]" (qualquer pessoa)
-//   apoiei:  "Apoiei Correnteza", com o selo de apoiador (só quem comprou)
-//   verso:   um trecho da letra escolhido pela pessoa (só quem comprou)
+//   album:  a capa, o nome do álbum e da dupla (qualquer pessoa)
+//   faixa:  a capa, o nome da faixa e da dupla (qualquer pessoa)
+//   apoiei: "Apoiei Correnteza", com o selo de apoiador (só quem comprou)
 // O celular abre o menu de compartilhar com a imagem pronta. O site não consegue pôr o link no Stories,
 // então ele já fica copiado para colar no adesivo de link. Sem esse menu (computador), a imagem é baixada.
 (function(){
@@ -10,7 +10,7 @@
   var CAPA = 'img/sem-ano_capa-album_correnteza.webp';
   var SERIF = '"Cormorant Garamond", Georgia, serif';
   var SANS = '"Work Sans", "Helvetica Neue", Arial, sans-serif';
-  var capa = null, janela = null, estado = { modo: 'ouvindo', faixa: 0, estrofe: 0 }, arquivo = null, urlImagem = '';
+  var capa = null, janela = null, estado = { modo: 'album', faixa: 0 }, arquivo = null, urlImagem = '';
   var geracao = 0;
 
   function el(tag, classe, texto){
@@ -26,7 +26,7 @@
   // ----- Link que vai junto (fica copiado) -----
   function linkDoCartao(){
     var f = dados().faixas[estado.faixa];
-    var destino = estado.modo === 'ouvindo' && f ? slug(f) + '/' : 'correnteza.html';
+    var destino = estado.modo === 'faixa' && f ? slug(f) + '/' : 'correnteza.html';
     var u = new URL(destino, location.href);
     u.search = '';
     u.hash = '';
@@ -64,15 +64,6 @@
     ctx.textAlign = 'left';
     for (i = 0; i < texto.length; i++){ ctx.fillText(texto[i], cx, y); cx += ctx.measureText(texto[i]).width + espaco; }
     ctx.textAlign = 'center';
-  }
-  function quebrar(ctx, texto, largura){
-    var palavras = texto.split(' '), linhas = [], linha = '';
-    palavras.forEach(function(p){
-      var tentativa = linha ? linha + ' ' + p : p;
-      if (ctx.measureText(tentativa).width > largura && linha){ linhas.push(linha); linha = p; } else linha = tentativa;
-    });
-    if (linha) linhas.push(linha);
-    return linhas;
   }
 
   function fundo(ctx, tom){
@@ -124,8 +115,6 @@
   function rodape(ctx){
     ctx.fillStyle = 'rgba(231,236,238,.92)'; ctx.textAlign = 'center';
     ctx.font = '500 40px ' + SERIF; ctx.fillText('Thales Carvalho & Thayson Azevedo', L / 2, 1640);
-    ctx.fillStyle = 'rgba(169,188,203,.85)';
-    ctx.font = '400 28px ' + SANS; ctx.fillText(estado.modo === 'ouvindo' ? 'ouça a prévia no link' : 'ouça no link', L / 2, 1690);
   }
 
   function desenhar(){
@@ -133,51 +122,26 @@
     canvas.width = L; canvas.height = A;
     var ctx = canvas.getContext('2d');
     var d = dados(), f = d.faixas[estado.faixa] || { titulo: 'Correnteza', numero: 1 };
-    var tom = f.cores && /^#[0-9a-f]{6}$/i.test(f.cores.tom) ? f.cores.tom : '#C68B3E';
+    var tom = estado.modo === 'faixa' && f.cores && /^#[0-9a-f]{6}$/i.test(f.cores.tom) ? f.cores.tom : '#C68B3E';
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
 
-    if (estado.modo === 'verso'){
-      // a capa ao fundo, escurecida; o verso em destaque
-      ctx.drawImage(capa, -420, 0, A, A);
-      var v = ctx.createLinearGradient(0, 0, 0, A);
-      v.addColorStop(0, 'rgba(14,24,38,.78)'); v.addColorStop(.5, 'rgba(14,24,38,.88)'); v.addColorStop(1, 'rgba(11,20,32,.96)');
-      ctx.fillStyle = v; ctx.fillRect(0, 0, L, A);
-      ctx.fillStyle = tom; ctx.font = '600 28px ' + SANS; espacado(ctx, 'CORRENTEZA · FAIXA ' + (f.numero < 10 ? '0' : '') + f.numero, L / 2, 330, 6);
-      var estrofe = (f.letra || [])[estado.estrofe] || [];
-      var tamanho = 92, linhas, altura;
-      // diminui a letra até o verso caber na área do meio
-      do {
-        ctx.font = 'italic 500 ' + tamanho + 'px ' + SERIF;
-        linhas = [];
-        estrofe.forEach(function(verso){ linhas = linhas.concat(quebrar(ctx, verso, 860)); });
-        altura = linhas.length * tamanho * 1.25;
-        tamanho -= 4;
-      } while (altura > 980 && tamanho > 36);
-      tamanho += 4;
-      var y = 960 - altura / 2 + tamanho;
-      ctx.fillStyle = '#E7ECEE';
-      ctx.fillText('“', L / 2, y - tamanho * 1.1);
-      linhas.forEach(function(l, i){ ctx.fillText(l, L / 2, y + i * tamanho * 1.25); });
-      ctx.fillStyle = tom; ctx.font = '500 52px ' + SERIF;
-      ctx.fillText('— ' + f.titulo, L / 2, y + linhas.length * tamanho * 1.25 + 50);
-      rodape(ctx);
-      return canvas;
-    }
-
-    fundo(ctx, estado.modo === 'apoiei' ? '#C68B3E' : tom);
+    fundo(ctx, tom);
     capaArredondada(ctx, 170, 300, 740, 28);
     if (estado.modo === 'apoiei'){
       selo(ctx, 860, 1000);
       ctx.fillStyle = '#C68B3E'; ctx.font = '600 30px ' + SANS; espacado(ctx, 'EU APOIEI', L / 2, 1230, 8);
       ctx.fillStyle = '#E7ECEE'; ctx.font = '500 150px ' + SERIF; ctx.fillText('Correnteza', L / 2, 1380);
       ctx.fillStyle = '#B9C8D3'; ctx.font = 'italic 400 46px ' + SERIF; ctx.fillText('o primeiro álbum da dupla, em primeira mão', L / 2, 1460);
-    } else {
-      ctx.fillStyle = tom; ctx.font = '600 30px ' + SANS; espacado(ctx, 'OUVINDO AGORA', L / 2, 1210, 8);
+    } else if (estado.modo === 'faixa'){
+      ctx.fillStyle = tom; ctx.font = '600 30px ' + SANS; espacado(ctx, 'FAIXA ' + (f.numero < 10 ? '0' : '') + f.numero, L / 2, 1210, 8);
       ctx.fillStyle = '#E7ECEE';
       var t = 140; ctx.font = '500 ' + t + 'px ' + SERIF;
       while (ctx.measureText(f.titulo).width > 920 && t > 70){ t -= 6; ctx.font = '500 ' + t + 'px ' + SERIF; }
       ctx.fillText(f.titulo, L / 2, 1350);
       ctx.fillStyle = '#B9C8D3'; ctx.font = 'italic 400 46px ' + SERIF; ctx.fillText('do álbum Correnteza', L / 2, 1430);
+    } else {
+      ctx.fillStyle = '#C68B3E'; ctx.font = '600 30px ' + SANS; espacado(ctx, 'ÁLBUM', L / 2, 1230, 8);
+      ctx.fillStyle = '#E7ECEE'; ctx.font = '500 150px ' + SERIF; ctx.fillText('Correnteza', L / 2, 1390);
     }
     rodape(ctx);
     return canvas;
@@ -196,7 +160,7 @@
     }).then(function(blob){
       if (esta !== geracao || !blob) return;
       var f = dados().faixas[estado.faixa];
-      var nome = 'correnteza-' + (estado.modo === 'apoiei' ? 'apoiei' : (f ? slug(f) : 'album')) + '.png';
+      var nome = 'correnteza-' + (estado.modo === 'faixa' && f ? slug(f) : estado.modo) + '.png';
       arquivo = new File([blob], nome, { type: 'image/png' });
       if (urlImagem) URL.revokeObjectURL(urlImagem);
       urlImagem = URL.createObjectURL(blob);
@@ -220,48 +184,31 @@
     });
     sel.value = estado.faixa;
   }
-  function opcoesEstrofes(){
-    var lista = janela.querySelector('.cartao-estrofes');
-    lista.textContent = '';
-    var f = dados().faixas[estado.faixa];
-    if (estado.estrofe >= ((f && f.letra) || []).length) estado.estrofe = 0;
-    ((f && f.letra) || []).forEach(function(estrofe, i){
-      var b = el('button', 'cartao-estrofe' + (i === estado.estrofe ? ' escolhida' : ''));
-      b.type = 'button';
-      b.setAttribute('aria-pressed', i === estado.estrofe ? 'true' : 'false');
-      estrofe.forEach(function(v, j){ if (j) b.appendChild(document.createElement('br')); b.appendChild(document.createTextNode(v)); });
-      b.addEventListener('click', function(){ estado.estrofe = i; opcoesEstrofes(); gerar(); });
-      lista.appendChild(b);
-    });
-  }
   function atualizar(){
     var exclusivo = comprou();
     [].forEach.call(janela.querySelectorAll('[data-exclusivo]'), function(e){ e.hidden = !exclusivo; });
-    if (!exclusivo) estado.modo = 'ouvindo';
+    if (!exclusivo && estado.modo === 'apoiei') estado.modo = 'album';
     [].forEach.call(janela.querySelectorAll('[name=modo]'), function(r){ r.checked = r.value === estado.modo; });
-    janela.querySelector('.cartao-faixa').hidden = estado.modo === 'apoiei';
-    janela.querySelector('.cartao-estrofes').hidden = estado.modo !== 'verso';
-    if (estado.modo === 'verso') opcoesEstrofes();
+    janela.querySelector('.cartao-faixa').hidden = estado.modo !== 'faixa';
     gerar();
   }
 
   function criarJanela(){
     janela = el('dialog', 'compartilhar-janela');
-    janela.setAttribute('aria-label', 'Compartilhar nos Stories');
+    janela.setAttribute('aria-label', 'Compartilhar');
     janela.innerHTML =
       '<div class="compartilhar-in">'
       + '<button type="button" class="fechar" aria-label="Fechar">&times;</button>'
-      + '<h2>Compartilhar nos Stories</h2>'
+      + '<h2>Compartilhar</h2>'
       + '<div class="cartao-grade">'
       + '<div class="cartao-previa"><img alt="Prévia do cartão para os Stories" width="270" height="480"></div>'
       + '<div class="cartao-opcoes">'
       + '<fieldset class="cartao-modos"><legend>Cartão</legend>'
-      + '<label><input type="radio" name="modo" value="ouvindo"> Ouvindo uma faixa</label>'
+      + '<label><input type="radio" name="modo" value="album"> O álbum</label>'
+      + '<label><input type="radio" name="modo" value="faixa"> Uma faixa</label>'
       + '<label data-exclusivo><input type="radio" name="modo" value="apoiei"> Apoiei Correnteza</label>'
-      + '<label data-exclusivo><input type="radio" name="modo" value="verso"> Um verso da letra</label>'
       + '</fieldset>'
       + '<label class="cartao-faixa">Faixa <select name="faixa"></select></label>'
-      + '<div class="cartao-estrofes" aria-label="Escolha o trecho"></div>'
       + '<div class="cartao-acoes">'
       + '<button type="button" class="botao" data-acao="compartilhar">Compartilhar</button>'
       + '<button type="button" class="botao contorno" data-acao="baixar">Baixar imagem</button>'
@@ -274,7 +221,7 @@
     [].forEach.call(janela.querySelectorAll('[name=modo]'), function(r){
       r.addEventListener('change', function(){ estado.modo = r.value; atualizar(); });
     });
-    janela.querySelector('[name=faixa]').addEventListener('change', function(){ estado.faixa = Number(this.value); estado.estrofe = 0; atualizar(); });
+    janela.querySelector('[name=faixa]').addEventListener('change', function(){ estado.faixa = Number(this.value); atualizar(); });
     janela.querySelector('[data-acao=compartilhar]').addEventListener('click', compartilhar);
     janela.querySelector('[data-acao=baixar]').addEventListener('click', baixar);
     janela.querySelector('[data-acao=copiar]').addEventListener('click', function(){
@@ -310,9 +257,8 @@
     if (typeof HTMLDialogElement === 'undefined' || !dados().faixas.length) return;
     opcoes = opcoes || {};
     if (!janela) criarJanela();
-    estado.modo = opcoes.modo || (comprou() ? 'apoiei' : 'ouvindo');
+    estado.modo = opcoes.modo || 'album';
     estado.faixa = typeof opcoes.faixa === 'number' ? opcoes.faixa : estado.faixa;
-    estado.estrofe = opcoes.estrofe || 0;
     opcoesFaixas();
     if (!janela.open) janela.showModal();
     atualizar();
@@ -323,8 +269,10 @@
   if (bt) bt.addEventListener('click', function(){
     var titulo = document.getElementById('tocadorTitulo').textContent;
     var i = dados().faixas.map(function(f){ return f.titulo; }).indexOf(titulo);
-    C.compartilhar({ modo: 'ouvindo', faixa: i >= 0 ? i : 0 });
+    C.compartilhar({ modo: 'faixa', faixa: i >= 0 ? i : 0 });
   });
+  var btAlbum = document.getElementById('btCompartilharAlbum');
+  if (btAlbum) btAlbum.addEventListener('click', function(){ C.compartilhar({ modo: 'album' }); });
   var btApoiei = document.getElementById('btApoiei');
   if (btApoiei) btApoiei.addEventListener('click', function(){ C.compartilhar({ modo: 'apoiei' }); });
 })();

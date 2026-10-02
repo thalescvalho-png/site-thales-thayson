@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=7">
+<link rel="stylesheet" href="css/estilo.css?v=8">
 </head>
 <body class="pagina-album">
 
@@ -183,7 +183,8 @@ faixas completas, letras e downloads para quem tem o código. -->
 <section class="faixas-secao" id="ouvir">
 <div class="faixas-in">
 <h2>Faixas</h2>
-<p class="faixas-aviso" id="avisoPlayer">Ouça uma prévia de cada faixa. O álbum completo fica disponível em primeira mão para quem adquire, antes de chegar às plataformas.</p>
+<p class="faixas-aviso"><span id="avisoPlayer">Ouça uma prévia de cada faixa. O álbum completo fica disponível em primeira mão para quem adquire, antes de chegar às plataformas.</span>
+<button type="button" class="compartilhar-album" id="btCompartilharAlbum"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg>Compartilhar álbum</button></p>
 <ol class="faixas" id="faixas">
 <li><button type="button" class="faixa" disabled><span class="num">01</span><span class="nome">Clareira</span><span class="estado">exclusivo</span></button></li>
 <li><button type="button" class="faixa" disabled><span class="num">02</span><span class="nome">Candeia</span><span class="estado">exclusivo</span></button></li>
@@ -250,25 +251,17 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 <p class="mural-intro">Conte o que Correnteza despertou em você. Os comentários aparecem depois que a dupla lê.</p>
 <div class="mural-grade">
 <form class="mural-form" id="formMural" novalidate>
-<label for="muralSobre">Sobre</label>
-<select id="muralSobre"><option value="">O álbum inteiro</option></select>
 <label for="muralTexto">Comentário</label>
 <textarea id="muralTexto" rows="5" maxlength="1000" required></textarea>
-<div class="mural-linha">
-<div><label for="muralNome">Nome</label><input type="text" id="muralNome" maxlength="60" autocomplete="name" required></div>
-<div><label for="muralCidade">Cidade <small>(opcional)</small></label><input type="text" id="muralCidade" maxlength="60" autocomplete="address-level2"></div>
-</div>
+<label for="muralNome">Nome <span class="selo mural-apoiador">apoiador</span></label>
+<input type="text" id="muralNome" maxlength="60" autocomplete="name" required>
 <div class="mural-email" id="muralEmailBloco"><label for="muralEmail">E-mail <small>(não aparece no mural)</small></label>
 <input type="email" id="muralEmail" autocomplete="email" inputmode="email"></div>
-<p class="apoie-nota mural-apoiador">Você comenta como apoiador do álbum.</p>
-<label class="marcar"><input type="checkbox" id="muralNovidades"> Quero receber novidades da dupla por e-mail</label>
 <button type="submit" class="botao">Enviar comentário</button>
 <p class="apoie-nota">Ao comentar, você concorda com as <a href="termos.html#mural">regras do mural</a>. Veja a <a href="privacidade.html">Política de Privacidade</a>.</p>
 <p class="mensagem" id="msgMural" role="status" hidden></p>
 </form>
 <div class="mural-lista">
-<div class="mural-filtro"><label for="muralFiltro">Mostrar</label>
-<select id="muralFiltro"><option value="">Todos os comentários</option><option value="album">Sobre o álbum</option></select></div>
 <ol class="comentarios" id="comentarios"></ol>
 <p class="mural-vazio" id="muralVazio" hidden>Ainda não há comentários por aqui. Que tal deixar o primeiro?</p>
 </div>
@@ -317,7 +310,7 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 <button type="button" id="btAnterior" aria-label="Faixa anterior" disabled>&#9198;&#xFE0E;</button>
 <button type="button" id="btTocar" class="tocar" aria-label="Tocar" disabled>&#9654;&#xFE0E;</button>
 <button type="button" id="btProxima" aria-label="Próxima faixa" disabled>&#9197;&#xFE0E;</button>
-<button type="button" id="btCompartilhar" class="compartilhar" aria-label="Compartilhar nos Stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v7.5h14V12"/></svg></button>
+<button type="button" id="btCompartilhar" class="compartilhar" aria-label="Compartilhar faixa"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg></button>
 </div>
 <div class="tocador-tempo">
 <span id="tempoAtual">0:00</span>
@@ -328,10 +321,10 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 </div>
 
 <script src="js/medicao.js?v=1"></script>
-<script src="js/album.js?v=6"></script>
+<script src="js/album.js?v=7"></script>
 <script src="js/compra.js?v=6"></script>
 <script src="js/aparelhos.js?v=1"></script>
-<script src="js/compartilhar.js?v=1"></script>
-<script src="js/mural.js?v=1"></script>
+<script src="js/compartilhar.js?v=2"></script>
+<script src="js/mural.js?v=2"></script>
 </body>
 </html>
