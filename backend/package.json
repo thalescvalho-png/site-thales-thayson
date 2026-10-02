@@ -14,7 +14,11 @@
     "aparelhos": "node scripts/admin.mjs aparelhos",
     "liberar-aparelhos": "node scripts/admin.mjs liberar-aparelhos",
     "desativar-codigo": "node scripts/admin.mjs desativar",
-    "exportar-emails": "node scripts/admin.mjs exportar-emails"
+    "exportar-emails": "node scripts/admin.mjs exportar-emails",
+    "funil": "node scripts/admin.mjs funil",
+    "comentarios": "node scripts/admin.mjs comentarios",
+    "publicar-comentario": "node scripts/admin.mjs publicar-comentario",
+    "apagar-comentario": "node scripts/admin.mjs apagar-comentario"
   },
   "devDependencies": {
     "typescript": "^7.0.2",

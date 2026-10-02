@@ -1,5 +1,5 @@
 // Configuração do Worker "correnteza" (venda do álbum).
-// Segredos (MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET, RESEND_API_KEY) NÃO ficam aqui:
+// Segredos (MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_SENHA) NÃO ficam aqui:
 // são cadastrados com  npx wrangler secret put NOME  (veja o README).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -17,6 +17,12 @@
     "PRECO": "22.90",
     // Quantos aparelhos/navegadores diferentes podem usar o mesmo código
     "LIMITE_APARELHOS": "3",
+    // Quantos aparelhos o comprador pode desconectar sozinho a cada 30 dias (para entrar num novo)
+    "TROCAS_APARELHO_MES": "3",
+    // "sim" libera o download das faixas em MP3 e do .zip; "nao" = só player (o encarte em PDF baixa sempre)
+    "DOWNLOAD_FAIXAS": "nao",
+    // Mural: "antes" = cada comentário espera aprovação; "depois" = publica direto e vocês apagam se preciso
+    "MURAL_MODERACAO": "antes",
     // Remetente do e-mail. Sem domínio próprio, o Resend só aceita onboarding@resend.dev
     "EMAIL_REMETENTE": "Thales Carvalho & Thayson Azevedo <onboarding@resend.dev>",
     // (opcional) endereço que recebe as respostas dos compradores
@@ -43,7 +49,9 @@
     { "name": "LIMITE_CHECKOUT", "namespace_id": "2601", "simple": { "limit": 6, "period": 60 } },
     { "name": "LIMITE_CONSULTA", "namespace_id": "2602", "simple": { "limit": 40, "period": 60 } },
     { "name": "LIMITE_CODIGO_ERRADO", "namespace_id": "2603", "simple": { "limit": 15, "period": 60 } },
-    { "name": "LIMITE_ARQUIVOS", "namespace_id": "2604", "simple": { "limit": 300, "period": 60 } }
+    { "name": "LIMITE_ARQUIVOS", "namespace_id": "2604", "simple": { "limit": 300, "period": 60 } },
+    { "name": "LIMITE_FORMULARIO", "namespace_id": "2605", "simple": { "limit": 8, "period": 60 } },
+    { "name": "LIMITE_EVENTOS", "namespace_id": "2606", "simple": { "limit": 60, "period": 60 } }
   ],
 
   // A cada 10 minutos confere pagamentos pendentes (caso algum aviso do Mercado Pago se perca)

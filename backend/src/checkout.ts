@@ -1,9 +1,10 @@
 // POST /api/checkout  -> cria o pagamento no Mercado Pago a partir do Payment Brick
 // GET  /api/order/:id -> situação do pedido (a página consulta até o Pix ser aprovado)
+import { registrarContato } from "./contatos";
 import { origemPermitida } from "./cors";
 import { consultarPagamento, criarPagamento } from "./mercadopago";
 import { buscarPedido, garantirCodigo, registrarPagamento, STATUS_PENDENTES } from "./pedidos";
-import { agora, emailValido, erro, idAleatorio, ipDe, json, lerJson } from "./util";
+import { agora, emailValido, erro, idAleatorio, ipDe, json, lerJson, limparOrigem } from "./util";
 
 // O que a página envia: o que o Payment Brick entrega em onSubmit + e-mail + opt-in
 type CorpoCheckout = {
@@ -22,6 +23,7 @@ type CorpoCheckout = {
   };
   email?: string;
   novidades?: boolean;
+  origem?: string; // de onde a pessoa chegou (instagram/bio, instagram/stories...), sem dado pessoal
 };
 
 /** Validade do Pix no formato que o Mercado Pago espera, no horário de Brasília. */
@@ -54,11 +56,13 @@ export async function rotaCheckout(request: Request, env: Env): Promise<Response
   const pedidoId = idAleatorio();
   const quando = agora();
   await env.DB.prepare(
-    `INSERT INTO pedidos (id, email, novidades, valor, metodo, tipo, status, criado_em, atualizado_em)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'criado', ?7, ?7)`,
+    `INSERT INTO pedidos (id, email, novidades, valor, metodo, tipo, status, criado_em, atualizado_em, origem)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'criado', ?7, ?7, ?8)`,
   )
-    .bind(pedidoId, email, corpo.novidades === true ? 1 : 0, preco, metodo || null, ehPix ? "bank_transfer" : tipo, quando)
+    .bind(pedidoId, email, corpo.novidades === true ? 1 : 0, preco, metodo || null, ehPix ? "bank_transfer" : tipo, quando, limparOrigem(corpo.origem))
     .run();
+  // a caixa "quero receber novidades" vale mesmo que o pagamento não seja concluído
+  if (corpo.novidades === true) await registrarContato(env, { email, origem: "compra", novidades: true });
 
   const pagador: Record<string, unknown> = { email };
   const documento = form.payer?.identification;

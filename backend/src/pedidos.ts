@@ -1,5 +1,6 @@
 // Pedidos, confirmação de pagamento e criação dos códigos de acesso.
 import { esquecerCodigo } from "./acesso";
+import { registrarContato } from "./contatos";
 import { enviarEmailDeAcesso } from "./email";
 import type { PagamentoMP } from "./mercadopago";
 import { agora, gerarCodigo } from "./util";
@@ -19,6 +20,7 @@ export type Pedido = {
   atualizado_em: string;
   pago_em: string | null;
   email_enviado_em: string | null;
+  origem: string | null;
 };
 
 export const STATUS_PENDENTES = ["pending", "in_process", "authorized"];
@@ -95,6 +97,7 @@ export async function garantirCodigo(env: Env, pedidoId: string): Promise<string
     return (await buscarPedido(env, pedidoId))?.codigo ?? null;
   }
   console.log(`Pedido ${pedidoId} aprovado: código de acesso criado.`);
+  await registrarContato(env, { email: pedido.email, origem: "compra", novidades: false, comprador: true });
   await enviarAcesso(env, { ...pedido, codigo: novo });
   return novo;
 }

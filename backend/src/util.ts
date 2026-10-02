@@ -22,10 +22,33 @@ export function ipDe(request: Request): string {
   return request.headers.get("CF-Connecting-IP") ?? "sem-ip";
 }
 
+export function base64url(bytes: Uint8Array): string {
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
 /** Identificador aleatório e impossível de adivinhar (128 bits), seguro para URLs. */
 export function idAleatorio(bytes = 16): string {
-  const aleatorio = crypto.getRandomValues(new Uint8Array(bytes));
-  return btoa(String.fromCharCode(...aleatorio)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return base64url(crypto.getRandomValues(new Uint8Array(bytes)));
+}
+
+/** Dia no horário de Brasília (AAAA-MM-DD). */
+export function diaBrasilia(ms = Date.now()): string {
+  return new Date(ms - 3 * 3600_000).toISOString().slice(0, 10);
+}
+
+/** Texto de formulário: sem caracteres de controle, espaços repetidos nem pontas; corta no limite. */
+export function limparTexto(valor: unknown, limite: number, multilinha = false): string {
+  let texto = String(valor ?? "").normalize("NFC");
+  texto = multilinha
+    ? texto.replace(/\r\n?/g, "\n").replace(/[^\S\n]+/g, " ").replace(/\n{3,}/g, "\n\n")
+    : texto.replace(/\s+/g, " ");
+  return texto.replace(/[\u0000-\u0009\u000B-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, "").trim().slice(0, limite);
+}
+
+/** Origem de uma visita ("instagram/bio", "whatsapp"...): só letras, números e . _ / - */
+export function limparOrigem(valor: unknown): string {
+  const origem = String(valor ?? "").toLowerCase().replace(/[^a-z0-9._/-]/g, "").slice(0, 40);
+  return origem || "direto";
 }
 
 /** Código de acesso no formato XXXX-XXXX-XXXX-XXXX (80 bits aleatórios). */

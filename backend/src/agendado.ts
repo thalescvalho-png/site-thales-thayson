@@ -1,5 +1,5 @@
 // Tarefa automática (a cada 10 minutos): rede de segurança caso algum aviso do Mercado Pago
-// ou algum e-mail se perca.
+// ou algum e-mail se perca, e limpeza de comentários nunca confirmados.
 import { consultarPagamento } from "./mercadopago";
 import { enviarAcesso, garantirCodigo, registrarPagamento, type Pedido } from "./pedidos";
 
@@ -38,4 +38,8 @@ export async function tarefaAgendada(env: Env): Promise<void> {
       .all<Pedido & { codigo: string }>();
     for (const pedido of results) await enviarAcesso(env, pedido);
   }
+
+  // 4. comentários do mural cujo e-mail nunca foi confirmado (7 dias)
+  const semana = new Date(Date.now() - 7 * 86400_000).toISOString();
+  await env.DB.prepare("DELETE FROM comentarios WHERE status = 'confirmar_email' AND criado_em < ?1").bind(semana).run();
 }
