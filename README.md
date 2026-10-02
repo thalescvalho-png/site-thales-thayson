@@ -114,7 +114,7 @@ guardada no navegador por 30 dias, então vale mesmo se a pessoa comprar dias de
 
 ## Termos e Privacidade
 
-`privacidade.html` é um quadro curto dizendo que o site respeita a LGPD, com o contato pelo WhatsApp.
+`privacidade.html` é um quadro curto dizendo que o site respeita a LGPD, apontando para os contatos do site.
 `termos.html` traz as regras de compra e do mural (Código de Defesa do Consumidor) e **não substitui uma
 revisão jurídica** antes de abrir as vendas. Falta o e-mail de contato (`[e-mail de contato]` nos Termos). Se mudar o limite de aparelhos ou de trocas no backend,
 atualize os números nos Termos.
