@@ -5,9 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Correnteza · Thales Carvalho &amp; Thayson Azevedo</title>
 <meta name="description" content="Correnteza, primeiro álbum de Thales Carvalho e Thayson Azevedo: faixas, ficha técnica e compra antecipada.">
+<!-- cartão de link (WhatsApp, Instagram, Facebook): o endereço precisa ser completo.
+     Quando o site ganhar domínio próprio, troque "https://thalescvalho-png.github.io/site-thales-thayson/" em todas as páginas. -->
+<meta property="og:type" content="music.album">
+<meta property="og:site_name" content="Thales Carvalho &amp; Thayson Azevedo">
 <meta property="og:title" content="Correnteza · Thales Carvalho &amp; Thayson Azevedo">
-<meta property="og:description" content="Nove faixas sobre a força da natureza e os fluxos da alma. Adquira em primeira mão.">
-<meta property="og:image" content="img/sem-ano_capa-album_correnteza.webp">
+<meta property="og:description" content="Nove faixas sobre a força da natureza e os fluxos da alma. Ouça as prévias e adquira em primeira mão.">
+<meta property="og:url" content="https://thalescvalho-png.github.io/site-thales-thayson/correnteza.html">
+<meta property="og:image" content="https://thalescvalho-png.github.io/site-thales-thayson/img/og/correnteza.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Capa de Correnteza ao lado do nome do álbum">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E1826">
 <!-- o site já é escuro: impede o "modo escuro" do celular (Samsung Internet, Chrome) de inverter as cores -->
@@ -19,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=6">
+<link rel="stylesheet" href="css/estilo.css?v=7">
 </head>
 <body class="pagina-album">
 
@@ -31,6 +41,7 @@
 <a href="#ouvir">Faixas</a>
 <a href="#encarte">Encarte</a>
 <a href="#ficha">Ficha técnica</a>
+<a href="#mural">Mural</a>
 <a class="botao" href="#apoie"><span class="so-sem-acesso">Apoiar</span><span class="so-com-acesso">Meu álbum</span></a>
 </nav>
 </div>
@@ -50,6 +61,8 @@
 <p class="album-texto">Uma jornada poética e sensorial sobre a força transformadora da natureza, os fluxos internos da alma humana e a busca por significado diante dos desafios da existência. É o resultado de um caminho marcado por resiliência e amizade, uma celebração das vozes do interior, geográfico e humano.</p>
 <div class="acoes">
 <a class="botao so-com-acesso" href="#ouvir">Ouvir o álbum</a>
+<button type="button" class="botao so-sem-acesso" id="btOuvirPrevia">Ouvir as prévias</button>
+<a class="botao contorno so-sem-acesso" href="#apoie" data-comprar>Adquirir o álbum</a>
 </div>
 </div>
 </div>
@@ -74,9 +87,9 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <h3>O que você recebe</h3>
 <ul class="inclui">
 <li><b>As nove faixas completas</b><span>Ouça o álbum inteiro aqui no site, em primeira mão, antes de ele chegar às plataformas.</span></li>
-<li><b>Todas as músicas para baixar</b><span>O álbum em MP3 (.zip) para guardar e ouvir quando quiser, mesmo sem internet.</span></li>
 <li><b>O encarte completo</b><span>Letras de todas as canções, créditos de cada faixa e a arte do álbum, para ler aqui ou baixar em PDF.</span></li>
-<li><b>Acesso na hora</b><span>Liberado assim que o pagamento é aprovado, com um código que funciona em até 3 aparelhos.</span></li>
+<li><b>Selo de apoiador</b><span>Seu comentário no mural dos ouvintes aparece com o selo de quem apoiou o álbum, e você ganha cartões exclusivos para os Stories.</span></li>
+<li><b>Acesso na hora</b><span>Liberado assim que o pagamento é aprovado, com um código que funciona em até 3 aparelhos. Trocou de celular? Você mesmo desconecta o antigo.</span></li>
 </ul>
 </div>
 
@@ -90,7 +103,8 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <input type="email" id="email" name="email" autocomplete="email" inputmode="email" required placeholder="voce@exemplo.com" aria-describedby="dicaEmail">
 <small class="dica" id="dicaEmail">É para ele que mandamos o seu código de acesso.</small>
 <button type="submit" class="botao" id="botaoComprar">Ir para o pagamento</button>
-<label class="marcar"><input type="checkbox" id="novidades" name="novidades"> Quero receber novidades da dupla</label>
+<label class="marcar"><input type="checkbox" id="novidades" name="novidades"> Quero receber novidades da dupla por e-mail</label>
+<small class="dica">Ao comprar, você concorda com os <a href="termos.html">Termos de Uso</a>. Veja como cuidamos dos seus dados na <a href="privacidade.html">Política de Privacidade</a>.</small>
 </form>
 <div class="brick" id="brickPagamento"></div>
 <p class="apoie-nota" id="notaCompra" hidden>Pagamento seguro pelo Mercado Pago.</p>
@@ -128,12 +142,25 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <div class="acoes navegar-acoes">
 <button type="button" class="botao" id="btOuvirTudo">Ouça o álbum na íntegra</button>
 <a class="botao contorno" href="#encarte">Leia o encarte completo</a>
-<a class="botao contorno" id="baixarZip" href="#" download>Baixe o álbum para ouvir onde preferir</a>
+<a class="botao contorno" id="baixarEncarte" href="#" download>Baixe o encarte em PDF</a>
+<a class="botao contorno" id="baixarZip" href="#" download hidden>Baixe o álbum para ouvir onde preferir</a>
+<button type="button" class="botao contorno" id="btApoiei">Conte nos Stories que você apoiou</button>
 </div>
+<details class="aparelhos" id="meusAparelhos">
+<summary>Meus aparelhos</summary>
+<div class="aparelhos-corpo" data-aparelhos></div>
+</details>
 <button type="button" class="link" id="btSair">Sair deste aparelho</button>
 </div>
 
 <p class="mensagem" id="mensagemCompra" role="alert" hidden></p>
+
+<!-- quando o código já está no limite de aparelhos (js/aparelhos.js) -->
+<div class="aparelhos-limite" id="limiteAparelhos" hidden>
+<h3>Seu código já está em <span data-limite>3 aparelhos</span></h3>
+<p>Para ouvir neste, desconecte um aparelho que você não usa mais.</p>
+<div class="aparelhos-corpo" data-aparelhos></div>
+</div>
 
 <details class="ja-comprei" id="jaComprei" open>
 <summary>Já comprei e tenho um código</summary>
@@ -143,7 +170,7 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <input type="text" id="campoCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX" required>
 <button type="submit" class="botao">Entrar</button>
 </div>
-<p class="apoie-nota">O código está no e-mail que enviamos depois do pagamento. Cada código vale em até 3 aparelhos.</p>
+<p class="apoie-nota">O código está no e-mail que enviamos depois do pagamento. Cada código vale em até 3 aparelhos, e você pode desconectar um antigo para entrar num novo.</p>
 </form>
 </details>
 
@@ -215,7 +242,69 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 </div>
 </section>
 
+<!-- ===== MURAL DOS OUVINTES =====
+Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e moderados em admin.html. -->
+<section class="mural" id="mural">
+<div class="mural-in">
+<h2>Mural dos ouvintes</h2>
+<p class="mural-intro">Conte o que Correnteza despertou em você. Os comentários aparecem depois que a dupla lê.</p>
+<div class="mural-grade">
+<form class="mural-form" id="formMural" novalidate>
+<label for="muralSobre">Sobre</label>
+<select id="muralSobre"><option value="">O álbum inteiro</option></select>
+<label for="muralTexto">Comentário</label>
+<textarea id="muralTexto" rows="5" maxlength="1000" required></textarea>
+<div class="mural-linha">
+<div><label for="muralNome">Nome</label><input type="text" id="muralNome" maxlength="60" autocomplete="name" required></div>
+<div><label for="muralCidade">Cidade <small>(opcional)</small></label><input type="text" id="muralCidade" maxlength="60" autocomplete="address-level2"></div>
+</div>
+<div class="mural-email" id="muralEmailBloco"><label for="muralEmail">E-mail <small>(não aparece no mural)</small></label>
+<input type="email" id="muralEmail" autocomplete="email" inputmode="email"></div>
+<p class="apoie-nota mural-apoiador">Você comenta como apoiador do álbum.</p>
+<label class="marcar"><input type="checkbox" id="muralNovidades"> Quero receber novidades da dupla por e-mail</label>
+<button type="submit" class="botao">Enviar comentário</button>
+<p class="apoie-nota">Ao comentar, você concorda com as <a href="termos.html#mural">regras do mural</a>. Veja a <a href="privacidade.html">Política de Privacidade</a>.</p>
+<p class="mensagem" id="msgMural" role="status" hidden></p>
+</form>
+<div class="mural-lista">
+<div class="mural-filtro"><label for="muralFiltro">Mostrar</label>
+<select id="muralFiltro"><option value="">Todos os comentários</option><option value="album">Sobre o álbum</option></select></div>
+<ol class="comentarios" id="comentarios"></ol>
+<p class="mural-vazio" id="muralVazio" hidden>Ainda não há comentários por aqui. Que tal deixar o primeiro?</p>
+</div>
+</div>
+</div>
+</section>
+
 </main>
+
+<footer class="rodape">
+<div class="rodape-in">
+<p>&copy; 2026 Thales Carvalho &amp; Thayson Azevedo. Todos os direitos reservados.</p>
+<nav aria-label="Informações"><a href="termos.html">Termos de Uso</a><a href="privacidade.html">Política de Privacidade</a><a href="links/">Links</a></nav>
+</div>
+</footer>
+
+<!-- ===== FIM DA PRÉVIA: ouvir o álbum completo ou "me avise" (js/album.js) ===== -->
+<aside class="fim-previa" id="fimPrevia" aria-labelledby="fimPreviaTitulo" hidden>
+<button type="button" class="fechar" id="fimPreviaFechar" aria-label="Fechar">&times;</button>
+<p class="fim-previa-rotulo">Fim da prévia</p>
+<h2 id="fimPreviaTitulo">Gostou de <span data-faixa>Clareira</span>?</h2>
+<div class="fim-previa-acoes">
+<a class="botao" href="#apoie" data-comprar>Ouvir o álbum completo</a>
+<button type="button" class="botao contorno" id="btMeAvise">Me avise das novidades</button>
+</div>
+<form class="novidades" id="formNovidades" novalidate hidden>
+<label for="emailNovidades">Seu e-mail</label>
+<input type="email" id="emailNovidades" autocomplete="email" inputmode="email" required placeholder="voce@exemplo.com">
+<label class="marcar"><input type="checkbox" id="aceiteNovidades"> Quero receber por e-mail as novidades da dupla: lançamentos, clipes e shows. Dá para sair quando quiser.</label>
+<button type="submit" class="botao">Confirmar</button>
+<p class="mensagem" id="msgNovidades" role="alert" hidden></p>
+<p class="apoie-nota">Seu e-mail fica só com a dupla. <a href="privacidade.html">Política de Privacidade</a></p>
+</form>
+<p class="fim-previa-ok" id="novidadesOk" role="status" hidden>Pronto! Você vai receber as novidades por e-mail.</p>
+<button type="button" class="link" id="btProximaPrevia">Ouvir a próxima prévia &rarr;</button>
+</aside>
 
 <!-- ===== PLAYER FIXO ===== -->
 <div class="tocador bloqueado" id="tocador" aria-label="Player do álbum">
@@ -228,6 +317,7 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <button type="button" id="btAnterior" aria-label="Faixa anterior" disabled>&#9198;&#xFE0E;</button>
 <button type="button" id="btTocar" class="tocar" aria-label="Tocar" disabled>&#9654;&#xFE0E;</button>
 <button type="button" id="btProxima" aria-label="Próxima faixa" disabled>&#9197;&#xFE0E;</button>
+<button type="button" id="btCompartilhar" class="compartilhar" aria-label="Compartilhar nos Stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v7.5h14V12"/></svg></button>
 </div>
 <div class="tocador-tempo">
 <span id="tempoAtual">0:00</span>
@@ -237,7 +327,11 @@ páginas com as letras, que vêm da API (as letras nunca ficam nos arquivos do s
 <audio id="audio" preload="none"></audio>
 </div>
 
-<script src="js/album.js?v=5"></script>
-<script src="js/compra.js?v=5"></script>
+<script src="js/medicao.js?v=1"></script>
+<script src="js/album.js?v=6"></script>
+<script src="js/compra.js?v=6"></script>
+<script src="js/aparelhos.js?v=1"></script>
+<script src="js/compartilhar.js?v=1"></script>
+<script src="js/mural.js?v=1"></script>
 </body>
 </html>

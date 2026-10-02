@@ -1,7 +1,8 @@
 # Venda do álbum Correnteza: backend
 
 Este é o "balcão" da venda. Ele recebe o pagamento pelo Mercado Pago, gera o código de acesso,
-envia o e-mail de agradecimento e entrega as músicas, o encarte e o álbum em .zip só para quem comprou.
+envia o e-mail de agradecimento e entrega as músicas (só no player) e o encarte só para quem comprou.
+Também guarda os aparelhos de cada código, a lista de e-mails, o mural dos ouvintes e a contagem do funil.
 Ele roda na Cloudflare, e o site continua estático no GitHub Pages.
 
 - **Endereço da API:** https://correnteza.correnteza-backend.workers.dev
@@ -23,7 +24,7 @@ cd ~/Desktop/"Arquivos Site"/site-thales-thayson/backend
 | Código deste backend | `site-thales-thayson/backend/` → GitHub | sim (não há segredos nele) |
 | Letras, PDF, faixas completas, prévias | `Arquivos Site/correnteza-privado/` (**fora** do site) | não |
 | Arquivos que os compradores baixam | R2 `correnteza` → pastas `previews/` e `full/` | só `previews/` |
-| Pedidos, códigos e aparelhos | banco D1 `correnteza` | não |
+| Pedidos, códigos, aparelhos, lista de e-mails, mural, funil | banco D1 `correnteza` | não |
 | Senhas e chaves | segredos do Worker (`wrangler secret put`) | não |
 
 Dentro de `correnteza-privado/`:
@@ -87,14 +88,25 @@ o backend confere sozinho os pagamentos pendentes.
 1. Crie uma conta em https://resend.com → **API Keys** → **Create API Key** (permissão "Sending access").
 2. Copie a chave (começa com `re_`) e rode `npx wrangler secret put RESEND_API_KEY`.
 
-**Enquanto a chave não existir,** nenhum e-mail sai. O backend só anota no log quem receberia e o link.
-Veja com `npm run logs`. Quando você cadastrar a chave, os pedidos pagos nos 3 dias anteriores
-que ficaram sem e-mail recebem o e-mail automaticamente em até 10 minutos.
+**Enquanto a chave não existir,** nenhum e-mail sai: o log só anota o número do pedido (nunca o e-mail).
+O código de cada compra aparece em `npm run pedidos`. Quando você cadastrar a chave, os pedidos pagos
+nos 3 dias anteriores que ficaram sem e-mail recebem o e-mail automaticamente em até 10 minutos.
+Sem envio de e-mails, os comentários do mural de quem não comprou vão direto para a moderação;
+com ele, a pessoa primeiro confirma o e-mail por um link.
 
 ⚠️ **Sem domínio próprio**, o Resend só entrega e-mails para o **seu próprio endereço** (o da conta Resend).
 Antes de abrir a venda, verifique um domínio no Resend (**Domains → Add Domain**) e troque o
 `EMAIL_REMETENTE` (veja "Configurações"), por exemplo para `Thales & Thayson <album@seudominio.com.br>`.
 Mesmo sem e-mail, o comprador tem acesso na hora: a página recebe o código assim que o pagamento é aprovado.
+
+### 4. Administração: `ADMIN_SENHA`
+Senha da página `admin.html` (moderar o mural, ver vendas e funil). Escolha uma senha longa:
+
+```bash
+npx wrangler secret put ADMIN_SENHA
+```
+
+Sem ela, a página de administração não abre. A moderação também funciona pelo Terminal (veja abaixo).
 
 ---
 
@@ -176,12 +188,17 @@ a duração (15 s) e o fade (1,5 s). Depois:
 | Comando | Para quê |
 |---|---|
 | `npm run pedidos` | últimos 20 pedidos (`-- --quantos 50` para mais) |
-| `npm run exportar-emails` | e-mails de quem pediu novidades **e** comprou → `correnteza-privado/exportacoes/` (`-- --todos` inclui quem não concluiu o pagamento) |
+| `npm run exportar-emails` | lista de novidades (só quem marcou a caixa e não saiu) → `correnteza-privado/exportacoes/`, com o `link_descadastro` de cada pessoa (`-- --compradores` ou `-- --previa` para separar) |
+| `npm run funil` | etapas do funil e vendas por origem (`-- --dias 7`) |
+| `npm run comentarios` | comentários esperando aprovação (`-- --status publicado` para os publicados) |
+| `npm run publicar-comentario -- ID` | publica um comentário do mural |
+| `npm run apagar-comentario -- ID` | apaga um comentário |
 | `npm run aparelhos -- CODIGO` | quais aparelhos já usaram um código |
 | `npm run liberar-aparelhos -- CODIGO` | zera os aparelhos (ex.: comprador trocou de celular) |
 | `npm run desativar-codigo -- CODIGO` | o código deixa de funcionar |
 | `npm run codigo` | cria um código de teste |
 | `npm run logs` | mostra ao vivo o que o backend está fazendo (Ctrl+C para sair) |
+| `npm run banco:atualizar` | aplica as mudanças do banco (pasta `migrations/`) **antes** do `npm run publicar` |
 | `npm run publicar` | publica mudanças no código ou nas configurações |
 
 Um pedido estornado ou contestado desativa o código sozinho.
@@ -196,6 +213,9 @@ Depois de mudar qualquer uma, rode `npm run publicar`.
 | `PAGINA_ALBUM` | página que o link do e-mail abre (`?codigo=` é acrescentado) | `.../correnteza.html` |
 | `PRECO` | preço cobrado (o navegador não consegue alterar) | `22.90` |
 | `LIMITE_APARELHOS` | aparelhos/navegadores por código | `3` |
+| `TROCAS_APARELHO_MES` | quantos aparelhos o comprador pode desconectar sozinho a cada 30 dias | `3` |
+| `DOWNLOAD_FAIXAS` | `sim` libera o download das faixas em MP3 e do .zip; `nao` = só player (o PDF do encarte baixa sempre) | `nao` |
+| `MURAL_MODERACAO` | `antes`: todo comentário espera aprovação; `depois`: o de quem comprou (ou confirmou o e-mail) publica direto | `antes` |
 | `EMAIL_REMETENTE` | remetente do e-mail | `onboarding@resend.dev` |
 | `EMAIL_RESPONDER_PARA` | para onde vão as respostas dos compradores (opcional) | vazio |
 | `PIX_VALIDADE_MINUTOS` | tempo para pagar o Pix | `30` |
@@ -214,12 +234,22 @@ webhook no Mercado Pago e o endereço da API na página do álbum.
 | Pedido | O que devolve |
 |---|---|
 | `GET /api/album` | álbum, preço e faixas com `previa` (URL da prévia) |
-| `GET /api/album?token=CODIGO&aparelho=ID` | `acesso: true`, e cada faixa ganha `audio`, `download`, `letra` (estrofes), `creditos`. Também vem `encarte.pdf`, `encarte.json`, `encarte.creditosGerais` e `zip`. Se o código não servir: `acesso: false` e `motivo` (`codigo_invalido`, `limite_aparelhos`, `sem_aparelho`, `muitas_tentativas`) |
+| `GET /api/album?token=CODIGO&aparelho=ID` | `acesso: true`, e cada faixa ganha `audio` (link assinado, vale 30 min), `letra` (estrofes) e `creditos`; `download` só com `DOWNLOAD_FAIXAS = "sim"`. Também vem `encarte.pdf`, `encarte.json`, `encarte.creditosGerais`, `linksExpiram` e `agora` (e `zip`, se o download estiver liberado). Se o código não servir: `acesso: false` e `motivo` (`codigo_invalido`, `limite_aparelhos`, `sem_aparelho`, `muitas_tentativas`) |
+| `GET /api/links?token=&aparelho=` | links novos das faixas e do encarte, com nova validade |
+| `GET /api/aparelhos?token=&aparelho=` | aparelhos do código (`nome`, datas, `este`, `ref`), `limite` e `trocasRestantes`. Funciona também no aparelho que ficou de fora do limite |
+| `POST /api/aparelhos/liberar` | `{ token, aparelho, ref }` desconecta um aparelho (sair do próprio não conta como troca) |
+| `POST /api/tocando` · `GET /api/tocando?token=&aparelho=` | este aparelho deu play e pega a vez · ainda é a vez dele? (`meu`, `outro`) |
+| `POST /api/novidades` | `{ email, nome?, aceite: true, origem }` entra na lista de novidades |
+| `POST /api/descadastrar` | `{ email, chave }` sai da lista (a chave vem do link do e-mail) |
+| `GET /api/comentarios` · `POST /api/comentarios` | mural publicado · novo comentário `{ nome, cidade?, texto, faixa?, email? ou token+aparelho, novidades? }` |
+| `POST /api/comentarios/confirmar` | `{ id, segredo }` link de confirmação do e-mail do mural |
+| `POST /api/evento` | `{ evento, origem }` soma +1 no funil do dia (sem dado pessoal) |
+| `/api/admin/comentarios`, `/api/admin/resumo` | moderação e resumo, com `Authorization: Bearer ADMIN_SENHA` |
 | `POST /api/checkout` | corpo: `{ selectedPaymentMethod, formData }` (o que o Payment Brick entrega) + `email` + `novidades` (true/false). Resposta: `pedido`, `status`; no Pix, `pix.copia_e_cola`, `pix.qr_code_base64` e `pix.expira_em`; se aprovado na hora, `codigo` |
 | `GET /api/order/:pedido` | `status`, `pago` e, quando aprovado, `codigo` (a página consulta a cada poucos segundos até o Pix ser pago) |
 | `GET /api/preview/:arquivo` | prévia (pública) |
-| `GET /api/stream/:arquivo?token=&aparelho=` | faixa completa ou `encarte.json`, com suporte a Range |
-| `GET /api/download/:arquivo?token=&aparelho=` | download com nome amigável; `album.zip` = faixas + PDF |
+| `GET /api/stream/:arquivo?k=&e=&s=` | faixa completa ou `encarte.json` por link assinado (ou, como antes, `?token=&aparelho=`), com suporte a Range |
+| `GET /api/download/:arquivo?k=&e=&s=` | download com nome amigável: `encarte.pdf`; faixas e `album.zip` só com `DOWNLOAD_FAIXAS = "sim"` |
 
 - `aparelho` é um identificador aleatório que a página cria uma vez e guarda no navegador
   (`crypto.randomUUID()`), junto com o código.
@@ -232,8 +262,12 @@ webhook no Mercado Pago e o endereço da API na página do álbum.
   direto na API antes de liberar.
 - Há limites de tentativas por IP (checkout, códigos errados, consultas) e por código (arquivos).
   Códigos têm 16 caracteres aleatórios, impossíveis de adivinhar.
-- O limite de aparelhos é uma proteção **básica**: dificulta espalhar o código, mas quem copiar o link
-  completo de um aparelho já cadastrado consegue ouvir. Isso é normal em sites sem login.
+- O limite de aparelhos e a reprodução em um aparelho por vez são proteções **básicas**: dificultam
+  espalhar o código, mas ninguém impede que alguém grave o som enquanto toca. Os links das faixas expiram
+  em 30 minutos e não mostram o código. A chave que assina os links é criada sozinha na tabela `config`
+  do D1 (apagar essa linha invalida todos os links já entregues; a página pede novos sozinha).
+- A lista de aparelhos não mostra o identificador verdadeiro de cada um (só um apelido), para que quem
+  tem o código não consiga se passar por outro aparelho.
 - As letras antigas ainda podem ser lidas no histórico público do GitHub (commits de 29/09/2026).
   Essa foi uma decisão consciente de não reescrever o histórico.
 

@@ -14,7 +14,7 @@ export function cabecalhosCors(request: Request, env: Env): Record<string, strin
   return {
     "Access-Control-Allow-Origin": request.headers.get("Origin")!,
     "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-Aparelho, Range",
+    "Access-Control-Allow-Headers": "Content-Type, X-Aparelho, Range, Authorization",
     "Access-Control-Expose-Headers": "Content-Length, Content-Range, Accept-Ranges, Content-Disposition",
     "Access-Control-Max-Age": "86400",
   };

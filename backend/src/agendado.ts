@@ -1,5 +1,5 @@
 // Tarefa automática (a cada 10 minutos): rede de segurança caso algum aviso do Mercado Pago
-// ou algum e-mail se perca.
+// ou algum e-mail se perca, e limpeza de comentários nunca confirmados.
 import { consultarPagamento } from "./mercadopago";
 import { enviarAcesso, garantirCodigo, registrarPagamento, type Pedido } from "./pedidos";
 
@@ -38,4 +38,13 @@ export async function tarefaAgendada(env: Env): Promise<void> {
       .all<Pedido & { codigo: string }>();
     for (const pedido of results) await enviarAcesso(env, pedido);
   }
+
+  // 4. prazos da Política de Privacidade: comentários nunca confirmados (7 dias), recusados (30 dias)
+  //    e o registro de trocas de aparelho (12 meses)
+  const dias = (n: number) => new Date(Date.now() - n * 86400_000).toISOString();
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM comentarios WHERE status = 'confirmar_email' AND criado_em < ?1").bind(dias(7)),
+    env.DB.prepare("DELETE FROM comentarios WHERE status = 'recusado' AND criado_em < ?1").bind(dias(30)),
+    env.DB.prepare("DELETE FROM aparelhos_liberados WHERE liberado_em < ?1").bind(dias(365)),
+  ]);
 }
