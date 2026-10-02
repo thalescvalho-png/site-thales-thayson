@@ -537,3 +537,28 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
 @media (prefers-reduced-motion: reduce){
   .apoie.surgindo .navegar > *, .navegar h2, .letra-janela[open]{ animation:none !important; }
 }
+
+/* ===================================================================
+   MOVIMENTO AO ROLAR (js/principal.js liga a classe .mov no <html>;
+   sem JavaScript ou com movimento reduzido, tudo aparece parado)
+   =================================================================== */
+.correnteza .acoes-linha{ margin-top:28px; }
+.mov .revela{ opacity:0; transform:translateY(34px); filter:blur(6px);
+  transition:opacity 1s cubic-bezier(.2,.7,.2,1), transform 1.2s cubic-bezier(.2,.7,.2,1), filter 1s ease;
+  transition-delay:calc(var(--i, 0) * 120ms); }
+.mov .revela.lado{ transform:translateX(60px); }
+.mov .revela.visto{ opacity:1; transform:none; filter:none; }
+/* títulos: as palavras sobem uma a uma, como se a frase se escrevesse */
+.mov .palavras .pal{ display:inline-block; opacity:0; transform:translateY(.55em) rotate(3deg); transform-origin:0 100%; filter:blur(8px);
+  transition:opacity .9s ease, transform 1.1s cubic-bezier(.2,.7,.2,1), filter .9s ease; transition-delay:calc(var(--w, 0) * 90ms); }
+.mov .palavras.visto .pal{ opacity:1; transform:none; filter:none; }
+/* fotos: abrem de dentro para fora e andam um pouco mais devagar que o texto */
+.mov .desvela{ clip-path:inset(12% 10% 12% 10% round 4px); opacity:.2; transition:clip-path 1.5s cubic-bezier(.2,.7,.2,1), opacity 1.2s ease; }
+.mov .desvela.visto{ clip-path:inset(0 0 0 0 round 4px); opacity:1; }
+.capa, .retrato, .quem h2{ translate:0 var(--py, 0px); }
+.mov .capa .arte img{ transform:scale(1.12); transition:transform 2.2s cubic-bezier(.2,.7,.2,1); }
+.mov .capa.visto .arte img{ transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .mov .revela, .mov .palavras .pal, .mov .desvela, .mov .capa .arte img{ opacity:1 !important; transform:none !important; filter:none !important; clip-path:none !important; transition:none !important; }
+  .capa, .retrato, .quem h2{ translate:none; }
+}
