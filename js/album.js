@@ -307,6 +307,7 @@ window.Correnteza.bioluz = function(amplitude){
   }
   function parar(){ cancelAnimationFrame(quadro); ultimo = 0; pintar(0); }
 
+  var ICONE_COMPARTILHAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg>';
   function montar(d){
     var tocando = !audio.paused;
     var idAtual = atual >= 0 && faixas[atual] ? faixas[atual].id : null;
@@ -341,6 +342,13 @@ window.Correnteza.bioluz = function(amplitude){
           baixar.setAttribute('aria-label', 'Baixar ' + f.titulo);
           extras.appendChild(baixar);
         }
+        // cartão da faixa para os Stories (js/compartilhar.js)
+        var partilhar = el('button', 'ver-letra partilhar');
+        partilhar.type = 'button';
+        partilhar.setAttribute('aria-label', 'Compartilhar ' + f.titulo);
+        partilhar.innerHTML = ICONE_COMPARTILHAR;
+        partilhar.addEventListener('click', function(){ if (C.compartilhar) C.compartilhar({ modo: 'faixa', faixa: i }); });
+        extras.appendChild(partilhar);
         li.appendChild(extras);
         // mostra a duração assim que ela for conhecida
         var sonda = new Audio(); sonda.preload = 'metadata'; sonda.src = f.audio;
@@ -666,14 +674,8 @@ window.Correnteza.bioluz = function(amplitude){
     janela = el('dialog', 'letra-janela');
     janela.setAttribute('aria-label', 'Letra');
     janela.innerHTML = '<div class="letra-janela-in"><button type="button" class="fechar" aria-label="Fechar">&times;</button><div class="letra-conteudo"></div>'
-      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a>'
-      + '<button type="button" class="link verso">criar um cartão com um verso</button></nav></div>';
+      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a></nav></div>';
     janela.querySelector('.fechar').addEventListener('click', function(){ janela.close(); });
-    // o cartão para os Stories (js/compartilhar.js) abre já nesta faixa
-    janela.querySelector('.verso').addEventListener('click', function(){
-      janela.close();
-      if (C.compartilhar) C.compartilhar({ modo: 'verso', faixa: atualLetra });
-    });
     janela.querySelector('.todas').addEventListener('click', function(){ janela.close(); });
     // clicar fora da página fecha
     janela.addEventListener('click', function(e){ if (e.target === janela) janela.close(); });
