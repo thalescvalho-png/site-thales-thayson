@@ -101,7 +101,7 @@ Mesmo sem e-mail, o comprador tem acesso na hora: a página recebe o código ass
 ## Testar sem o Mercado Pago (modo de teste)
 
 ```bash
-npm run codigo                                   # cria um código de teste (vale em 5 aparelhos)
+npm run codigo                                   # cria um código de teste (vale em 3 aparelhos)
 npm run codigo -- --aparelhos 2                  # com outro limite de aparelhos
 npm run codigo -- --email voce@exemplo.com       # anotando para quem é
 ```
@@ -195,7 +195,7 @@ Depois de mudar qualquer uma, rode `npm run publicar`.
 | `SITE_ORIGENS` | sites que podem chamar a API (CORS), separados por vírgula | GitHub Pages |
 | `PAGINA_ALBUM` | página que o link do e-mail abre (`?codigo=` é acrescentado) | `.../correnteza.html` |
 | `PRECO` | preço cobrado (o navegador não consegue alterar) | `22.90` |
-| `LIMITE_APARELHOS` | aparelhos/navegadores por código | `5` |
+| `LIMITE_APARELHOS` | aparelhos/navegadores por código | `3` |
 | `EMAIL_REMETENTE` | remetente do e-mail | `onboarding@resend.dev` |
 | `EMAIL_RESPONDER_PARA` | para onde vão as respostas dos compradores (opcional) | vazio |
 | `PIX_VALIDADE_MINUTOS` | tempo para pagar o Pix | `30` |
