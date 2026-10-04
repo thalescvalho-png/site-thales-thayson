@@ -21,7 +21,7 @@
   var linhas = [], itens = [], versoAtual = -2;
   var arrastando = false;
   var pausaAte = 0, centralizado = -2, saltar = true, anima = 0, retomada = 0;
-  var empurrado = false, ignorarVolta = false, restauracao = null, depois = null, inertes = [];
+  var empurrado = false, ignorarVolta = false, restauracao = null, depois = null, inertes = [], escondendo = 0;
 
   function el(tag, classe, texto){
     var e = document.createElement(tag);
@@ -48,6 +48,7 @@
 
   function mostrarTela(){
     aberta = true;
+    clearTimeout(escondendo);
     tela.hidden = false;
     document.documentElement.classList.add('letra-aberta');
     prender(true);
@@ -62,7 +63,9 @@
       history.pushState({ letraTela: true }, '');
       empurrado = true;
     } catch (e) { empurrado = false; }
-    requestAnimationFrame(function(){ tela.classList.add('aberta'); });
+    // a tela sobe do player: parte um pouco abaixo e transparente, e desliza para o lugar
+    void tela.offsetWidth;
+    requestAnimationFrame(function(){ if (aberta) tela.classList.add('aberta'); });
     btFechar.focus();
   }
 
@@ -70,7 +73,9 @@
     if (!aberta) return;
     aberta = false;
     tela.classList.remove('aberta');
-    tela.hidden = true;
+    // desce e some; só sai da página depois da animação
+    clearTimeout(escondendo);
+    escondendo = setTimeout(function(){ if (!aberta) tela.hidden = true; }, reduzir.matches ? 0 : 560);
     document.documentElement.classList.remove('letra-aberta');
     prender(false);
     bio.ligar(null);
@@ -92,6 +97,12 @@
     if (aberta){ empurrado = false; fechar(true); }
   });
   btFechar.addEventListener('click', function(){ fechar(); });
+
+  // a capa e o nome da faixa no player fixo abrem a letra da faixa que está tocando
+  var btPlayer = $('tocadorAbrirLetra');
+  function abrirPeloPlayer(){ if (P.atual() >= 0) C.abrirLetra(P.atual(), btPlayer); }
+  btPlayer.addEventListener('click', abrirPeloPlayer);
+  document.querySelector('#tocador > img').addEventListener('click', abrirPeloPlayer);
 
   // ----- Foco preso na tela enquanto ela está aberta -----
   function prender(sim){

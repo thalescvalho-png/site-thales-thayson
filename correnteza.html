@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=10">
+<link rel="stylesheet" href="css/estilo.css?v=12">
 <link rel="stylesheet" href="css/tela-tv.css?v=1">
 <link rel="stylesheet" href="css/transmitir.css?v=3">
 </head>
@@ -307,10 +307,12 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 <!-- ===== PLAYER FIXO ===== -->
 <div class="tocador bloqueado" id="tocador" aria-label="Player do álbum">
 <img src="img/sem-ano_capa-album_correnteza.webp" width="48" height="48" alt="">
-<div class="tocador-info">
+<!-- a capa e o nome da faixa abrem a letra (js/letra.js) -->
+<button type="button" class="tocador-info" id="tocadorAbrirLetra" aria-haspopup="dialog">
 <b id="tocadorTitulo">Correnteza</b>
 <small id="tocadorSub">prévias de 15 segundos</small>
-</div>
+<span class="visualmente-oculto">. Abrir a letra</span>
+</button>
 <div class="tocador-controles">
 <button type="button" id="btAnterior" aria-label="Faixa anterior" disabled>&#9198;&#xFE0E;</button>
 <button type="button" id="btTocar" class="tocar" aria-label="Tocar" disabled>&#9654;&#xFE0E;</button>
@@ -333,7 +335,7 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 Tela cheia por cima da página, tocando no mesmo <audio> do player. O .lrc de cada faixa vem da API
 só para quem comprou; sem o álbum, a tela mostra o convite e nenhum verso é pedido. -->
 <div class="letra-tela" id="letraTela" role="dialog" aria-modal="true" aria-labelledby="letraTitulo" hidden>
-<div class="letra-fundo" aria-hidden="true"><img src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" alt="" loading="lazy"></div>
+<div class="letra-fundo" aria-hidden="true"><img src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" alt=""></div>
 <div class="letra-topo">
 <button type="button" class="letra-fechar" id="letraFechar" aria-label="Fechar a letra e voltar às faixas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9l6.5 6.5L18.5 9"/></svg></button>
 <span class="letra-topo-rotulo">Letra</span>
