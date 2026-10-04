@@ -260,6 +260,8 @@ window.Correnteza.bioluz = function(amplitude){
   var pedindoPlay = false; // a pessoa pediu para tocar e o áudio ainda não começou
   var ultimaRenovacao = 0; // evita pedir links novos sem parar se a faixa continuar falhando
   var retomarEm = -1;      // depois de trocar o link, volta ao ponto em que estava
+  var desenhos = [];       // outras barras que andam junto com o player (tela da letra, js/letra.js)
+  var trocas = [];         // avisados quando a faixa muda
   // quem chega por um link de faixa (correnteza.html?faixa=lugubre) já encontra a faixa escolhida
   var pedida = (new URLSearchParams(location.search).get('faixa') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
   function slug(f){ return f.id.replace(/^\d+-/, ''); }
@@ -299,6 +301,7 @@ window.Correnteza.bioluz = function(amplitude){
     var p = progresso(), tocando = !audio.paused;
     bioPrincipal.quadro(dt, p, tocando);
     bioMini.quadro(dt, audio.duration ? audio.currentTime / audio.duration : 0, tocando);
+    desenhos.forEach(function(d){ d(dt, tocando); });
   }
   function animar(agora){
     pintar(ultimo ? Math.min(50, agora - ultimo) / 16.7 : 1);
@@ -328,14 +331,16 @@ window.Correnteza.bioluz = function(amplitude){
       b.appendChild(estado);
       b.addEventListener('click', function(){ if (i === atual) alternar(); else carregarFaixa(i, true); });
       li.appendChild(b);
+      // letra sincronizada numa tela cheia (js/letra.js); sem o álbum, a tela mostra o convite
+      var letra = el('a', 'ver-letra', 'letra'); letra.href = completo ? '#letra-' + f.numero : '#apoie';
+      letra.setAttribute('aria-label', 'Letra de ' + f.titulo);
+      letra.setAttribute('aria-haspopup', 'dialog');
+      letra.addEventListener('click', function(e){
+        if (C.abrirLetra && C.abrirLetra(i, letra)) e.preventDefault();
+      });
+      var extras = el('span', 'faixa-extras');
+      extras.appendChild(letra);
       if (completo){
-        var letra = el('a', 'ver-letra', 'letra'); letra.href = '#letra-' + f.numero;
-        letra.setAttribute('aria-label', 'Letra de ' + f.titulo);
-        letra.addEventListener('click', function(e){
-          if (C.abrirLetra && C.abrirLetra(f.numero)) e.preventDefault();
-        });
-        var extras = el('span', 'faixa-extras');
-        extras.appendChild(letra);
         // download das faixas só quando o backend liberar (DOWNLOAD_FAIXAS = "sim")
         if (f.download){
           var baixar = el('a', 'ver-letra', 'baixar'); baixar.href = f.download; baixar.setAttribute('download', '');
@@ -349,11 +354,11 @@ window.Correnteza.bioluz = function(amplitude){
         partilhar.innerHTML = ICONE_COMPARTILHAR;
         partilhar.addEventListener('click', function(){ if (C.compartilhar) C.compartilhar({ modo: 'faixa', faixa: i }); });
         extras.appendChild(partilhar);
-        li.appendChild(extras);
         // mostra a duração assim que ela for conhecida
         var sonda = new Audio(); sonda.preload = 'metadata'; sonda.src = f.audio;
         sonda.addEventListener('loadedmetadata', function(){ estado.textContent = formatar(sonda.duration); sonda.removeAttribute('src'); });
       }
+      li.appendChild(extras);
       lista.appendChild(li);
     });
     tocador.classList.remove('bloqueado');
@@ -421,6 +426,7 @@ window.Correnteza.bioluz = function(amplitude){
       if (tocarJa) tocar();
     }
     pintar(0);
+    trocas.forEach(function(t){ t(i); });
   }
   function tocar(){
     pedindoPlay = true;
@@ -437,11 +443,13 @@ window.Correnteza.bioluz = function(amplitude){
   function vizinha(passo){ return faixas.length ? (atual + passo + faixas.length) % faixas.length : -1; }
 
   btTocar.addEventListener('click', alternar);
-  btAnterior.addEventListener('click', function(){
+  function anterior(){
     if (audio.currentTime > 3){ audio.currentTime = 0; return; }
     carregarFaixa(vizinha(-1), true);
-  });
-  btProxima.addEventListener('click', function(){ carregarFaixa(vizinha(1), true); });
+  }
+  function proxima(){ carregarFaixa(vizinha(1), true); }
+  btAnterior.addEventListener('click', anterior);
+  btProxima.addEventListener('click', proxima);
 
   audio.addEventListener('play', function(){ btTocar.innerHTML = '&#10074;&#10074;'; btTocar.setAttribute('aria-label', 'Pausar'); document.body.classList.add('tocando');
     cancelAnimationFrame(quadro); quadro = requestAnimationFrame(animar);
@@ -528,9 +536,29 @@ window.Correnteza.bioluz = function(amplitude){
   if ('mediaSession' in navigator){
     navigator.mediaSession.setActionHandler('play', function(){ audio.play(); });
     navigator.mediaSession.setActionHandler('pause', function(){ audio.pause(); });
-    navigator.mediaSession.setActionHandler('previoustrack', function(){ btAnterior.click(); });
-    navigator.mediaSession.setActionHandler('nexttrack', function(){ btProxima.click(); });
+    navigator.mediaSession.setActionHandler('previoustrack', anterior);
+    navigator.mediaSession.setActionHandler('nexttrack', proxima);
   }
+
+  // o que a tela da letra (js/letra.js) usa do player: o mesmo <audio>, os mesmos botões e o mesmo laço de desenho
+  C.player = {
+    audio: audio,
+    faixas: function(){ return faixas; },
+    atual: function(){ return atual; },
+    completo: function(){ return completo; },
+    tom: function(i){ return faixas[i] ? tomDe(faixas[i], i) : TONS[0]; },
+    formatar: formatar,
+    // abre a faixa i tocando; se já é a atual e está parada, continua de onde parou
+    tocarFaixa: function(i){ if (i !== atual) carregarFaixa(i, true); else if (audio.paused) alternar(); },
+    // só escolhe a faixa (continua tocando se já estava)
+    escolher: function(i){ if (i !== atual) carregarFaixa(i, !audio.paused); },
+    alternar: alternar,
+    anterior: anterior,
+    proxima: proxima,
+    aoTrocar: function(f){ trocas.push(f); },
+    desenhar: function(f){ desenhos.push(f); },
+    pintar: function(){ pintar(0); }
+  };
 
   C.aoCarregar(montar);
   C.evento('visita');
@@ -667,45 +695,6 @@ window.Correnteza.bioluz = function(amplitude){
     camadas.forEach(function(c){ c.style.transform = 'translate3d(0,' + (d * parseFloat(c.dataset.velocidade)).toFixed(1) + 'px,0)'; });
   }
   window.addEventListener('scroll', function(){ if (!pendente){ pendente = true; requestAnimationFrame(mover); } }, { passive: true });
-
-  // ----- A letra de uma faixa sozinha, numa janela por cima da página -----
-  var janela = null, atualLetra = 0, faixasLetra = [];
-  function criarJanela(){
-    janela = el('dialog', 'letra-janela');
-    janela.setAttribute('aria-label', 'Letra');
-    janela.innerHTML = '<div class="letra-janela-in"><button type="button" class="fechar" aria-label="Fechar">&times;</button><div class="letra-conteudo"></div>'
-      + '<nav class="letra-nav"><a class="link todas" href="#encarte">ver o encarte completo</a></nav></div>';
-    janela.querySelector('.fechar').addEventListener('click', function(){ janela.close(); });
-    janela.querySelector('.todas').addEventListener('click', function(){ janela.close(); });
-    // clicar fora da página fecha
-    janela.addEventListener('click', function(e){ if (e.target === janela) janela.close(); });
-    document.body.appendChild(janela);
-  }
-  function mostrarLetra(i){
-    var n = faixasLetra.length;
-    atualLetra = (i + n) % n;
-    var f = faixasLetra[atualLetra];
-    var pg = pagina(f);
-    pg.removeAttribute('id');
-    var caixa = janela.querySelector('.letra-conteudo');
-    caixa.textContent = '';
-    caixa.appendChild(pg);
-    janela.setAttribute('aria-label', 'Letra de ' + f.titulo);
-    janela.querySelector('.letra-janela-in').scrollTop = 0;
-    // deixa o navegador pintar a página escondida antes de revelar os versos
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ pg.classList.add('visivel'); }); });
-  }
-  C.abrirLetra = function(numero){
-    var d = C.dados();
-    if (!d || !d.acesso || typeof HTMLDialogElement === 'undefined') return false;
-    faixasLetra = d.faixas;
-    var i = faixasLetra.map(function(f){ return f.numero; }).indexOf(numero);
-    if (i < 0) return false;
-    if (!janela) criarJanela();
-    mostrarLetra(i);
-    if (!janela.open) janela.showModal();
-    return true;
-  };
 
   C.aoCarregar(montar);
 })();

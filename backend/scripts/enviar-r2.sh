@@ -3,7 +3,8 @@
 #
 # Uso (no Terminal, dentro da pasta backend):
 #     ./scripts/enviar-r2.sh previews    # só as prévias (públicas)
-#     ./scripts/enviar-r2.sh full        # faixas completas, encarte (PDF e JSON) e o .zip do álbum
+#     ./scripts/enviar-r2.sh full        # faixas completas, encarte (PDF e JSON), o .zip do álbum e as letras .lrc
+#     ./scripts/enviar-r2.sh letras      # só as letras sincronizadas (.lrc)
 #     ./scripts/enviar-r2.sh tudo        # as duas coisas
 # Acrescente --local para mandar para o R2 de testes do "npm run dev".
 #
@@ -13,6 +14,7 @@
 #     encarte/Correnteza-Encarte.pdf -> R2 full/encarte.pdf
 #     encarte/encarte.json    -> R2 full/encarte.json
 #     (montado aqui)          -> R2 full/album.zip   (faixas com nomes bonitos + PDF)
+#     lyrics/*.lrc            -> R2 lyrics/          (letra sincronizada; o nome é o da faixa: 01-clareira.lrc)
 set -euo pipefail
 
 BUCKET="correnteza"
@@ -85,10 +87,21 @@ PY
   enviar "full/album.zip" "$TMP/album.zip" "application/zip" "private, max-age=86400"
 }
 
+enviar_letras() {
+  local letras=("$PRIVADO"/lyrics/*.lrc)
+  if [ ! -f "${letras[0]}" ]; then echo "Nenhuma letra .lrc em $PRIVADO/lyrics (as faixas mostram a letra do encarte)."; return; fi
+  echo "Letras sincronizadas (${#letras[@]}):"
+  for f in "${letras[@]}"; do
+    [[ "$(basename "$f")" =~ ^[0-9]{2}-[a-z0-9-]+\.lrc$ ]] || { echo "  nome fora do padrão (ex.: 01-clareira.lrc): $(basename "$f")"; exit 1; }
+    enviar "lyrics/$(basename "$f")" "$f" "text/plain; charset=utf-8" "no-cache"
+  done
+}
+
 case "$QUAL" in
   previews) enviar_previas ;;
-  full) enviar_completos ;;
-  tudo) enviar_previas; enviar_completos ;;
-  *) echo "Uso: ./scripts/enviar-r2.sh previews|full|tudo [--local]"; exit 1 ;;
+  full) enviar_completos; enviar_letras ;;
+  letras) enviar_letras ;;
+  tudo) enviar_previas; enviar_completos; enviar_letras ;;
+  *) echo "Uso: ./scripts/enviar-r2.sh previews|full|letras|tudo [--local]"; exit 1 ;;
 esac
 echo "Pronto ($([ "$ONDE" = "--local" ] && echo "R2 local de testes" || echo "R2 da Cloudflare")). Mudanças no encarte podem levar até 5 minutos para aparecer."

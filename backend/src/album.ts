@@ -2,6 +2,7 @@
 // GET /api/album?token=...  -> também áudio completo, letras e encarte (JSON e PDF)
 // GET /api/links?token=...  -> links novos das faixas (os anteriores expiram em 30 minutos)
 // GET /api/preview|stream|download/:arquivo
+// GET /api/letra/:faixa.lrc?token=... -> letra sincronizada (.lrc), só para quem comprou
 import { lerCredenciais, respostaDeRecusa, verificarAcesso } from "./acesso";
 import { nomePermitido, servirDoR2 } from "./arquivos";
 import { apelidoDoCodigo, conferirLink, linkAssinado, VALIDADE_LINKS_S, type TipoArquivo } from "./assinatura";
@@ -160,4 +161,19 @@ export async function rotaArquivo(
   if (!(await env.LIMITE_ARQUIVOS.limit({ key: chaveLimite })).success) return erro(429, "muitas_requisicoes");
   const baixarComo = tipo === "download" ? nomeAmigavel(await lerEncarte(env), nome) : undefined;
   return servirDoR2(request, env.ARQUIVOS, `full/${nome}`, { cache: "private, max-age=1800", baixarComo });
+}
+
+/** Letra sincronizada de uma faixa (R2: lyrics/01-clareira.lrc). Mesma regra do áudio: código + aparelho. */
+export async function rotaLetra(nome: string, request: Request, env: Env, ctx: ExecutionContext, url: URL): Promise<Response> {
+  if (!/^\d{2}-[a-z0-9-]+\.lrc$/.test(nome)) return erro(404, "sem_lrc");
+  const acesso = await verificarAcesso(request, env, ctx, url);
+  if (!acesso.ok) return respostaDeRecusa(acesso.motivo);
+  if (!(await env.LIMITE_ARQUIVOS.limit({ key: `codigo:${await apelidoDoCodigo(env, acesso.codigo)}` })).success) {
+    return erro(429, "muitas_requisicoes");
+  }
+  const objeto = await env.ARQUIVOS.get(`lyrics/${nome}`);
+  if (!objeto) return erro(404, "sem_lrc", "Esta faixa ainda não tem letra sincronizada.");
+  return new Response(objeto.body, {
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "private, no-store" },
+  });
 }
