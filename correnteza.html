@@ -25,11 +25,16 @@
 <!-- endereço da API de venda (backend/) e chave PÚBLICA do Mercado Pago (Credenciais → Public Key).
      Com a chave vazia, a página mostra "pagamento em breve", mas prévias e códigos continuam funcionando. -->
 <meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
+<!-- Modo TV: endereço que a pessoa digita no navegador da TV (aparece no "Assistir na TV").
+     Quando houver um atalho curto (ex.: is.gd/...) ou domínio próprio, troque aqui. -->
+<meta name="tv-endereco" content="thalescvalho-png.github.io/site-thales-thayson/tv">
 <meta name="mp-public-key" content="APP_USR-fbb62fb6-9ffe-428a-9706-f6096ad3d826">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/estilo.css?v=10">
+<link rel="stylesheet" href="css/tela-tv.css?v=1">
+<link rel="stylesheet" href="css/transmitir.css?v=2">
 </head>
 <body class="pagina-album">
 
@@ -144,6 +149,7 @@ A chave pública do Mercado Pago e o endereço da API ficam nas metas "mp-public
 <a class="botao contorno" id="baixarEncarte" href="#" download>Baixe o encarte em PDF</a>
 <a class="botao contorno" id="baixarZip" href="#" download hidden>Baixe o álbum para ouvir onde preferir</a>
 <button type="button" class="botao contorno" id="btApoiei">Conte nos Stories que você apoiou</button>
+<button type="button" class="botao contorno" data-assistir-tv>Assistir na TV</button>
 </div>
 <details class="aparelhos" id="meusAparelhos">
 <summary>Meus aparelhos</summary>
@@ -309,6 +315,10 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 <button type="button" id="btAnterior" aria-label="Faixa anterior" disabled>&#9198;&#xFE0E;</button>
 <button type="button" id="btTocar" class="tocar" aria-label="Tocar" disabled>&#9654;&#xFE0E;</button>
 <button type="button" id="btProxima" aria-label="Próxima faixa" disabled>&#9197;&#xFE0E;</button>
+<!-- ouvir na TV (js/transmitir.js): Chromecast no Chrome, AirPlay no iPhone, Modo TV em qualquer TV -->
+<google-cast-launcher id="castBotao" class="na-tv-icone" hidden></google-cast-launcher>
+<button type="button" id="btAirplay" class="na-tv-icone" aria-label="Tocar pela AirPlay" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17H4.5A2 2 0 0 1 2.5 15V6a2 2 0 0 1 2-2h15a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H18"/><path class="cheio" d="M12 14.5l5 6H7z"/></svg></button>
+<button type="button" id="btTv" class="na-tv-icone" aria-label="Assistir na TV"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="12.5" rx="1.8"/><path d="M8 20.5h8M12 17v3.5"/></svg></button>
 <button type="button" id="btCompartilhar" class="compartilhar" aria-label="Compartilhar faixa"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/></svg></button>
 </div>
 <div class="tocador-tempo">
@@ -347,10 +357,47 @@ só para quem comprou; sem o álbum, a tela mostra o convite e nenhum verso é p
 </div>
 </div>
 
+<!-- ===== ASSISTIR NA TV (js/transmitir.js) ===== -->
+<div class="tv-conectar" id="tvConectar" role="dialog" aria-modal="true" aria-labelledby="tvConectarTitulo" hidden>
+<div class="tv-conectar-in">
+<button type="button" class="fechar" id="tvConectarFechar" aria-label="Fechar">&times;</button>
+<h2 id="tvConectarTitulo">Assistir na TV</h2>
+<p>Na TV, abra o navegador em <b data-tv-endereco>thalescvalho-png.github.io/site-thales-thayson/tv</b> e digite aqui o código que aparecer.</p>
+<form id="formTv" novalidate>
+<label for="campoTv">Código da TV</label>
+<div class="linha-codigo">
+<input type="text" id="campoTv" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="K7Q 4MD">
+<button type="submit" class="botao">Conectar</button>
+</div>
+</form>
+<p class="mensagem" id="msgTv" role="alert" hidden></p>
+<p class="tv-sem-acesso" id="tvSemAcesso" hidden>Para ouvir na TV, entre antes com o seu código de acesso. <a href="#apoie">Entrar</a></p>
+<p class="apoie-nota">Tem Chromecast, Google TV ou Apple TV? Use o ícone de transmitir no player, como no YouTube.</p>
+</div>
+</div>
+
+<!-- ===== NA TV: o celular vira o controle remoto, com a mesma tela da TV em versão compacta ===== -->
+<div class="na-tv-painel" id="naTv" role="dialog" aria-modal="true" aria-labelledby="naTvTitulo" hidden>
+<div class="na-tv-topo">
+<button type="button" class="na-tv-fechar" id="naTvFechar" aria-label="Esconder o controle (a TV continua tocando)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9l6.5 6.5L18.5 9"/></svg></button>
+<span class="na-tv-titulo" id="naTvTitulo">Tocando na TV</span>
+<button type="button" class="link na-tv-sair" id="naTvSair">Desconectar</button>
+</div>
+<div class="na-tv-tela" id="naTvTela"></div>
+<div class="tocador-controles na-tv-controles">
+<button type="button" id="naTvAnterior" aria-label="Faixa anterior">&#9198;&#xFE0E;</button>
+<button type="button" id="naTvTocar" class="tocar" aria-label="Tocar na TV">&#9654;&#xFE0E;</button>
+<button type="button" id="naTvProxima" aria-label="Próxima faixa">&#9197;&#xFE0E;</button>
+</div>
+</div>
+
 <script src="js/medicao.js?v=1"></script>
-<script src="js/album.js?v=8"></script>
+<script src="js/bioluz.js?v=1"></script>
+<script src="js/album.js?v=9"></script>
 <script src="js/letra-lrc.js?v=1"></script>
-<script src="js/letra.js?v=1"></script>
+<script src="js/letra.js?v=2"></script>
+<script src="js/tela-tv.js?v=1"></script>
+<script src="js/transmitir.js?v=1"></script>
 <script src="js/compra.js?v=6"></script>
 <script src="js/aparelhos.js?v=1"></script>
 <script src="js/compartilhar.js?v=2"></script>

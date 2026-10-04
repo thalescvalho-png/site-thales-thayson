@@ -1,0 +1,66 @@
+/* =====================================================================
+   OUVIR NA TV, na página do álbum (js/transmitir.js)
+   Ícones de Cast / AirPlay / TV no player, a janela "Assistir na TV" e o painel "Na TV" do celular.
+   Cores da paleta do site (variáveis de css/estilo.css).
+   ===================================================================== */
+
+/* ----- Ícones no player (só para quem tem o álbum) ----- */
+.tocador-controles .na-tv-icone{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; padding:9px;
+  border:0; border-radius:50%; background:transparent; color:var(--texto); cursor:pointer; }
+.tocador-controles .na-tv-icone[hidden], body:not(.pode-tv) .tocador-controles .na-tv-icone{ display:none; }
+.na-tv-icone svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.na-tv-icone svg .cheio{ fill:currentColor; stroke:none; }
+/* o ícone oficial do Google Cast: cinza parado, âmbar quando transmitindo */
+google-cast-launcher.na-tv-icone{ --disconnected-color:var(--texto); --connected-color:var(--ambar); }
+body.na-tv #btTv{ color:var(--ambar); }
+
+/* ----- Janela "Assistir na TV" ----- */
+.tv-conectar{ position:fixed; inset:0; z-index:45; display:flex; align-items:center; justify-content:center; padding:16px;
+  background:rgba(6,12,20,.78); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); opacity:0; transition:opacity .3s ease; }
+.tv-conectar[hidden]{ display:none; }
+.tv-conectar.aberto{ opacity:1; }
+.tv-conectar-in{ position:relative; width:min(520px, 100%); padding:34px 28px 26px; border-radius:12px; background:var(--serra); border:1px solid #1F3550; }
+.tv-conectar h2{ font-family:var(--serif); font-weight:500; font-size:32px; color:var(--neblina); margin-bottom:10px; }
+.tv-conectar p{ color:var(--texto-suave); }
+.tv-conectar b{ color:var(--creme, #F4EDDC); word-break:break-all; }
+.tv-conectar form{ margin-top:18px; }
+.tv-conectar label{ display:block; font-size:14px; color:var(--nevoa); margin-bottom:6px; }
+.tv-conectar input{ font:inherit; font-size:22px; letter-spacing:.18em; text-transform:uppercase; }
+.tv-conectar .mensagem{ margin-top:12px; }
+.tv-conectar .apoie-nota{ margin-top:16px; font-size:13px; }
+.tv-conectar .fechar{ position:absolute; top:10px; right:10px; width:42px; height:42px; border-radius:50%; border:1px solid rgba(169,188,203,.35);
+  background:transparent; color:var(--texto); font-size:24px; line-height:1; cursor:pointer; }
+.tv-sem-acesso{ margin-top:16px; }
+.tv-sem-acesso a{ color:var(--ambar); }
+
+/* ----- Painel "Na TV": controle remoto com a tela da TV em versão compacta ----- */
+html.na-tv-aberto, html.na-tv-aberto body{ overflow:hidden; }
+.na-tv-painel{ position:fixed; inset:0; z-index:42; display:flex; flex-direction:column; background:var(--noite); color:var(--texto);
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px); opacity:0; transition:opacity .35s ease; }
+.na-tv-painel[hidden]{ display:none; }
+.na-tv-painel.aberto{ opacity:1; }
+.na-tv-topo{ flex-shrink:0; position:relative; display:flex; align-items:center; justify-content:center; height:56px; padding:0 16px; }
+.na-tv-titulo{ font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ambar); }
+.na-tv-fechar{ position:absolute; left:10px; top:6px; width:44px; height:44px; display:grid; place-items:center; border:0; border-radius:50%;
+  background:rgba(169,188,203,.08); color:var(--texto); cursor:pointer; }
+.na-tv-fechar svg{ width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.na-tv-sair{ position:absolute; right:16px; top:16px; font-size:14px; color:var(--nevoa); }
+.na-tv-tela{ position:relative; flex:1 1 auto; min-height:0; width:100%; max-width:760px; margin:0 auto; }
+.na-tv-controles{ flex-shrink:0; justify-content:center; gap:22px; padding:10px 0 18px; }
+.na-tv-controles button{ width:52px; height:52px; font-size:19px; }
+.na-tv-controles button.tocar{ width:64px; height:64px; font-size:21px; }
+@media (min-width:900px){
+  .na-tv-tela .ttv.compacta .ttv-verso{ font-size:36px; }
+  .na-tv-tela .ttv.compacta .ttv-trecho-nome span{ display:inline; }
+}
+@media (prefers-reduced-motion: reduce){ .tv-conectar, .na-tv-painel{ transition:none; } }
+
+/* celular: com o ícone de TV a mais, os botões do player ficam um pouco mais juntos para o título caber */
+@media (max-width:560px){
+  .tocador-controles{ gap:2px; }
+  .tocador-controles button{ width:34px; }
+  .tocador-controles button.tocar{ width:44px; height:44px; }
+  .tocador-controles .na-tv-icone{ width:34px; padding:7px; }
+  .tocador-controles button.compartilhar{ margin-left:0; }
+  .tocador-info small{ display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+}

@@ -132,6 +132,17 @@ Cada valor diferente em `aparelho=` conta como um aparelho. Para liberar as vaga
 
 ---
 
+## Ouvir na TV (Modo TV e Chromecast)
+
+- `POST /api/tv/sessao`, `POST /api/tv/parear`, `GET /api/tv/ws`: Modo TV. Cada TV ganha uma "sala"
+  (Durable Object `SalaTV`, em `src/sala-tv.ts`) com o nome do código que aparece na tela. A sala liga a TV
+  ao celular por WebSocket, assina os links das faixas (15 min) e vigia a regra de uma reprodução por vez.
+  Parada, ela hiberna e não gasta nada; tudo cabe no plano gratuito da Cloudflare.
+- `GET /api/cast/fila`: a fila do Chromecast, com links que vencem 20 min depois do fim previsto de cada faixa.
+- **Duração das faixas:** depois de trocar alguma faixa, rode `./scripts/duracoes.sh` e `./scripts/enviar-r2.sh full`.
+  Ela grava a `duracao` de cada faixa no `encarte.json` (para a barra do álbum e para a validade dos links).
+- A primeira publicação depois desta mudança (`npm run publicar`) cria o Durable Object sozinha.
+
 ## Atualizar as músicas
 
 1. Coloque as faixas novas em `correnteza-privado/faixas/` com os mesmos nomes

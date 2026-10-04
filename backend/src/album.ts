@@ -3,6 +3,7 @@
 // GET /api/links?token=...  -> links novos das faixas (os anteriores expiram em 30 minutos)
 // GET /api/preview|stream|download/:arquivo
 // GET /api/letra/:faixa.lrc?token=... -> letra sincronizada (.lrc), só para quem comprou
+// GET /api/cast/fila?token=&inicio=  -> a fila do Chromecast: links com validade escalonada
 import { lerCredenciais, respostaDeRecusa, verificarAcesso } from "./acesso";
 import { nomePermitido, servirDoR2 } from "./arquivos";
 import { apelidoDoCodigo, conferirLink, linkAssinado, VALIDADE_LINKS_S, type TipoArquivo } from "./assinatura";
@@ -16,8 +17,10 @@ type Faixa = {
   creditos: { letra: string; musica: string };
   cores?: { tom: string; tom2: string };
   letra: string[][];
+  // duração em segundos (gravada por scripts/duracoes.sh); serve para a barra do álbum inteiro
+  duracao?: number;
 };
-type Encarte = {
+export type Encarte = {
   album: string;
   artistas: string;
   descricao?: string;
@@ -83,7 +86,7 @@ export async function rotaAlbum(request: Request, env: Env, ctx: ExecutionContex
     artistas: encarte.artistas,
     preco: Number(env.PRECO),
     moeda: "BRL",
-    faixas: encarte.faixas.map((f) => ({ numero: f.numero, id: f.id, titulo: f.titulo, previa: previa(f) })),
+    faixas: encarte.faixas.map((f) => ({ numero: f.numero, id: f.id, titulo: f.titulo, duracao: f.duracao, previa: previa(f) })),
   };
 
   if (!lerCredenciais(request, url).bruto) {
@@ -105,6 +108,7 @@ export async function rotaAlbum(request: Request, env: Env, ctx: ExecutionContex
       numero: f.numero,
       id: f.id,
       titulo: f.titulo,
+      duracao: f.duracao,
       idioma: f.idioma,
       previa: previa(f),
       audio: l.faixas[i].audio,
@@ -176,4 +180,37 @@ export async function rotaLetra(nome: string, request: Request, env: Env, ctx: E
   return new Response(objeto.body, {
     headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "private, no-store" },
   });
+}
+
+// ----- Fila do Chromecast -----
+// O Chromecast recebe as 9 faixas de uma vez e toca sozinho, mesmo com o celular bloqueado.
+// Para nenhum link ficar válido por muito tempo, cada um vence pouco depois do horário previsto
+// para o fim daquela faixa (validade escalonada). Se a pessoa pausar por muito tempo, os links
+// vencem; ao voltar, o celular pede a fila de novo e continua de onde parou.
+const FOLGA_CAST_S = 20 * 60; // folga depois do fim previsto de cada faixa (pausas curtas, buffer)
+const DURACAO_PADRAO_S = 10 * 60; // faixa sem "duracao" no encarte.json
+
+export async function rotaFilaCast(request: Request, env: Env, ctx: ExecutionContext, url: URL): Promise<Response> {
+  const acesso = await verificarAcesso(request, env, ctx, url);
+  if (!acesso.ok) return respostaDeRecusa(acesso.motivo);
+  const encarte = await lerEncarte(env);
+  if (!encarte) return erro(503, "album_nao_configurado");
+  const n = encarte.faixas.length;
+  const inicio = Math.min(n - 1, Math.max(0, Math.floor(Number(url.searchParams.get("inicio")) || 0)));
+  const apelido = await apelidoDoCodigo(env, acesso.codigo);
+  const agoraS = Math.floor(Date.now() / 1000);
+  let acumulado = 0;
+  const faixas = await Promise.all(
+    encarte.faixas.map((f, i) => {
+      const duracao = Math.min(f.duracao || DURACAO_PADRAO_S, 15 * 60);
+      let expira: number;
+      if (i < inicio) expira = agoraS + VALIDADE_LINKS_S; // faixas anteriores: só para "voltar"
+      else {
+        expira = agoraS + acumulado + duracao + FOLGA_CAST_S;
+        acumulado += duracao;
+      }
+      return linkAssinado(env, url.origin, "stream", `${f.id}.mp3`, apelido, expira).then((audio) => ({ id: f.id, audio, expira: expira * 1000 }));
+    }),
+  );
+  return json({ agora: Date.now(), inicio, faixas });
 }
