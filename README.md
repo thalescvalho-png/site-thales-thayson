@@ -17,6 +17,14 @@ js/album.js         código de acesso, player, encarte e cartão do fim da prév
 js/compra.js        compra pelo Mercado Pago (Pix, crédito e débito) e tela de "obrigado"
 js/aparelhos.js     "Meus aparelhos" e desconectar um aparelho antigo
 js/compartilhar.js  cartões para os Stories (ouvindo, apoiei, verso)
+js/transmitir.js    ouvir na TV: Chromecast, AirPlay, "Assistir na TV" e o painel de controle remoto no celular
+js/tela-tv.js       a tela da TV (capa, letra sincronizada, barra do álbum), usada no Modo TV e no celular
+js/bioluz.js        a barra bioluminescente (player, letra e TV)
+js/tv.js            Modo TV: código, QR, conexão com a sala, áudio e teclas do controle da TV
+tv/index.html       Modo TV: a página aberta no navegador da TV
+css/tela-tv.css     visual da tela da TV (tamanhos, cores e velocidade da rolagem comentados)
+css/transmitir.css  ícones de TV no player, janela "Assistir na TV" e painel "Na TV"
+img/tv/             capa em JPG (Chromecast, tela de bloqueio) e a miniatura do fundo desfocado
 js/mural.js         mural dos ouvintes          js/admin.js   página de administração
 img/                fotos em WebP, até 1600 px no lado maior, sem metadados/GPS
 img/og/             cartões de link 1200×630 (gerados por scripts/gerar-cartoes-de-link.sh)
@@ -174,3 +182,58 @@ No site, os dados que ainda faltam aparecem entre colchetes (`[ano]`, `[evento]`
 | sem-ano_sem-evento_sem-musica-1 | Fotos Thales e Thays.jpg | Galeria |
 | sem-ano_sem-evento_sem-musica-2 | Fotos Thales e Thayson.jpg | Galeria |
 | sem-ano_bolsa-amarela_sem-musica | bolsaamarela.jpeg | Galeria |
+
+## Ouvir na TV
+
+Só para quem tem o código de acesso. Três caminhos, todos na página do álbum:
+
+| Aparelho | Como | O que a TV mostra | A letra sincronizada |
+|---|---|---|---|
+| Android e computador (Chrome) | ícone do Google Cast no player (só aparece se houver um Chromecast/Google TV na rede) | capa e título (tela padrão do Google) | no celular |
+| iPhone (Safari) | ícone da AirPlay no player (no lugar do Cast) | capa e título | no celular |
+| Qualquer TV com navegador (Samsung, LG...) | **Assistir na TV**: a TV abre `/tv` e mostra um código | capa de fundo, letra sincronizada e a barra do álbum | na TV e no celular |
+
+- No celular abre o painel **Na TV**: a mesma tela da TV em versão compacta, com a barra do álbum inteiro
+  em trechos (tocar num trecho pula para a faixa; arrastar adianta ou volta), tocar/pausar, anterior e próxima.
+- **Segurança:** a TV e o Chromecast recebem só links assinados que vencem: 15 minutos no Modo TV (renovados
+  pela sala enquanto a TV estiver conectada) e, no Chromecast, cada faixa vence 20 minutos depois do fim
+  previsto dela. A TV nunca recebe o código de acesso e não ocupa uma das 3 vagas de aparelho.
+- **Uma reprodução por vez:** a TV do Modo TV conta como a reprodução ativa da conta; se outro aparelho der
+  play, ela pausa com um aviso (e vice-versa). No Chromecast, quem vigia é o celular enquanto a página está aberta.
+- **Endereço da TV:** fica na meta `tv-endereco`, no topo de `correnteza.html`. Ao criar um atalho curto
+  (ex.: is.gd) ou quando chegar o domínio próprio, troque ali.
+- **Letra:** vem dos `.lrc` (pasta `lyrics/` do R2). Faixa sem `.lrc` mostra só a capa e o título.
+- **Ajustes visuais:** tamanhos, cores e velocidade da rolagem estão comentados em `css/tela-tv.css`
+  (procure "AJUSTE"); tempos do controle remoto no topo de `js/tv.js`.
+
+### Como testar
+
+**Android (Chrome) + Chromecast ou Google TV**
+1. Celular e Chromecast na mesma rede Wi-Fi. Abra a página do álbum no Chrome, com o código de acesso.
+2. O ícone de transmitir aparece no player (se não aparecer: o Chromecast está em outra rede, ou o navegador não é o Chrome).
+3. Toque nele e escolha a TV. A TV começa na faixa e no ponto em que o celular estava, e o celular abre o painel com a letra.
+4. Teste: pausar, próxima, tocar no trecho 05 da barra, arrastar a barra, bloquear o celular (o álbum segue até o fim).
+5. Em outro aparelho com o mesmo código, dê play: em até 20 s a TV pausa (com a página do álbum aberta no celular).
+
+**iPhone (Safari) + Apple TV ou TV com AirPlay 2**
+1. Mesma rede Wi-Fi. Abra a página do álbum no Safari e dê play numa faixa.
+2. Toque no ícone da AirPlay no player e escolha a TV. O painel "Na TV" abre com a letra.
+3. Confira a capa e o título na TV e na tela de bloqueio; troque de faixa pela tela de bloqueio.
+
+**Modo TV (Samsung, LG, qualquer TV com navegador)**
+1. Na TV, abra o navegador e digite o endereço de `tv-endereco` (ex.: `thalescvalho-png.github.io/site-thales-thayson/tv`).
+2. Aparecem um código de 6 letras/números e um QR. No celular: aponte a câmera para o QR, ou abra o álbum e toque em **Assistir na TV**, digite o código e toque em **Conectar**.
+3. Na TV, aperte **OK** no controle (os navegadores só liberam o som depois de um toque na própria TV).
+4. Controle da TV: OK = tocar/pausar; ← → = faixa anterior/próxima (segurando: volta/adianta 10 s); ↑ ↓ = mostra/esconde a barra.
+5. Teste também: desligar o Wi-Fi da TV por alguns segundos (ela reconecta sozinha); **Desconectar** no celular (a TV volta a mostrar um código novo).
+6. Google TV não tem navegador de fábrica: nela, use o Cast (ela tem Chromecast embutido).
+
+### Fase 2: receptor próprio do Google Cast (pago, US$ 5 uma vez)
+
+Com ele, a TV mostra a mesma tela do Modo TV também pelo Chromecast. O código já está pronto para isso:
+1. Criar `tv/receiver.html` com o CAF Receiver SDK (`//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js`),
+   `css/tela-tv.css`, `js/bioluz.js`, `js/letra-lrc.js` e `js/tela-tv.js`; criar a tela com `TelaTV.criar(...)` e
+   ligar os eventos do `PlayerManager` (faixa atual, tempo, tocando) a `tela.posicao(...)`. As letras podem ir
+   no `customData` de cada item da fila, montada em `js/transmitir.js`.
+2. No console do Google Cast, cadastrar o receptor com o endereço `.../tv/receiver.html` e publicar.
+3. Em `js/transmitir.js`, trocar `CAST_APP_ID = 'CC1AD845'` pelo ID do receptor. O botão continua o mesmo.

@@ -40,6 +40,12 @@
     }
   ],
 
+  // Modo TV: uma "sala" por TV (src/sala-tv.ts). Durable Object com SQLite, que entra no plano gratuito.
+  "durable_objects": {
+    "bindings": [{ "name": "SALA_TV", "class_name": "SalaTV" }]
+  },
+  "migrations": [{ "tag": "v1-sala-tv", "new_sqlite_classes": ["SalaTV"] }],
+
   "r2_buckets": [
     { "binding": "ARQUIVOS", "bucket_name": "correnteza" }
   ],

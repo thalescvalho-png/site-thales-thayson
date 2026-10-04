@@ -1,0 +1,128 @@
+/* =====================================================================
+   TELA DA TV (js/tela-tv.js): capa de fundo, letra sincronizada e barra do álbum.
+   Usada no Modo TV (tv/index.html), no painel "Na TV" do celular e, na fase 2, no receptor do Cast.
+
+   Os valores estão escritos direto (e não em variáveis) porque os navegadores de TVs antigas
+   (Samsung 2017, LG 2016) não entendem variáveis CSS nem CSS Grid. Para ajustar, troque os
+   números marcados com "AJUSTE". Os tamanhos da TV usam vw/vh (parte da largura/altura da tela),
+   então valem para qualquer TV; foram pensados para ler a uns 3 metros de distância.
+
+   Paleta do site (css/estilo.css): noite #0E1826 · serra #13223A · névoa #A9BCCB
+   neblina #E7ECEE · creme #F4EDDC · âmbar #C68B3E. A cor de cada faixa vem do encarte (--ttv-tom).
+   ===================================================================== */
+
+.ttv{ position:absolute; left:0; top:0; right:0; bottom:0; overflow:hidden;
+  background:#0E1826; color:#E7ECEE;                                   /* noite / neblina */
+  font-family:'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing:antialiased; cursor:default; }
+
+/* ----- Fundo: a capa minúscula (40 px) ampliada já fica desfocada, sem custo para a TV ----- */
+.ttv-fundo{ position:absolute; left:-6%; top:-6%; right:-6%; bottom:-6%;
+  background-size:cover; background-position:50% 50%; }
+.ttv-veu{ position:absolute; left:0; top:0; right:0; bottom:0;
+  /* AJUSTE: escurecimento do fundo (o último número de cada rgba: 0 = nada, 1 = preto) */
+  background:linear-gradient(180deg, rgba(14,24,38,.62) 0%, rgba(14,24,38,.74) 55%, rgba(8,14,24,.92) 100%); }
+.ttv-veu::after{ content:""; position:absolute; left:0; top:0; right:0; bottom:0; opacity:.16;
+  background:radial-gradient(70% 60% at 70% 40%, #C68B3E, transparent 70%);
+  background:radial-gradient(70% 60% at 70% 40%, var(--ttv-tom, #C68B3E), transparent 70%); }
+
+/* ----- Capa nítida e título, à esquerda ----- */
+.ttv-lado{ position:absolute; left:5vw; top:7vh; bottom:24vh; width:29vw;
+  display:-webkit-box; display:-webkit-flex; display:flex; -webkit-flex-direction:column; flex-direction:column;
+  -webkit-justify-content:center; justify-content:center; }
+.ttv-capa{ display:block; width:25vw; max-width:46vh; height:auto; border-radius:.4vw;
+  box-shadow:0 2vh 6vh rgba(0,0,0,.55), 0 0 0 1px rgba(198,139,62,.35); }  /* fio âmbar em volta da capa */
+.ttv-info{ margin-top:3.2vh; }
+.ttv-num{ margin:0; font-size:1.25vw; font-weight:500; letter-spacing:.18em; text-transform:uppercase;
+  color:#C68B3E; color:var(--ttv-tom, #C68B3E); }
+.ttv-titulo{ margin:.6vh 0 0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500;
+  font-size:3.4vw; line-height:1.05; color:#F4EDDC; }                   /* AJUSTE: tamanho do título da faixa */
+.ttv-artistas{ margin:1vh 0 0; font-size:1.3vw; color:#A9BCCB; }        /* AJUSTE: texto de apoio */
+
+/* ----- Letra sincronizada, à direita ----- */
+.ttv-letra{ position:absolute; left:39vw; right:5vw; top:5vh; bottom:24vh; overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 16%, #000 80%, transparent 100%);
+  mask-image:linear-gradient(180deg, transparent 0%, #000 16%, #000 80%, transparent 100%); }
+.ttv-versos{ list-style:none; margin:0; padding:0;
+  /* AJUSTE: velocidade da rolagem da letra (.8s = oito décimos de segundo por verso) */
+  -webkit-transition:-webkit-transform .8s cubic-bezier(.22,.61,.36,1); transition:transform .8s cubic-bezier(.22,.61,.36,1);
+  will-change:transform; }
+.ttv-versos.sem-transicao{ -webkit-transition:none; transition:none; }
+.ttv-verso{ margin:0; padding:.9vh 0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500;
+  font-size:3.3vw; line-height:1.18;                                    /* AJUSTE: tamanho dos versos */
+  color:#A9BCCB; opacity:.42;                                           /* AJUSTE: versos que ainda vêm */
+  -webkit-transform-origin:0 50%; transform-origin:0 50%;
+  -webkit-transition:opacity .5s ease, color .5s ease, -webkit-transform .5s ease; transition:opacity .5s ease, color .5s ease, transform .5s ease; }
+.ttv-verso.proximo{ opacity:.62; }                                       /* AJUSTE: o verso logo depois do atual */
+.ttv-verso.cantado{ opacity:.2; }                                        /* AJUSTE: versos já cantados */
+.ttv-verso.atual{ opacity:1; color:#F4EDDC;                              /* verso atual: creme */
+  -webkit-transform:scale(1.04); transform:scale(1.04);                  /* AJUSTE: quanto o verso atual cresce */
+  text-shadow:0 0 2.4vw rgba(57,200,255,.30); }
+.ttv-verso.pausa{ letter-spacing:.3em; font-size:2.4vw; }
+.ttv-verso.pausa.atual{ color:#C68B3E; text-shadow:0 0 1.8vw rgba(198,139,62,.45); }
+
+/* faixa sem .lrc: só a capa e o título, no centro e maiores */
+.ttv.sem-letra .ttv-letra{ display:none; }
+.ttv.sem-letra .ttv-lado{ left:30vw; width:40vw; -webkit-align-items:center; align-items:center; text-align:center; }
+.ttv.sem-letra .ttv-capa{ width:32vw; max-width:52vh; }
+
+/* ----- Barra do álbum inteiro, em trechos com os nomes das faixas ----- */
+.ttv-base{ position:absolute; left:5vw; right:5vw; bottom:5vh; }
+.ttv-tempos{ display:-webkit-box; display:-webkit-flex; display:flex; -webkit-justify-content:space-between; justify-content:space-between;
+  margin-bottom:.8vh; font-size:1.3vw; color:#A9BCCB; font-variant-numeric:tabular-nums; }
+.ttv-tempo-faixa{ color:#E7ECEE; }
+.ttv-barra{ position:relative; height:8.5vh; }                            /* AJUSTE: altura da barra com os nomes */
+.ttv-barra canvas{ position:absolute; left:0; top:0; width:100%; height:4.6vh; }
+.ttv-trechos{ position:absolute; left:0; top:0; right:0; bottom:0; display:-webkit-box; display:-webkit-flex; display:flex; }
+.ttv-trecho{ position:relative; height:100%; border-left:1px solid rgba(169,188,203,.28); -webkit-box-sizing:border-box; box-sizing:border-box; }
+.ttv-trecho:first-child{ border-left-color:transparent; }
+.ttv-trecho-nome{ position:absolute; left:.5vw; right:.3vw; bottom:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:1.05vw; color:rgba(169,188,203,.75); }                       /* AJUSTE: nomes das faixas na barra */
+.ttv-trecho-nome b{ font-weight:600; }
+.ttv-trecho.passou .ttv-trecho-nome{ color:rgba(169,188,203,.45); }
+.ttv-trecho.atual .ttv-trecho-nome{ color:#F4EDDC; }
+.ttv-trecho.atual .ttv-trecho-nome b{ color:#C68B3E; color:var(--ttv-tom-trecho, #C68B3E); }
+
+/* ----- Aviso no topo ("Pausado: começou a tocar em outro aparelho") ----- */
+.ttv-aviso{ position:absolute; left:50%; top:3vh; margin:0; padding:1vh 1.6vw; border-radius:999px; max-width:70vw;
+  -webkit-transform:translateX(-50%); transform:translateX(-50%);
+  background:rgba(14,24,38,.9); border:1px solid rgba(198,139,62,.6); color:#F4EDDC; font-size:1.3vw; display:none; }
+.ttv.avisando .ttv-aviso{ display:block; }
+
+/* ----- Modo leve (TV): sem sombras de texto, que pesam em TVs fracas ----- */
+.ttv.leve .ttv-verso.atual, .ttv.leve .ttv-verso.pausa.atual{ text-shadow:none; }
+.ttv.leve .ttv-capa{ box-shadow:0 0 0 1px rgba(198,139,62,.35); }
+
+/* =====================================================================
+   VERSÃO COMPACTA: o painel "Na TV" no celular (correnteza.html)
+   ===================================================================== */
+.ttv.compacta{ font-size:16px; }
+.ttv.compacta .ttv-lado{ left:16px; right:16px; top:12px; bottom:auto; width:auto; height:64px;
+  -webkit-flex-direction:row; flex-direction:row; -webkit-align-items:center; align-items:center; -webkit-justify-content:flex-start; justify-content:flex-start; }
+.ttv.compacta .ttv-capa{ width:64px; height:64px; max-width:none; border-radius:4px; -webkit-flex-shrink:0; flex-shrink:0; }
+.ttv.compacta .ttv-info{ margin:0 0 0 14px; min-width:0; }
+.ttv.compacta .ttv-num{ font-size:11px; }
+.ttv.compacta .ttv-titulo{ font-size:26px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ttv.compacta .ttv-artistas{ font-size:12px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ttv.compacta .ttv-letra{ left:16px; right:16px; top:92px; bottom:104px; }
+.ttv.compacta .ttv-verso{ font-size:25px; padding:5px 0; }                /* AJUSTE: versos no celular */
+.ttv.compacta .ttv-verso.pausa{ font-size:19px; }
+.ttv.compacta .ttv-verso.atual{ text-shadow:0 0 18px rgba(57,200,255,.3); }
+.ttv.compacta.sem-letra .ttv-lado{ left:16px; width:auto; top:18%; height:auto; -webkit-flex-direction:column; flex-direction:column; }
+.ttv.compacta.sem-letra .ttv-capa{ width:min(62vw, 34vh); height:auto; }
+.ttv.compacta.sem-letra .ttv-info{ margin:18px 0 0; }
+.ttv.compacta.sem-letra .ttv-titulo{ white-space:normal; }
+.ttv.compacta .ttv-base{ left:16px; right:16px; bottom:16px; }
+.ttv.compacta .ttv-tempos{ font-size:12px; margin-bottom:4px; }
+.ttv.compacta .ttv-barra{ height:58px; touch-action:none; }
+.ttv.compacta .ttv-barra canvas{ height:30px; }
+.ttv.compacta .ttv-trecho-nome{ font-size:11px; left:3px; right:1px; text-align:left; }
+.ttv.compacta .ttv-trecho-nome span{ display:none; }                     /* no celular, só os números das faixas */
+.ttv.compacta .ttv-aviso{ top:auto; bottom:126px; font-size:13px; padding:8px 14px; width:max-content; max-width:calc(100% - 32px); }
+.ttv.controlavel .ttv-barra{ cursor:pointer; }
+.ttv.arrastando .ttv-tempo-faixa, .ttv.arrastando .ttv-tempo-album{ color:#C68B3E; }
+
+@media (prefers-reduced-motion: reduce){
+  .ttv-versos, .ttv-verso{ -webkit-transition:none; transition:none; }
+  .ttv-verso.atual{ -webkit-transform:none; transform:none; }
+}

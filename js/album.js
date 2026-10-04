@@ -125,113 +125,8 @@
   };
 })();
 
-// ----- 3. Barra de avanço viva -----
-// A parte já ouvida é uma correnteza que acende como plâncton bioluminescente: três fios de luz
-// ondulando, uma cabeça que pulsa e faíscas que se soltam e ficam para trás.
-window.Correnteza.bioluz = function(amplitude){
-  var reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var canvas = null, ctx = null, w = 0, h = 0, t = 0, faiscas = [];
-  var tom = [95, 242, 224];
-  var obsTamanho = 'ResizeObserver' in window ? new ResizeObserver(function(){ medir(); }) : null;
-
-  function rgb(hex){
-    var m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
-    if (!m) return null;
-    var n = parseInt(m[1], 16);
-    return [n >> 16, (n >> 8) & 255, n & 255];
-  }
-  function cor(c, a){ return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a.toFixed(3) + ')'; }
-  function medir(){
-    if (!canvas) return;
-    var r = canvas.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
-    w = r.width; h = r.height;
-    canvas.width = Math.max(1, Math.round(w * dpr)); canvas.height = Math.max(1, Math.round(h * dpr));
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function onda(x, fim, fase, amp){
-    // os fios se juntam na cabeça e se abrem ao longo do que já passou
-    var abre = Math.min(1, (fim - x) / 70) * Math.min(1, x / 24 + .2);
-    return h / 2 + (Math.sin(x * .05 - fase) * .6 + Math.sin(x * .017 + fase * .55) * .4) * amp * abre;
-  }
-
-  function quadro(dt, p, tocando){
-    if (!ctx || w < 2) return;
-    if (reduzir) dt = 0;
-    t += dt / 60;
-    var fim = Math.max(0, Math.min(1, p || 0)) * w, meio = h / 2;
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.clearRect(0, 0, w, h);
-    // o leito do rio, ainda escuro
-    ctx.strokeStyle = 'rgba(169,188,203,.16)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(1, meio); ctx.lineTo(w - 1, meio); ctx.stroke();
-    if (fim < 1) return;
-
-    ctx.globalCompositeOperation = 'lighter';
-    [
-      { amp: amplitude,       fase: t * 2.1,       c: [30, 95, 210],  a: .45, lw: 4,   brilho: 10 },
-      { amp: amplitude * .7,  fase: t * 3 + 1.7,   c: [57, 200, 255], a: .7,  lw: 2,   brilho: 8 },
-      { amp: amplitude * .45, fase: t * 1.5 + 3.1, c: tom,            a: .95, lw: 1.4, brilho: 6 }
-    ].forEach(function(f){
-      var g = ctx.createLinearGradient(0, 0, fim, 0);
-      g.addColorStop(0, cor(f.c, f.a * .25));
-      g.addColorStop(.7, cor(f.c, f.a * .7));
-      g.addColorStop(1, cor(f.c, f.a));
-      ctx.strokeStyle = g; ctx.lineWidth = f.lw;
-      ctx.shadowColor = cor(f.c, .9); ctx.shadowBlur = f.brilho;
-      ctx.beginPath();
-      for (var x = 0; x <= fim; x += 3) ctx[x ? 'lineTo' : 'moveTo'](x, onda(x, fim, f.fase, f.amp));
-      ctx.lineTo(fim, meio);
-      ctx.stroke();
-    });
-    ctx.shadowBlur = 0;
-
-    // faíscas: nascem na cabeça e ao longo da correnteza, derivam para trás e se apagam
-    if (tocando && dt){
-      var nascer = dt * (amplitude > 6 ? .9 : .5);
-      while (nascer > 0){
-        if (Math.random() < nascer){
-          var junto = Math.random() < .55;
-          var px = junto ? fim - Math.random() * 14 : Math.random() * fim;
-          faiscas.push({ x: px, y: onda(px, fim, t * 3 + 1.7, amplitude * .7) + (Math.random() - .5) * amplitude,
-            vx: -(.15 + Math.random() * .6), vy: (Math.random() - .5) * .35,
-            r: .6 + Math.random() * (amplitude > 6 ? 1.8 : 1.1), vida: 0, max: 30 + Math.random() * 60,
-            c: Math.random() < .3 ? tom : Math.random() < .5 ? [150, 255, 240] : [80, 190, 255] });
-        }
-        nascer -= 1;
-      }
-    }
-    faiscas = faiscas.filter(function(s){
-      s.vida += dt; s.x += s.vx * dt; s.y += s.vy * dt;
-      if (s.vida > s.max || s.x < 0) return false;
-      var a = Math.sin(Math.PI * s.vida / s.max);
-      ctx.fillStyle = cor(s.c, a * .22);
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 3, 0, 6.29); ctx.fill();
-      ctx.fillStyle = cor(s.c, a);
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.29); ctx.fill();
-      return true;
-    });
-
-    // a cabeça da correnteza, pulsando
-    var pulso = 1 + (tocando ? Math.sin(t * 6) * .18 : 0), raio = (amplitude > 6 ? 11 : 7) * pulso;
-    var luz = ctx.createRadialGradient(fim, meio, 0, fim, meio, raio);
-    luz.addColorStop(0, 'rgba(235,255,252,.95)');
-    luz.addColorStop(.3, cor(tom, .7));
-    luz.addColorStop(1, cor(tom, 0));
-    ctx.fillStyle = luz;
-    ctx.beginPath(); ctx.arc(fim, meio, raio, 0, 6.29); ctx.fill();
-  }
-
-  return {
-    ligar: function(c){
-      if (canvas === c) return;
-      if (canvas && obsTamanho) obsTamanho.unobserve(canvas);
-      canvas = c; ctx = c ? c.getContext('2d') : null; faiscas = [];
-      if (c){ medir(); if (obsTamanho) obsTamanho.observe(c); }
-    },
-    cor: function(hex){ tom = rgb(hex) || [95, 242, 224]; },
-    quadro: quadro
-  };
-};
+// ----- 3. Barra de avanço viva: fica em js/bioluz.js (a mesma do Modo TV) -----
+window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude); };
 
 // ----- 4. Lista de faixas e player -----
 (function(){
@@ -408,7 +303,12 @@ window.Correnteza.bioluz = function(amplitude){
     if ('mediaSession' in navigator){
       navigator.mediaSession.metadata = new MediaMetadata({
         title: f.titulo, artist: 'Thales Carvalho & Thayson Azevedo', album: 'Correnteza',
-        artwork: [{ src: 'img/sem-ano_capa-album_correnteza.webp', sizes: '1600x1600', type: 'image/webp' }]
+        // JPG primeiro: a tela de bloqueio do iPhone e as TVs pela AirPlay aceitam melhor que WebP
+        artwork: [
+          { src: 'img/tv/capa-512.jpg', sizes: '512x512', type: 'image/jpeg' },
+          { src: 'img/tv/capa-1024.jpg', sizes: '1024x1024', type: 'image/jpeg' },
+          { src: 'img/sem-ano_capa-album_correnteza.webp', sizes: '1600x1600', type: 'image/webp' }
+        ]
       });
     }
     retomarEm = -1;
@@ -467,6 +367,7 @@ window.Correnteza.bioluz = function(amplitude){
   audio.addEventListener('timeupdate', function(){
     if (completo && !audio.paused) conferirVez();
     if (arrastando || !audio.duration) return;
+    posicaoNaSessao();
     barra.value = (audio.currentTime / audio.duration) * 100;
     tempoAtual.textContent = formatar(audio.currentTime);
     if (audio.paused) pintar(0); // ao arrastar a barra principal com o áudio parado
@@ -499,6 +400,15 @@ window.Correnteza.bioluz = function(amplitude){
     pedindoPlay = false;
     sub.textContent = completo ? 'Não deu para tocar esta faixa agora. Tente de novo em instantes.' : 'Prévia indisponível no momento.';
   });
+
+  // posição da música na tela de bloqueio e na TV (AirPlay): no máximo uma vez a cada 5 s
+  var ultimaPosicao = 0;
+  function posicaoNaSessao(){
+    if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState || Date.now() - ultimaPosicao < 5000) return;
+    ultimaPosicao = Date.now();
+    try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch (e) {}
+  }
+  audio.addEventListener('seeked', function(){ ultimaPosicao = 0; posicaoNaSessao(); });
 
   // ----- Uma reprodução por vez -----
   // Ao dar play, este aparelho pega a vez. Enquanto toca, confere a cada 20 s se outro aparelho
