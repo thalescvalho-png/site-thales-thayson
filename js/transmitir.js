@@ -10,8 +10,14 @@
 // Nos três casos o celular abre o painel "Na TV": a mesma tela da TV (js/tela-tv.js), compacta,
 // com a barra do álbum inteiro (tocar num trecho pula para a faixa, arrastar adianta ou volta).
 (function(){
+  // ===== LIGA/DESLIGA =====
+  // Desligado em out/2026: nenhum botão de TV aparece no site (o código fica guardado).
+  // Para religar: troque para true e publique. Os ícones e o botão "Ouça na TV" voltam sozinhos.
+  var LIGADO = false;
+
   var C = window.Correnteza, P = C && C.player;
-  if (!P || !window.TelaTV) return;
+  if (!LIGADO || !P || !window.TelaTV) return;
+  [].forEach.call(document.querySelectorAll('[data-assistir-tv]'), function(b){ b.hidden = false; });
 
   // ===== AJUSTES =====
   // FASE 2 (receptor próprio, US$ 5 no console do Google Cast): troque só este ID pelo do seu receptor.
