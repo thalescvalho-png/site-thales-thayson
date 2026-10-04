@@ -185,6 +185,9 @@ No site, os dados que ainda faltam aparecem entre colchetes (`[ano]`, `[evento]`
 
 ## Ouvir na TV
 
+> **Desligado por enquanto** (digitar o endereço na TV complicava a jornada). Nenhum botão aparece no site.
+> Para religar, troque `LIGADO = false` para `true` no topo de `js/transmitir.js` e publique.
+
 Só para quem tem o código de acesso. Três caminhos, todos na página do álbum:
 
 | Aparelho | Como | O que a TV mostra | A letra sincronizada |
