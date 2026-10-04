@@ -14,6 +14,7 @@ css/estilo.css      estilos de todas as páginas (a paleta fica nas variáveis d
 js/principal.js     parallax, capa de Correnteza, trajetória horizontal e galeria ampliada
 js/medicao.js       origem dos links marcados, Cloudflare Web Analytics e contagem do funil (sem cookies)
 js/album.js         código de acesso, player, encarte e cartão do fim da prévia (tudo vem da API de venda)
+js/camada.js        com música tocando, as outras páginas abrem por cima do álbum e a música não para
 js/compra.js        compra pelo Mercado Pago (Pix, crédito e débito) e tela de "obrigado"
 js/aparelhos.js     "Meus aparelhos" e desconectar um aparelho antigo
 js/compartilhar.js  cartões para os Stories (ouvindo, apoiei, verso)

@@ -828,3 +828,10 @@ html.letra-aberta, html.letra-aberta body{ overflow:hidden; }
   .botao:hover{ transform:none; }
   ::view-transition-old(root), ::view-transition-new(root){ animation:none; }
 }
+
+/* ===== CAMADA DO SITE (js/camada.js) =====
+Com música tocando, as outras páginas abrem por cima do álbum e o player fica à vista embaixo. */
+.camada-site{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:24; background:var(--noite); }
+.camada-site[hidden]{ display:none; }
+.camada-site iframe{ display:block; width:100%; height:100%; border:0; }
+html.camada-aberta, html.camada-aberta body{ overflow:hidden; }
