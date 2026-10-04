@@ -310,6 +310,10 @@ body.tocando .faixas li.atual .mini-icone .i-pausa{ display:inline; }
 .tocador{ position:fixed; left:0; right:0; bottom:0; z-index:25; display:grid; grid-template-columns:48px minmax(0,1fr) auto minmax(0,1.4fr); align-items:center; gap:16px; padding:12px 24px calc(12px + env(safe-area-inset-bottom,0px)); background:rgba(14,24,38,.96); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-top:1px solid #1F3550; }
 .tocador img{ width:48px; height:48px; border-radius:3px; object-fit:cover; }
 .tocador-info{ line-height:1.25; min-width:0; }
+/* a capa e o nome da faixa abrem a letra em tela cheia */
+button.tocador-info{ display:block; width:100%; padding:0; border:0; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+.tocador > img{ cursor:pointer; }
+@media (hover:hover){ button.tocador-info:hover b{ text-decoration:underline; text-underline-offset:3px; } }
 .tocador-info b{ display:block; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .tocador-info small{ font-size:12px; color:var(--nevoa); }
 .tocador-controles{ display:flex; align-items:center; gap:6px; }
@@ -540,15 +544,17 @@ body.tocando .tocador-controles button.tocar{ box-shadow:0 0 26px -4px rgba(198,
 /* ----- Letra sincronizada, em tela cheia (js/letra.js) ----- */
 html.letra-aberta, html.letra-aberta body{ overflow:hidden; }
 .letra-tela{ --tom:var(--ambar); position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; overflow:hidden;
-  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px); color:var(--texto);
-  background:linear-gradient(180deg, rgba(6,12,20,.5), transparent 35%, rgba(6,12,20,.75)),
-    radial-gradient(90% 55% at 50% 0%, color-mix(in srgb, var(--tom) 10%, transparent), transparent 70%), var(--noite);
-  opacity:0; transition:opacity .45s ease; }
-.letra-tela.aberta{ opacity:1; }
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px); color:var(--texto); background:var(--noite);
+  opacity:0; transform:translateY(7%); transition:opacity .4s ease, transform .55s cubic-bezier(.2,.75,.2,1); }
+.letra-tela.aberta{ opacity:1; transform:none; }
+.letra-tela:not(.aberta){ pointer-events:none; }
 .letra-tela > *{ position:relative; z-index:1; }
-.letra-tela > .letra-fundo{ display:none; position:absolute; inset:0; z-index:0; }
-.letra-tela.convite > .letra-fundo{ display:block; }
-.letra-fundo img{ width:100%; height:100%; object-fit:cover; transform:scale(1.15); filter:blur(28px) brightness(.42) saturate(.9); }
+/* a capa do álbum, desfocada e escurecida, com um toque da cor da faixa no alto */
+.letra-tela > .letra-fundo{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+.letra-fundo img{ width:100%; height:100%; object-fit:cover; transform:scale(1.2); filter:blur(32px) brightness(.4) saturate(1.05); }
+.letra-fundo::after{ content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(6,12,20,.55), rgba(6,12,20,.18) 30%, rgba(6,12,20,.3) 62%, rgba(6,12,20,.88)),
+    radial-gradient(90% 55% at 50% 0%, color-mix(in srgb, var(--tom) 14%, transparent), transparent 70%); }
 .letra-topo{ flex-shrink:0; display:flex; align-items:center; justify-content:center; height:60px; padding:0 16px; }
 .letra-fechar{ position:absolute; left:12px; top:8px; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; border:0; background:rgba(169,188,203,.08); color:var(--texto); cursor:pointer; }
 .letra-fechar svg{ width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
@@ -590,6 +596,7 @@ html.letra-aberta, html.letra-aberta body{ overflow:hidden; }
 }
 @media (prefers-reduced-motion: reduce){
   .letra-tela, .letra-verso button{ transition:none; }
+  .letra-tela{ transform:none; }
   .letra-verso.atual button, .letra-verso.pausa.atual button{ transform:none; text-shadow:none; }
 }
 .encarte-intro a{ color:var(--ambar); text-underline-offset:3px; }

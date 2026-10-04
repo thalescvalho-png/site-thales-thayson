@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Correnteza na TV · Thales Carvalho &amp; Thayson Azevedo</title>
+<meta name="description" content="Ouça Correnteza na TV, com a letra sincronizada. O celular vira o controle remoto.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E1826">
+<meta name="color-scheme" content="dark">
+<!-- Modo TV: esta página é aberta no navegador da TV (Samsung, LG, Google TV...).
+     Ela mostra um código; quem comprou o álbum confirma no celular, e o celular vira o controle remoto.
+     O endereço da API é o mesmo da página do álbum. -->
+<meta name="correnteza-api" content="https://correnteza.correnteza-backend.workers.dev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tela-tv.css?v=1">
+<style>
+/* Telas do Modo TV antes e por cima da tela da letra (os tamanhos usam vw/vh: valem em qualquer TV).
+   Paleta: noite #0E1826 · névoa #A9BCCB · neblina #E7ECEE · creme #F4EDDC · âmbar #C68B3E */
+html, body{ margin:0; height:100%; background:#0E1826; color:#E7ECEE; overflow:hidden; }
+body{ font-family:'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; }
+#tela{ position:absolute; left:0; top:0; right:0; bottom:0; }
+.camada{ position:absolute; left:0; top:0; right:0; bottom:0; display:none; }
+.camada.visivel{ display:block; }
+
+/* pareamento: código grande à esquerda, QR à direita */
+#parear{ background:#0E1826 url(../img/tv/capa-fundo.jpg) 50% 50% / cover no-repeat; }
+#parear::before{ content:""; position:absolute; left:0; top:0; right:0; bottom:0; background:rgba(14,24,38,.84); }
+.parear-in{ position:absolute; left:7vw; right:7vw; top:12vh; bottom:10vh; }
+.parear-texto{ position:absolute; left:0; top:0; width:52vw; }
+.rotulo{ margin:0; font-size:1.3vw; letter-spacing:.2em; text-transform:uppercase; color:#C68B3E; }
+.parear-texto h1{ margin:1.4vh 0 0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:5vw; line-height:1; color:#F4EDDC; }
+.passo{ margin:4vh 0 0; font-size:1.75vw; line-height:1.45; color:#E7ECEE; max-width:46vw; }
+.passo b{ color:#F4EDDC; }
+.codigo{ margin:3.5vh 0 0; font-family:'Work Sans', monospace; font-weight:600; font-size:7.5vw; letter-spacing:.14em; color:#F4EDDC;
+  text-shadow:0 0 3vw rgba(57,200,255,.25); }
+.situacao{ margin:2.5vh 0 0; font-size:1.3vw; color:#A9BCCB; min-height:2em; }
+.qr{ position:absolute; right:0; top:4vh; width:27vw; text-align:center; }
+.qr-caixa{ display:inline-block; padding:1.4vw; background:#F4EDDC; border-radius:1vw; }
+.qr-caixa svg, .qr-caixa img{ display:block; width:22vw; height:22vw; }
+.qr p{ margin:2vh 0 0; font-size:1.25vw; color:#A9BCCB; }
+
+/* "Aperte OK para começar": os navegadores só tocam som depois de um toque na própria TV */
+#comecar{ background:rgba(8,14,24,.72); }
+.comecar-in{ position:absolute; left:50%; top:50%; -webkit-transform:translate(-50%,-50%); transform:translate(-50%,-50%); text-align:center; }
+.comecar-in p{ margin:0 0 3vh; font-family:'Cormorant Garamond', Georgia, serif; font-size:3.4vw; color:#F4EDDC; }
+#btComecar{ font:inherit; font-family:'Work Sans', sans-serif; font-weight:600; font-size:2vw; padding:1.6vh 3.2vw; border:0; border-radius:999px;
+  background:#C68B3E; color:#0E1826; box-shadow:0 0 0 .4vw rgba(244,237,220,.35); }
+#btComecar:focus{ outline:none; box-shadow:0 0 0 .5vw #F4EDDC; }
+.comecar-in small{ display:block; margin-top:3vh; font-size:1.25vw; color:#A9BCCB; }
+
+/* ↑/↓ no controle escondem e mostram a barra do álbum */
+body.sem-barra .ttv-base{ display:none; }
+body.sem-barra .ttv-letra, body.sem-barra .ttv-lado{ bottom:8vh; }
+</style>
+</head>
+<body>
+
+<div id="tela" aria-label="Correnteza tocando"></div>
+
+<section class="camada visivel" id="parear" aria-labelledby="parearTitulo">
+<div class="parear-in">
+<div class="parear-texto">
+<p class="rotulo">Correnteza na TV</p>
+<h1 id="parearTitulo">Thales Carvalho &amp; Thayson Azevedo</h1>
+<p class="passo">No celular, abra o álbum no site, toque em <b>Ouça na TV</b> e digite este código:</p>
+<p class="codigo" id="codigo" aria-live="polite">· · · · · ·</p>
+<p class="situacao" id="situacao">Gerando o código…</p>
+</div>
+<div class="qr" id="qr" hidden>
+<div class="qr-caixa" id="qrCaixa"></div>
+<p>Ou aponte a câmera do celular para o código</p>
+</div>
+</div>
+</section>
+
+<section class="camada" id="comecar" aria-labelledby="comecarTexto">
+<div class="comecar-in">
+<p id="comecarTexto">Tudo pronto para tocar Correnteza</p>
+<button type="button" id="btComecar">Aperte OK para começar</button>
+<small>Depois disso, use o celular como controle remoto.</small>
+</div>
+</section>
+
+<script src="../js/vendor/qrcode.js?v=1"></script>
+<script src="../js/bioluz.js?v=1"></script>
+<script src="../js/letra-lrc.js?v=1"></script>
+<script src="../js/tela-tv.js?v=1"></script>
+<script src="../js/tv.js?v=1"></script>
+</body>
+</html>
