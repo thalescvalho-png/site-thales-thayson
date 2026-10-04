@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=9">
+<link rel="stylesheet" href="css/estilo.css?v=10">
 </head>
 <body class="pagina-album">
 
@@ -319,8 +319,38 @@ Comentários sobre o álbum ou sobre cada faixa, montados por js/mural.js e mode
 <audio id="audio" preload="none"></audio>
 </div>
 
+<!-- ===== LETRA SINCRONIZADA (js/letra.js; leitura do .lrc em js/letra-lrc.js) =====
+Tela cheia por cima da página, tocando no mesmo <audio> do player. O .lrc de cada faixa vem da API
+só para quem comprou; sem o álbum, a tela mostra o convite e nenhum verso é pedido. -->
+<div class="letra-tela" id="letraTela" role="dialog" aria-modal="true" aria-labelledby="letraTitulo" hidden>
+<div class="letra-fundo" aria-hidden="true"><img src="img/sem-ano_capa-album_correnteza.webp" width="1600" height="1600" alt="" loading="lazy"></div>
+<div class="letra-topo">
+<button type="button" class="letra-fechar" id="letraFechar" aria-label="Fechar a letra e voltar às faixas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9l6.5 6.5L18.5 9"/></svg></button>
+<span class="letra-topo-rotulo">Letra</span>
+</div>
+<div class="letra-rolagem" id="letraRolagem">
+<div class="letra-coluna" id="letraConteudo"></div>
+</div>
+<p class="visualmente-oculto" id="letraAoVivo" aria-live="polite" aria-atomic="true"></p>
+<div class="letra-base">
+<div class="letra-info"><h2 id="letraTitulo">Correnteza</h2><p id="letraSub">Correnteza</p></div>
+<div class="tocador-tempo letra-tempo">
+<span id="letraTempoAtual">0:00</span>
+<div class="bio"><canvas id="bioLetra" aria-hidden="true"></canvas><input type="range" id="letraBarra" min="0" max="100" step="0.1" value="0" aria-label="Posição na faixa"></div>
+<span id="letraTempoTotal">0:00</span>
+</div>
+<div class="tocador-controles letra-controles">
+<button type="button" id="letraAnterior" aria-label="Faixa anterior">&#9198;&#xFE0E;</button>
+<button type="button" id="letraTocar" class="tocar" aria-label="Tocar">&#9654;&#xFE0E;</button>
+<button type="button" id="letraProxima" aria-label="Próxima faixa">&#9197;&#xFE0E;</button>
+</div>
+</div>
+</div>
+
 <script src="js/medicao.js?v=1"></script>
-<script src="js/album.js?v=7"></script>
+<script src="js/album.js?v=8"></script>
+<script src="js/letra-lrc.js?v=1"></script>
+<script src="js/letra.js?v=1"></script>
 <script src="js/compra.js?v=6"></script>
 <script src="js/aparelhos.js?v=1"></script>
 <script src="js/compartilhar.js?v=2"></script>
