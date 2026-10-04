@@ -251,10 +251,16 @@ export async function liberarAparelho(
 }
 
 // ----- Uma reprodução por vez -----
+export const PREFIXO_TV = "tv:";
 // Quem dá play "pega a vez". Os outros aparelhos perguntam de tempos em tempos e pausam se perderam a vez.
 
 export async function marcarTocando(env: Env, codigo: string, aparelho: string): Promise<void> {
   await env.DB.prepare("UPDATE codigos SET tocando_aparelho = ?2, tocando_em = ?3 WHERE codigo = ?1").bind(codigo, aparelho, agora()).run();
+}
+
+/** Solta a vez, se ainda for deste aparelho (ex.: a TV foi desconectada). */
+export async function soltarVez(env: Env, codigo: string, aparelho: string): Promise<void> {
+  await env.DB.prepare("UPDATE codigos SET tocando_aparelho = NULL WHERE codigo = ?1 AND tocando_aparelho = ?2").bind(codigo, aparelho).run();
 }
 
 export async function quemEstaTocando(env: Env, codigo: string, aparelho: string): Promise<{ meu: boolean; outro?: string }> {
@@ -266,5 +272,7 @@ export async function quemEstaTocando(env: Env, codigo: string, aparelho: string
     .bind(codigo)
     .first<{ tocando: string | null; descricao: string | null }>();
   if (!linha?.tocando || linha.tocando === aparelho) return { meu: true };
+  // a TV do Modo TV pega a vez com um identificador próprio ("tv:" + código da sala), que não ocupa vaga de aparelho
+  if (linha.tocando.startsWith(PREFIXO_TV)) return { meu: false, outro: "TV · Modo TV" };
   return { meu: false, outro: descreverAparelho(linha.descricao) };
 }

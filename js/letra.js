@@ -153,6 +153,8 @@
     return cache[f.id].catch(function(){ return []; });
   }
   C.aoCarregar(function(){ cache = {}; if (aberta) mostrar(P.atual()); else mostrada = -1; });
+  // o painel "Na TV" (js/transmitir.js) usa a mesma letra, já pronta: [] = faixa sem .lrc
+  C.letraDe = function(i){ var f = P.faixas()[i]; return f && P.completo() ? letraDe(f) : Promise.resolve([]); };
 
   function mostrar(i){
     var f = P.faixas()[i];

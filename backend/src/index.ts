@@ -8,6 +8,8 @@
 // GET  /api/preview/:arquivo         prévia pública de 15 s
 // GET  /api/stream/:arquivo          faixa completa, encarte.json ou PDF (link assinado; suporte a Range)
 // GET  /api/letra/:faixa.lrc?token=  letra sincronizada (.lrc), só para quem comprou
+// GET  /api/cast/fila?token=&inicio= fila do Chromecast (links com validade escalonada)
+// POST /api/tv/sessao  POST /api/tv/parear  GET /api/tv/ws   Modo TV (veja src/tv.ts e src/sala-tv.ts)
 // GET  /api/download/:arquivo        download com nome amigável (encarte.pdf; faixas e .zip só com DOWNLOAD_FAIXAS = "sim")
 // GET  /api/aparelhos?token=         aparelhos que usam o código   POST /api/aparelhos/liberar  desconecta um
 // GET|POST /api/tocando              uma reprodução por vez
@@ -17,7 +19,7 @@
 // /api/admin/...                     moderação e resumo (senha ADMIN_SENHA)
 import { rotaAdmin } from "./admin";
 import { tarefaAgendada } from "./agendado";
-import { rotaAlbum, rotaArquivo, rotaLetra, rotaLinks } from "./album";
+import { rotaAlbum, rotaArquivo, rotaFilaCast, rotaLetra, rotaLinks } from "./album";
 import { rotaAparelhos, rotaLiberarAparelho, rotaTocando } from "./aparelhos";
 import { rotaCheckout, rotaPedido } from "./checkout";
 import { rotaDescadastrar, rotaNovidades } from "./contatos";
@@ -25,7 +27,10 @@ import { aplicarCors, cabecalhosCors } from "./cors";
 import { rotaEvento } from "./eventos";
 import { rotaComentarios, rotaConfirmarComentario } from "./mural";
 import { decodificar, erro, json } from "./util";
+import { rotaTvParear, rotaTvSessao, rotaTvWs } from "./tv";
 import { rotaWebhook } from "./webhook";
+
+export { SalaTV } from "./sala-tv";
 
 const SO_POST: Record<string, (request: Request, env: Env) => Promise<Response>> = {
   "/api/checkout": rotaCheckout,
@@ -46,11 +51,14 @@ async function rotear(request: Request, env: Env, ctx: ExecutionContext, url: UR
   if (pathname.startsWith("/api/admin/")) return rotaAdmin(request, env, url);
   if (pathname === "/api/tocando") return rotaTocando(request, env, ctx, url);
   if (pathname === "/api/comentarios") return rotaComentarios(request, env, ctx);
+  if (pathname === "/api/tv/sessao") return metodo === "POST" ? rotaTvSessao(request, env, url) : erro(405, "metodo_nao_permitido");
+  if (pathname === "/api/tv/parear") return metodo === "POST" ? rotaTvParear(request, env, ctx) : erro(405, "metodo_nao_permitido");
   if (!leitura) return erro(405, "metodo_nao_permitido");
 
   if (pathname === "/") return json({ servico: "Correnteza", ok: true });
   if (pathname === "/api/album") return rotaAlbum(request, env, ctx, url);
   if (pathname === "/api/links") return rotaLinks(request, env, ctx, url);
+  if (pathname === "/api/cast/fila") return rotaFilaCast(request, env, ctx, url);
   if (pathname === "/api/aparelhos") return rotaAparelhos(request, env, url);
 
   const pedido = pathname.match(/^\/api\/order\/([^/]+)$/);
@@ -73,6 +81,15 @@ export default {
     const url = new URL(request.url);
     const cors = cabecalhosCors(request, env);
     if (request.method === "OPTIONS") return aplicarCors(new Response(null, { status: 204 }), cors);
+    // conexão do Modo TV: a resposta 101 (WebSocket) não pode ser copiada pelo CORS
+    if (url.pathname === "/api/tv/ws") {
+      try {
+        return await rotaTvWs(request, env, ctx, url);
+      } catch (e) {
+        console.error("Erro no Modo TV:", e instanceof Error ? e.stack : e);
+        return erro(500, "erro_interno");
+      }
+    }
     let resposta: Response;
     try {
       resposta = await rotear(request, env, ctx, url);

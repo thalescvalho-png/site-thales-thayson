@@ -16,6 +16,8 @@ export const EVENTOS = new Set([
   "compartilhar", // gerou um cartão para Stories
   "comentario", // enviou um comentário ao mural
   "links", // abriu a página de links da bio
+  "tv_conectada", // conectou uma TV pelo Modo TV
+  "cast", // mandou o álbum para um Chromecast
 ]);
 
 export async function rotaEvento(request: Request, env: Env): Promise<Response> {
