@@ -1,6 +1,6 @@
 /* =====================================================================
    OUVIR NA TV, na página do álbum (js/transmitir.js)
-   Ícones de Cast / AirPlay / TV no player, a janela "Assistir na TV" e o painel "Na TV" do celular.
+   Ícones de Cast / AirPlay / TV no player, a janela "Ouça na TV" e o painel "Na TV" do celular.
    Cores da paleta do site (variáveis de css/estilo.css).
    ===================================================================== */
 
@@ -14,7 +14,7 @@
 google-cast-launcher.na-tv-icone{ --disconnected-color:var(--texto); --connected-color:var(--ambar); }
 body.na-tv #btTv{ color:var(--ambar); }
 
-/* ----- Janela "Assistir na TV" ----- */
+/* ----- Janela "Ouça na TV" ----- */
 .tv-conectar{ position:fixed; inset:0; z-index:45; display:flex; align-items:center; justify-content:center; padding:16px;
   background:rgba(6,12,20,.78); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); opacity:0; transition:opacity .3s ease; }
 .tv-conectar[hidden]{ display:none; }
@@ -31,6 +31,7 @@ body.na-tv #btTv{ color:var(--ambar); }
 .tv-conectar .fechar{ position:absolute; top:10px; right:10px; width:42px; height:42px; border-radius:50%; border:1px solid rgba(169,188,203,.35);
   background:transparent; color:var(--texto); font-size:24px; line-height:1; cursor:pointer; }
 .tv-sem-acesso{ margin-top:16px; }
+.tv-usar-cast{ margin-top:18px; width:100%; }
 .tv-sem-acesso a{ color:var(--ambar); }
 
 /* ----- Painel "Na TV": controle remoto com a tela da TV em versão compacta ----- */

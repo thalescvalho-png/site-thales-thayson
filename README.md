@@ -17,13 +17,13 @@ js/album.js         código de acesso, player, encarte e cartão do fim da prév
 js/compra.js        compra pelo Mercado Pago (Pix, crédito e débito) e tela de "obrigado"
 js/aparelhos.js     "Meus aparelhos" e desconectar um aparelho antigo
 js/compartilhar.js  cartões para os Stories (ouvindo, apoiei, verso)
-js/transmitir.js    ouvir na TV: Chromecast, AirPlay, "Assistir na TV" e o painel de controle remoto no celular
+js/transmitir.js    ouvir na TV: Chromecast, AirPlay, "Ouça na TV" e o painel de controle remoto no celular
 js/tela-tv.js       a tela da TV (capa, letra sincronizada, barra do álbum), usada no Modo TV e no celular
 js/bioluz.js        a barra bioluminescente (player, letra e TV)
 js/tv.js            Modo TV: código, QR, conexão com a sala, áudio e teclas do controle da TV
 tv/index.html       Modo TV: a página aberta no navegador da TV
 css/tela-tv.css     visual da tela da TV (tamanhos, cores e velocidade da rolagem comentados)
-css/transmitir.css  ícones de TV no player, janela "Assistir na TV" e painel "Na TV"
+css/transmitir.css  ícones de TV no player, janela "Ouça na TV" e painel "Na TV"
 img/tv/             capa em JPG (Chromecast, tela de bloqueio) e a miniatura do fundo desfocado
 js/mural.js         mural dos ouvintes          js/admin.js   página de administração
 img/                fotos em WebP, até 1600 px no lado maior, sem metadados/GPS
@@ -189,10 +189,13 @@ Só para quem tem o código de acesso. Três caminhos, todos na página do álbu
 
 | Aparelho | Como | O que a TV mostra | A letra sincronizada |
 |---|---|---|---|
-| Android e computador (Chrome) | ícone do Google Cast no player (só aparece se houver um Chromecast/Google TV na rede) | capa e título (tela padrão do Google) | no celular |
+| Android e computador (Chrome) | ícone de transmitir no player: com um Chromecast/Google TV na rede, é o botão oficial do Google | capa e título (tela padrão do Google) | no celular |
 | iPhone (Safari) | ícone da AirPlay no player (no lugar do Cast) | capa e título | no celular |
-| Qualquer TV com navegador (Samsung, LG...) | **Assistir na TV**: a TV abre `/tv` e mostra um código | capa de fundo, letra sincronizada e a barra do álbum | na TV e no celular |
+| Qualquer TV com navegador (Samsung, LG...) | **Ouça na TV** (ou o ícone de transmitir, quando não há Chromecast na rede): a TV abre `/tv` e mostra um código | capa de fundo, letra sincronizada e a barra do álbum | na TV e no celular |
 
+- O ícone de transmitir aparece sempre para quem tem o álbum. Com um aparelho Cast na rede, ele é o botão oficial
+  do Google; sem nenhum, o mesmo ícone abre o **Ouça na TV**. O YouTube mostra o ícone também para TVs Samsung/LG
+  sem Chromecast porque usa um protocolo próprio (DIAL) com o app dele; para os sites, essas TVs só funcionam pelo Modo TV.
 - No celular abre o painel **Na TV**: a mesma tela da TV em versão compacta, com a barra do álbum inteiro
   em trechos (tocar num trecho pula para a faixa; arrastar adianta ou volta), tocar/pausar, anterior e próxima.
 - **Segurança:** a TV e o Chromecast recebem só links assinados que vencem: 15 minutos no Modo TV (renovados
@@ -222,7 +225,7 @@ Só para quem tem o código de acesso. Três caminhos, todos na página do álbu
 
 **Modo TV (Samsung, LG, qualquer TV com navegador)**
 1. Na TV, abra o navegador e digite o endereço de `tv-endereco` (ex.: `thalescvalho-png.github.io/site-thales-thayson/tv`).
-2. Aparecem um código de 6 letras/números e um QR. No celular: aponte a câmera para o QR, ou abra o álbum e toque em **Assistir na TV**, digite o código e toque em **Conectar**.
+2. Aparecem um código de 6 letras/números e um QR. No celular: aponte a câmera para o QR, ou abra o álbum e toque em **Ouça na TV**, digite o código e toque em **Conectar**.
 3. Na TV, aperte **OK** no controle (os navegadores só liberam o som depois de um toque na própria TV).
 4. Controle da TV: OK = tocar/pausar; ← → = faixa anterior/próxima (segurando: volta/adianta 10 s); ↑ ↓ = mostra/esconde a barra.
 5. Teste também: desligar o Wi-Fi da TV por alguns segundos (ela reconecta sozinha); **Desconectar** no celular (a TV volta a mostrar um código novo).

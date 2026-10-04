@@ -291,7 +291,15 @@
     var pausadoDesde = 0, ultimaRecarga = 0, ultimaVez = 0, faixaCast = 0;
 
     // o ícone só aparece se houver um aparelho Cast na rede (e só para quem tem o álbum)
-    function mostrarIcone(){ lancador.hidden = contexto.getCastState() === cf.CastState.NO_DEVICES_AVAILABLE; }
+    // Um ícone de transmitir só: com um aparelho Cast na rede, aparece o botão oficial do Google;
+    // sem nenhum, o mesmo desenho abre o "Ouça na TV" (Modo TV). Com uma TV já conectada, os dois aparecem.
+    function mostrarIcone(){
+      var semCast = contexto.getCastState() === cf.CastState.NO_DEVICES_AVAILABLE;
+      lancador.hidden = semCast;
+      $('btTv').hidden = !semCast && !(destino && destino.tipo === 'tv');
+      $('btUsarCast').hidden = semCast;
+    }
+    $('btUsarCast').addEventListener('click', function(){ fecharConectar(); contexto.requestSession().catch(function(){}); });
     contexto.addEventListener(cf.CastContextEventType.CAST_STATE_CHANGED, mostrarIcone);
     mostrarIcone();
 
@@ -426,6 +434,6 @@
     });
   }
 
-  // botão de TV no player: abre o painel se já houver uma TV; senão, o "Assistir na TV"
+  // botão de TV no player: abre o painel se já houver uma TV; senão, o "Ouça na TV"
   $('btTv').addEventListener('click', function(){ if (destino) abrirPainel(destino); else abrirConectar(); });
 })();
