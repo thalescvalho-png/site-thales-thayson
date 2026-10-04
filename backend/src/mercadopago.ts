@@ -32,8 +32,16 @@ export async function criarPagamento(
     },
     body: JSON.stringify(corpo),
   });
-  const dados = (await resposta.json().catch(() => ({}))) as PagamentoMP & { message?: string };
-  if (!resposta.ok) return { ok: false, status: resposta.status, mensagem: dados.message ?? `HTTP ${resposta.status}` };
+  const dados = (await resposta.json().catch(() => ({}))) as PagamentoMP & { message?: string; cause?: unknown };
+  if (!resposta.ok) {
+    // o corpo do erro (sem dados do cartão) e o x-request-id ajudam o suporte do Mercado Pago a achar a falha
+    console.error(
+      `Resposta do Mercado Pago ao criar o pagamento ${chaveIdempotencia}: ${resposta.status}`,
+      `x-request-id=${resposta.headers.get("x-request-id") ?? "-"}`,
+      JSON.stringify(dados).slice(0, 800),
+    );
+    return { ok: false, status: resposta.status, mensagem: dados.message ?? `HTTP ${resposta.status}` };
+  }
   return { ok: true, pagamento: dados };
 }
 
