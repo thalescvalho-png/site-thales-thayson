@@ -31,10 +31,10 @@ done <<'FAIXAS'
 2|candeia|Candeia|#E8AE62|#C68B3E
 3|no-leito|No Leito|#86BCD4|#3E7C9A
 4|meandros|Meandros|#74B3AB|#2F6F73
-5|a-danca-das-chamas|A Dança das Chamas|#EC8456|#B8452A
-6|degredo|Degredo|#C48BB6|#6D4C7D
-7|lugubre|Lúgubre|#9AA2DD|#3A3F7B
-8|correnteza-faixa|Correnteza|#B9CCDA|#C68B3E
+5|correnteza-faixa|Correnteza|#B9CCDA|#C68B3E
+6|a-danca-das-chamas|A Dança das Chamas|#EC8456|#B8452A
+7|degredo|Degredo|#C48BB6|#6D4C7D
+8|lugubre|Lúgubre|#9AA2DD|#3A3F7B
 9|endless|Endless|#8FB3CF|#3E5C76
 FAIXAS
 rm -rf "$TEMP"
