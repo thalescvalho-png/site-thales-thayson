@@ -86,7 +86,18 @@ img{ max-width:100%; height:auto; display:block; }
 .quem-in{ max-width:1280px; margin:0 auto; padding:120px 24px; display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:72px; align-items:center; }
 .quem h2{ font-family:var(--serif); font-weight:500; font-size:clamp(40px, 5vw, 64px); line-height:1.05; margin-bottom:24px; }
 .quem p{ color:#2B4560; max-width:62ch; margin-bottom:18px; }
-.quem a.mais{ color:var(--ambar-escuro); font-weight:600; text-decoration:none; }
+.quem .mais{ color:var(--ambar-escuro); font-weight:600; text-decoration:none; }
+/* "Ler história completa": o principal.js põe .recolhivel (sem JS o texto fica aberto) */
+.quem button.mais{ display:inline-flex; align-items:center; gap:8px; padding:6px 0; background:none; border:0; font:inherit; font-weight:600; cursor:pointer; }
+.quem button.mais::after{ content:''; width:7px; height:7px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:translateY(-2px) rotate(45deg); transition:transform .4s ease; }
+.quem button.mais[aria-expanded="true"]::after{ transform:translateY(2px) rotate(-135deg); }
+.quem button.mais:hover{ text-decoration:underline; text-underline-offset:4px; }
+.historia.recolhivel{ display:grid; grid-template-rows:0fr; opacity:0; visibility:hidden;
+  transition:grid-template-rows .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease, visibility 0s linear .7s; }
+.historia.recolhivel > div{ overflow:hidden; min-height:0; }
+.historia.recolhivel.aberta{ grid-template-rows:1fr; opacity:1; visibility:visible;
+  transition:grid-template-rows .7s cubic-bezier(.2,.7,.2,1), opacity .7s ease .15s, visibility 0s; }
+@media (prefers-reduced-motion: reduce){ .historia.recolhivel, .historia.recolhivel.aberta, .quem button.mais::after{ transition:none; } }
 .retrato{ aspect-ratio:4/5; width:100%; border-radius:4px; object-fit:cover; object-position:50% 40%; }
 @media (max-width:860px){ .quem-in{ grid-template-columns:1fr; padding:80px 24px; gap:36px; } }
 
