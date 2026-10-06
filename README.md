@@ -90,8 +90,8 @@ guardada no navegador por 30 dias, então vale mesmo se a pessoa comprar dias de
 
 (`...` = `https://thalescvalho-png.github.io/site-thales-thayson`. Também vale `?origem=qualquer-nome`.)
 
-- **Endereços curtos das faixas:** `/clareira/`, `/candeia/`, `/no-leito/`, `/meandros/`, `/a-danca-das-chamas/`,
-  `/degredo/`, `/lugubre/`, `/correnteza/` (a faixa 8), `/endless/`. Cada um mostra o cartão da faixa no
+- **Endereços curtos das faixas:** `/clareira/`, `/candeia/`, `/no-leito/`, `/meandros/`, `/correnteza/` (a faixa 5),
+  `/a-danca-das-chamas/`, `/degredo/`, `/lugubre/`, `/endless/`. Cada um mostra o cartão da faixa no
   WhatsApp/Instagram e abre a página do álbum com a faixa escolhida.
 - **Cartões de link** (`img/og/`): para refazer depois de mudar textos ou cores, edite
   `scripts/cartao-de-link.html` e rode `./scripts/gerar-cartoes-de-link.sh` (precisa do Chrome).

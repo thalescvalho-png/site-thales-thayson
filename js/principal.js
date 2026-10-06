@@ -78,7 +78,7 @@
     }
     grupo('.correnteza .quando');
     grupo('.correnteza .verso, .correnteza .descricao, .correnteza .acoes-linha', 2);
-    grupo('.quem p, .quem .mais', 2);
+    grupo('.quem-in > div > p, .quem .mais', 2);
     grupo('.traj-topo .botao', 2);
     grupo('.galeria .intro', 1);
     grupo('.contato .apoio-texto', 1);
@@ -144,6 +144,25 @@
       else window.open(link, '_blank', 'noopener');
     });
   });
+
+  // Quem somos: "Ler história completa" abre e recolhe o resto do texto
+  var historia = document.getElementById('historiaCompleta');
+  var btHistoria = document.getElementById('btHistoria');
+  if (historia && btHistoria){
+    historia.classList.add('recolhivel');
+    btHistoria.setAttribute('aria-expanded', 'false');
+    btHistoria.hidden = false;
+    btHistoria.addEventListener('click', function(){
+      var abrir = !historia.classList.contains('aberta');
+      // ao recolher, o botão sobe até onde o texto começa: a página acompanha, se esse ponto ficou para trás
+      var inicio = historia.getBoundingClientRect().top;
+      historia.classList.toggle('aberta', abrir);
+      btHistoria.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      btHistoria.textContent = abrir ? 'Recolher' : 'Ler história completa';
+      if (!abrir && inicio < 100) window.scrollBy({ top: inicio - window.innerHeight * 0.4, behavior: reduzir ? 'auto' : 'smooth' });
+      setTimeout(pedir, reduzir ? 0 : 750);
+    });
+  }
 
   // 4. Galeria: clicar numa foto abre a versão ampliada, com setas e Esc
   var janela = document.getElementById('ampliada');
