@@ -67,6 +67,9 @@
         Object.keys(origens).sort(function(a, b){ return (origens[b].visita || 0) - (origens[a].visita || 0); }).map(function(o){
           return [o].concat(ETAPAS.map(function(e){ return origens[o][e[0]] || 0; }));
         }));
+      tabela(document.getElementById('ouvidas'), ['faixa', 'prévias', 'completas', 'total'], (r.reproducoes || []).map(function(f){
+        return [titulos[f.faixa] || f.faixa, f.previas, f.completas, f.previas + f.completas];
+      }));
       tabela(document.getElementById('vendas'), ['origem', 'vendas', 'valor'], r.vendas.map(function(v){ return [v.origem, v.pedidos, reais(v.valor)]; }));
     });
   }

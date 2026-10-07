@@ -16,6 +16,7 @@
 // POST /api/novidades                "me avise das novidades"      POST /api/descadastrar  sair da lista
 // GET|POST /api/comentarios          mural dos ouvintes            POST /api/comentarios/confirmar
 // POST /api/evento                   contagem do funil, sem dado pessoal
+// POST /api/reproducao  GET /api/reproducoes   quantas vezes cada faixa foi ouvida
 // /api/admin/...                     moderação e resumo (senha ADMIN_SENHA)
 import { rotaAdmin } from "./admin";
 import { tarefaAgendada } from "./agendado";
@@ -25,6 +26,7 @@ import { rotaCheckout, rotaPedido } from "./checkout";
 import { rotaDescadastrar, rotaNovidades } from "./contatos";
 import { aplicarCors, cabecalhosCors } from "./cors";
 import { rotaEvento } from "./eventos";
+import { rotaReproducao, rotaReproducoes } from "./reproducoes";
 import { rotaComentarios, rotaConfirmarComentario } from "./mural";
 import { decodificar, erro, json } from "./util";
 import { rotaTvParear, rotaTvSessao, rotaTvWs } from "./tv";
@@ -39,6 +41,7 @@ const SO_POST: Record<string, (request: Request, env: Env) => Promise<Response>>
   "/api/descadastrar": rotaDescadastrar,
   "/api/comentarios/confirmar": rotaConfirmarComentario,
   "/api/evento": rotaEvento,
+  "/api/reproducao": rotaReproducao,
 };
 
 async function rotear(request: Request, env: Env, ctx: ExecutionContext, url: URL): Promise<Response> {
@@ -60,6 +63,7 @@ async function rotear(request: Request, env: Env, ctx: ExecutionContext, url: UR
   if (pathname === "/api/links") return rotaLinks(request, env, ctx, url);
   if (pathname === "/api/cast/fila") return rotaFilaCast(request, env, ctx, url);
   if (pathname === "/api/aparelhos") return rotaAparelhos(request, env, url);
+  if (pathname === "/api/reproducoes") return rotaReproducoes(env);
 
   const pedido = pathname.match(/^\/api\/order\/([^/]+)$/);
   if (pedido) return rotaPedido(request, env, decodificar(pedido[1]) ?? "");

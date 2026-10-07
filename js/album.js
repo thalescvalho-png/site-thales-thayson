@@ -234,6 +234,9 @@ window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude);
         if (C.abrirLetra && C.abrirLetra(i, letra)) e.preventDefault();
       });
       var extras = el('span', 'faixa-extras');
+      var ouvidas = el('span', 'ouvidas');
+      ouvidas.hidden = true;
+      extras.appendChild(ouvidas);
       extras.appendChild(letra);
       if (completo){
         // download das faixas só quando o backend liberar (DOWNLOAD_FAIXAS = "sim")
@@ -256,6 +259,7 @@ window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude);
       li.appendChild(extras);
       lista.appendChild(li);
     });
+    mostrarOuvidas();
     tocador.classList.remove('bloqueado');
     [btTocar, btAnterior, btProxima, barra].forEach(function(b){ b.disabled = false; });
     aviso.textContent = completo
@@ -312,6 +316,7 @@ window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude);
       });
     }
     retomarEm = -1;
+    contada = false;
     // link da faixa completa perto de vencer: pede um novo antes de tocar
     if (completo && C.linksVencendo(2 * 60000)){
       audio.pause(); audio.removeAttribute('src'); audio.load();
@@ -366,6 +371,7 @@ window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude);
   });
   audio.addEventListener('timeupdate', function(){
     if (completo && !audio.paused) conferirVez();
+    if (!contada && !audio.paused && audio.currentTime >= (completo ? 30 : 10)) contarOuvida();
     if (arrastando || !audio.duration) return;
     posicaoNaSessao();
     barra.value = (audio.currentTime / audio.duration) * 100;
@@ -409,6 +415,36 @@ window.Correnteza.bioluz = function(amplitude){ return window.Bioluz(amplitude);
     try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch (e) {}
   }
   audio.addEventListener('seeked', function(){ ultimaPosicao = 0; posicaoNaSessao(); });
+
+  // ----- Quantas vezes cada faixa foi ouvida ("▶ 223" ao lado do nome) -----
+  // Conta uma vez cada vez que a faixa é aberta e tocada por 10 s (prévia) ou 30 s (completa).
+  var contada = false;
+  var ouvidas = null; // { "01-clareira": 223, ... } vindo de /api/reproducoes
+  var milhar = window.Intl ? new Intl.NumberFormat('pt-BR') : { format: String };
+  function mostrarOuvidas(){
+    itens().forEach(function(x, i){
+      var s = x.querySelector('.ouvidas'), n = ouvidas && faixas[i] ? ouvidas[faixas[i].id] || 0 : 0;
+      if (!s) return;
+      s.hidden = !n;
+      s.textContent = '\u25B6\uFE0E ' + milhar.format(n);
+      s.setAttribute('aria-label', n === 1 ? 'ouvida 1 vez' : 'ouvida ' + milhar.format(n) + ' vezes');
+    });
+  }
+  function contarOuvida(){
+    var f = faixas[atual];
+    if (!f) return;
+    contada = true;
+    var corpo = JSON.stringify({ faixa: f.id, tipo: completo ? 'completa' : 'previa' });
+    try {
+      if (!(navigator.sendBeacon && navigator.sendBeacon(C.api + '/api/reproducao', corpo))){
+        fetch(C.api + '/api/reproducao', { method: 'POST', body: corpo, keepalive: true }).catch(function(){});
+      }
+    } catch (e) {}
+    if (ouvidas){ ouvidas[f.id] = (ouvidas[f.id] || 0) + 1; mostrarOuvidas(); }
+  }
+  C.pedirJson('/api/reproducoes').then(function(r){
+    if (r && r.reproducoes){ ouvidas = r.reproducoes; mostrarOuvidas(); }
+  }, function(){});
 
   // ----- Uma reprodução por vez -----
   // Ao dar play, este aparelho pega a vez. Enquanto toca, confere a cada 20 s se outro aparelho
