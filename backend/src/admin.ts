@@ -56,7 +56,7 @@ export async function rotaAdmin(request: Request, env: Env, url: URL): Promise<R
     const dias = Math.min(Math.max(Number(url.searchParams.get("dias")) || 30, 1), 365);
     const desde = new Date(Date.now() - dias * 86400_000).toISOString();
     const diaDesde = desde.slice(0, 10);
-    const [vendas, funil, lista, mural] = await Promise.all([
+    const [vendas, funil, lista, mural, ouvidas] = await Promise.all([
       env.DB.prepare(
         `SELECT COALESCE(origem, 'direto') AS origem, COUNT(*) AS pedidos, ROUND(SUM(valor), 2) AS valor
            FROM pedidos WHERE status = 'approved' AND pago_em > ?1 GROUP BY 1 ORDER BY pedidos DESC`,
@@ -76,8 +76,16 @@ export async function rotaAdmin(request: Request, env: Env, url: URL): Promise<R
            FROM contatos`,
       ).first(),
       env.DB.prepare("SELECT status, COUNT(*) AS total FROM comentarios GROUP BY status").all(),
+      env.DB.prepare(
+        `SELECT faixa,
+                SUM(CASE WHEN tipo = 'previa' THEN total ELSE 0 END) AS previas,
+                SUM(CASE WHEN tipo = 'completa' THEN total ELSE 0 END) AS completas
+           FROM reproducoes_dia WHERE dia >= ?1 GROUP BY faixa ORDER BY faixa`,
+      )
+        .bind(diaDesde)
+        .all(),
     ]);
-    return json({ dias, vendas: vendas.results, funil: funil.results, lista, mural: mural.results });
+    return json({ dias, vendas: vendas.results, funil: funil.results, lista, mural: mural.results, reproducoes: ouvidas.results });
   }
 
   return erro(404, "nao_encontrado");

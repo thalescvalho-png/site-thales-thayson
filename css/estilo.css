@@ -468,12 +468,15 @@ button.botao{ cursor:pointer; font-family:inherit; }
 .linha-codigo .botao{ flex-shrink:0; }
 
 /* faixas com letra e download ao lado (no celular, numa linha abaixo do nome) */
-.faixa-extras{ display:flex; flex-shrink:0; }
+.faixa-extras{ display:flex; flex-shrink:0; align-items:center; }
+/* quantas vezes a faixa foi ouvida */
+.ouvidas{ font-size:13px; color:var(--nevoa); font-variant-numeric:tabular-nums; white-space:nowrap; padding:10px 8px; opacity:.85; }
+.ouvidas[hidden]{ display:none; }
 @media (max-width:560px){
   .faixas li{ flex-wrap:wrap; gap:0; }
   .faixas li .faixa{ flex-basis:100%; }
   .faixa-extras{ margin:-14px 0 6px 60px; }
-  .faixa-extras .ver-letra{ padding:6px 14px 6px 0; }
+  .faixa-extras .ver-letra, .faixa-extras .ouvidas{ padding:6px 14px 6px 0; }
 }
 @media (prefers-reduced-motion: reduce){ .girando{ animation-duration:3s; } }
 .ja-comprei{ max-width:none; }
